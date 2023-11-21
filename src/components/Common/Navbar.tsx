@@ -10,11 +10,11 @@ import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import {} from "react-icons/ai"
 import { Link } from "react-router-dom"
-import useFetchDetails from "../../Hooks/useFetchDetails"
 import { nukt_logo } from "../../assets"
 import { fileDB } from "../../config/firebase"
 import { useAuthContext } from "../../contexts/AuthContext"
 import { useDataContext } from "../../contexts/DataContext"
+import useFetchDetails from "../../hooks/useFetchDetails"
 import Sidebar from "../LeftSidebar/Sidebar"
 import FeedbackModal from "../Modal/FeedbackModal"
 import UserSidebar from "../UserSidebar/UserSideBar"
@@ -175,6 +175,7 @@ export default function Navbar() {
                 <FontAwesomeIcon icon={faBell} className="font-[90px]" />
               )}
               <button
+                type="button"
                 onClick={showUserSidebar}
                 className="bg-[#0d0d0d50] rounded-full border-2 border-[#ffffff70]
                 w-[40px] h-[40px] overflow-hidden"

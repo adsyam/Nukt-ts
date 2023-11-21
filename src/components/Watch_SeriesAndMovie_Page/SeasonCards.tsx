@@ -1,22 +1,30 @@
 import { motion } from "framer-motion"
 import { Link, useParams } from "react-router-dom"
-import useFetchDetails from "../../Hooks/useFetchDetails"
+import useFetchDetails from "../../hooks/useFetchDetails"
 
-export default function SeasonCards({ id }) {
-  const { season } = useParams()
+interface Data {
+    seasons: Season[]
+}
+
+interface SeasonCardsProps {
+    id: string
+}
+
+export default function SeasonCards({ id }: SeasonCardsProps) {
+  const { season } = useParams<string>()
   const { data } = useFetchDetails()
 
   return (
     <div className="text-white flex flex-wrap gap-3">
-      {data.seasons &&
+      {data?.seasons &&
         data.seasons
-          .filter((sea) => sea.season_number > 0)
+          .filter((sea: { season_number: number }) => sea.season_number > 0)
           .map((sea, i) => (
             <Link
               key={i}
               role="button"
               className={`flex relative items-center justify-center uppercase font-semibold border-2 rounded-md overflow-hidden max-w-[15%] text-lg max-md:max-w-[25%] max-lg:text-sm ${
-                parseInt(season) === i + 1
+                parseInt(season || "1") === i + 1
                   ? "border-[2px] border-[#7300FF]"
                   : "border-[#868686]"
               }`}

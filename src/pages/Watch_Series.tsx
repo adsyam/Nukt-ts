@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
 import { doc, onSnapshot } from "firebase/firestore"
 import { motion } from "framer-motion"
-import useFetchDetails from "../Hooks/useFetchDetails"
+import useFetchDetails from "../hooks/useFetchDetails"
 import {
   EpisodeList,
   Footer,
@@ -17,24 +17,30 @@ import { useAuthContext } from "../contexts/AuthContext"
 import { useDBContext } from "../contexts/DBContext"
 import { useDataContext } from "../contexts/DataContext"
 
+interface Servers {
+    [key: string]: string
+}
+
 export default function WatchSeries() {
-  const { id, season, episode, isLoading, setIsLoading, pathname, data } =
+  const { id, season, episode, setIsLoading, pathname, data } =
     useFetchDetails()
-  const [mediaType, setMediaType] = useState()
-  const [serverState, setServerState] = useState("Server1")
-  const [currentServer, setCurrentServer] = useState()
+  const [mediaType, setMediaType] = useState<string>()
+  const [serverState, setServerState] = useState<string>("Server1")
+  const [currentServer, setCurrentServer] = useState<string>()
 
   const { user } = useAuthContext()
   const { sidebar } = useDataContext()
   const { addHistoryOrLibrary } = useDBContext()
 
-  const servers = {
+const servers: Servers = useMemo(() => {
+  return {
     Server1: `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${season}&e=${episode}`,
     Server2: `https://vidsrc.me/embed/${mediaType}?tmdb=${id}&season=${season}&episode=${episode}`,
     Server3: `https://vidsrc.to/embed/${mediaType}/${id}/${season}/${episode}/`,
     Server4: `https://2embed.org/series.php?id=${id}/${season}/${episode}/`,
     Server5: `https://www.2embed.cc/embedtv/${id}&s=${season}&e=${episode}/`,
   }
+}, [id, season, episode, mediaType])
 
   //===== this code is for watch history =======
   useEffect(() => {
@@ -42,14 +48,14 @@ export default function WatchSeries() {
       doc(textDB, "Users", user.uid),
       { includeMetadataChanges: true },
       (doc) => {
-        if (doc.data().storeHistory) {
+        if (doc.data()?.storeHistory) {
           addHistoryOrLibrary(user?.uid, "history", "series", id)
         }
       }
     )
 
     return () => unsubscribe()
-  }, [user?.uid])
+  }, [user?.uid, addHistoryOrLibrary, id])
 
   useEffect(() => {
     if (serverState in servers) {
@@ -61,7 +67,7 @@ export default function WatchSeries() {
     setTimeout(() => {
       setIsLoading(false)
     }, 2000)
-  }, [serverState, mediaType, id, season, episode, pathname, setIsLoading])
+  }, [serverState, mediaType, id, season, episode, pathname, setIsLoading, servers])
 
   return (
     <>
@@ -69,10 +75,10 @@ export default function WatchSeries() {
         <div className="flex flex-col w-full gap-4">
           <MediaFrame
             id={id}
-            season={season}
-            episode={episode}
+            // season={season}
+            // episode={episode}
             server={currentServer}
-            path={mediaType}
+            // path={mediaType}
           />
           <div className="flex flex-col gap-4 border-2 border-[#86868650] p-3 pb-4 rounded-md">
             <ul className="flex flex-wrap text-[#868686] gap-4">

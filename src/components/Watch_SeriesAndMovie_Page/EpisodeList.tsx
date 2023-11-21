@@ -1,6 +1,6 @@
 import { motion } from "framer-motion"
 import { Link, useNavigate, useParams } from "react-router-dom"
-import useFetchDetails from "../../Hooks/useFetchDetails"
+import useFetchDetails from "../../hooks/useFetchDetails"
 import useResponsive from "../../Hooks/useResponsive"
 
 export default function EpisodeList() {
@@ -13,7 +13,7 @@ export default function EpisodeList() {
 
   return (
     <div className={`${responsiveEpisodeList}`}>
-      {data.seasons &&
+      {data?.seasons &&
         data.seasons
           .filter((ep) => ep.season_number === parseInt(season))
           .map((ep, i) =>

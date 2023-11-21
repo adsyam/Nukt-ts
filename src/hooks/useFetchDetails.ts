@@ -3,24 +3,27 @@ import { useEffect, useState } from "react"
 import { useLocation, useParams } from "react-router"
 import { API_KEY, TMDB_BASE_URL } from "../config/TMDB_API"
 
+interface useFetchDetails {
+    data: Array<[]>
+    isLoading: boolean
+    setIsLoading: boolean
+    id: string
+    season: string
+    episode: string
+    pathname: string
+}
+
 export default function useFetchDetails() {
-  const { id, season, episode } = useParams()
-  const [data, setData] = useState([])
+  const { id, season, episode } = useParams<string>()
+  const [data, setData] = useState<[]>()
   const [isLoading, setIsLoading] = useState(true)
   const location = useLocation()
   const pathname = location.pathname
 
   useEffect(() => {
-    let mediaType
-
-    if (pathname.includes("Movie")) {
-      mediaType = "movie"
-    } else {
-      mediaType = "tv"
-    }
-
     const fetchData = async () => {
       try {
+        const mediaType = pathname.includes("Movie") ? "movie" : "tv"
         const response = await axios.get(
           `${TMDB_BASE_URL}/${mediaType}/${id}?api_key=${API_KEY}`
         )

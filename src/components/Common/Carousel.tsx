@@ -5,17 +5,21 @@ import "swiper/css"
 import "swiper/css/effect-fade"
 import { Autoplay, EffectFade } from "swiper/modules"
 import { Swiper, SwiperSlide } from "swiper/react"
-import useFetchTrailer from "../../Hooks/useFetchTrailer"
+import useFetchTrailer from "../../hooks/useFetchTrailer"
 import { API_KEY, TMDB_BASE_URL } from "../../config/TMDB_API"
 import { useDataContext } from "../../contexts/DataContext"
 import TrailerModal from "../Modal/TrailerModal"
 import GenreMap from "./GenreMap"
 
-export default function Carousel({ mediaType }) {
-  const [data, setData] = useState([])
-  const [isloading, setIsLoading] = useState(true)
+interface CarouselProps {
+    mediaType: string
+}
+
+export default function Carousel({ mediaType }: CarouselProps) {
+  const [data, setData] = useState<[]>([])
+//   const [isloading, setIsLoading] = useState(true)
   const [isOpen, setIsOpen] = useState(false)
-  const [getId, setGetId] = useState()
+  const [getId, setGetId] = useState<number>()
   const [url, setUrl] = useState(
     `${TMDB_BASE_URL}/trending/all/day?api_key=${API_KEY}`
   )
@@ -53,12 +57,12 @@ export default function Carousel({ mediaType }) {
         const response = await axios.get(url)
 
         setData(response.data.results)
-        setTimeout(() => {
-          setIsLoading(false)
-        }, 1600)
+        // setTimeout(() => {
+        //   setIsLoading(false)
+        // }, 1600)
       } catch (error) {
         console.error("Error fething data (CAROUSEL):", error)
-        setIsLoading(false)
+        // setIsLoading(false)
       }
     }
 

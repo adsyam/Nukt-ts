@@ -79,9 +79,9 @@ export const useFetchChannelVideos = (param) => {
   const [videos, setVideos] = useState([]);
 
   useEffect(() => {
-    useFetch(`search?channelId=${param}&part=snippet&order=date`).then((data) =>
-      setVideos(data?.items)
-    );
+    useFetchRapid(`search?channelId=${param}&part=snippet&order=date`).then(
+      (data) => setVideos(data?.items)
+    )
   }, [param]);
 
   return videos;
@@ -92,7 +92,7 @@ export const useFetchChannelVideos = (param) => {
 export const useFetchVideoComments = (param) => {
   const [comments, setComments] = useState(null);
   useEffect(() => {
-    useFetch(`commentThreads?part=snippet&videoId=${param}`).then((data) =>
+    useFetchRapid(`commentThreads?part=snippet&videoId=${param}`).then((data) =>
       setComments(data?.items)
     );
   }, [param]);
@@ -108,11 +108,11 @@ export const useFetchSubsVideos = (subChannels) => {
       try {
         const responses = await Promise.all(
           subChannels.map((channelId) =>
-            useFetch(
+            useFetchRapid(
               `search?channelId=${channelId}&part=snippet,id&order=date&`
             )
           )
-        );
+        )
 
         const flattenedData = responses.flatMap(
           (response) => response?.items || []
@@ -138,9 +138,9 @@ export const useFetchSubChannels = (subChannels) => {
       try {
         const responses = await Promise.all(
           subChannels.map((channelId) =>
-            useFetch(`channels?part=snippet&id=${channelId}`)
+            useFetchRapid(`channels?part=snippet&id=${channelId}`)
           )
-        );
+        )
 
         const flattenedData = responses.flatMap(
           (response) => response?.items || []
@@ -166,9 +166,9 @@ export const useFetchVideoDetail = (videoIds) => {
       try {
         const responses = await Promise.all(
           videoIds.map((videoId) =>
-            useFetch(`videos?part=snippet&id=${videoId}`)
+            useFetchRapid(`videos?part=snippet&id=${videoId}`)
           )
-        );
+        )
 
         const flattenedData = responses.flatMap(
           (response) => response?.items || []

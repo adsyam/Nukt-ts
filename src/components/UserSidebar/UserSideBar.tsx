@@ -11,15 +11,15 @@ export default function UserSidebar({ showUserSidebar }) {
   const { user, logout } = useAuthContext()
   const { modal, setModal, setUserSidebar } = useDataContext()
   const [imageUrl, setImageUrl] = useState(null)
-  const [reload, setReload] = useState(false)
+//   const [reload, setReload] = useState(false)
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setReload(!reload)
-    }, 1000)
+//   useEffect(() => {
+//     const timeout = setTimeout(() => {
+//       setReload(!reload)
+//     }, 1000)
 
-    return () => clearTimeout(timeout)
-  }, [reload])
+//     return () => clearTimeout(timeout)
+//   }, [reload])
 
   useEffect(() => {
     const listRef = ref(fileDB, `${user?.uid}/profileImage/`)

@@ -35,11 +35,11 @@ export default function Home() {
     }
 
     addUserData()
-  }, [])
+  }, [addUser, user?.auth?.currentUser?.providerData, user?.displayName, user?.providerData, user?.uid])
 
   return (
     <div className="overflow-x-hidden">
-      <Carousel />
+      <Carousel mediaType={""} />
       <div>
         <div
           className={`${

@@ -1,4 +1,5 @@
 import {
+    NextOrObserver,
   User,
   UserCredential,
   createUserWithEmailAndPassword,
@@ -21,7 +22,7 @@ interface AuthProviderProps {
   children: ReactNode
 }
 
-interface AuthContextProps {
+export interface AuthContextProps {
   createUser: (email: string, password: string) => Promise<UserCredential>
   signInUser: (email: string, password: string) => Promise<UserCredential>
   signInWithGoogle: () => Promise<UserCredential>
@@ -30,10 +31,6 @@ interface AuthContextProps {
 }
 
 const AuthContext = createContext<AuthContextProps | null>(null)
-
-interface AuthProviderProps {
-  children: ReactNode
-}
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const navigate = useNavigate()
@@ -68,7 +65,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       await signOut(auth)
       return navigate("/login")
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
 
@@ -78,7 +75,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         createUser,
         signInUser,
         signInWithGoogle,
-        user,
+        user: user || "",
         logout,
       }}
     >

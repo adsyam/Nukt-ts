@@ -5,14 +5,10 @@ import { FcGoogle } from "react-icons/fc"
 import { useNavigate } from "react-router"
 import { Link } from "react-router-dom"
 import { Footer } from "../components"
-import { useAuthContext } from "../contexts/AuthContext"
+import { AuthContextProps, useAuthContext } from "../contexts/AuthContext"
 
 export default function SignIn() {
   const [showPassword1, setShowPassword1] = useState(false)
-  function passwordToggle(isShow) {
-    if (isShow) return "text"
-    if (!isShow) return "password"
-  }
   const navigate = useNavigate()
   const [loginDetail, setLoginDetail] = useState({
     email: "",
@@ -21,9 +17,13 @@ export default function SignIn() {
   })
   const [loading, setLoading] = useState(false)
   const [errorMsg, setErrorMsg] = useState("")
-  const { signInUser, signInWithGoogle } = useAuthContext()
+  const { signInUser, signInWithGoogle } = useAuthContext()! as AuthContextProps
 
-  const handleChange = (e) => {
+  function passwordToggle(isShow: boolean) {
+    if (isShow) return "text"
+    if (!isShow) return "password"
+  }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target
 
     const newValue = type === "checkbox" ? checked : value

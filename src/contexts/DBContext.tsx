@@ -16,7 +16,7 @@ interface DBProviderProps {
   children: ReactNode
 }
 
-interface DBContextProps {
+export interface DBContextProps {
   addUser: (userId: string, username: string, email: string) => Promise<void>
   getUserData: (userId: string) => Promise<DocumentData | undefined>
   addImage: (userId: string, type: string, imageUpload: File) => void

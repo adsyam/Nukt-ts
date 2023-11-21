@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react"
 
 import { doc, onSnapshot } from "firebase/firestore"
 import { motion } from "framer-motion"
-import useFetchDetails from "../hooks/useFetchDetails"
 import {
   EpisodeList,
   Footer,
@@ -13,53 +12,55 @@ import {
   SeasonCards,
 } from "../components"
 import { textDB } from "../config/firebase"
-import { useAuthContext } from "../contexts/AuthContext"
-import { useDBContext } from "../contexts/DBContext"
-import { useDataContext } from "../contexts/DataContext"
-
-interface Servers {
-    [key: string]: string
-}
+import { AuthContextProps, useAuthContext } from "../contexts/AuthContext"
+import { DBContextProps, useDBContext } from "../contexts/DBContext"
+import { DataContextProps, useDataContext } from "../contexts/DataContext"
+import useFetchDetails from "../hooks/useFetchDetails"
 
 export default function WatchSeries() {
-  const { id, season, episode, setIsLoading, pathname, data } =
-    useFetchDetails()
+  const { id, season, episode, setIsLoading, pathname } = useFetchDetails()
   const [mediaType, setMediaType] = useState<string>()
-  const [serverState, setServerState] = useState<string>("Server1")
+  const [serverState, setServerState] = useState("Server1")
   const [currentServer, setCurrentServer] = useState<string>()
+  const [historyToggle, setHistoryToggle] = useState(true)
 
-  const { user } = useAuthContext()
-  const { sidebar } = useDataContext()
-  const { addHistoryOrLibrary } = useDBContext()
+  const { user } = useAuthContext() as AuthContextProps
+  const { sidebar } = useDataContext() as DataContextProps
+  const { addHistoryOrLibrary } = useDBContext() as DBContextProps
 
-const servers: Servers = useMemo(() => {
-  return {
-    Server1: `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${season}&e=${episode}`,
-    Server2: `https://vidsrc.me/embed/${mediaType}?tmdb=${id}&season=${season}&episode=${episode}`,
-    Server3: `https://vidsrc.to/embed/${mediaType}/${id}/${season}/${episode}/`,
-    Server4: `https://2embed.org/series.php?id=${id}/${season}/${episode}/`,
-    Server5: `https://www.2embed.cc/embedtv/${id}&s=${season}&e=${episode}/`,
-  }
-}, [id, season, episode, mediaType])
+  const servers = useMemo(() => {
+    return {
+      Server1: `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${season}&e=${episode}`,
+      Server2: `https://vidsrc.me/embed/${mediaType}?tmdb=${id}&season=${season}&episode=${episode}`,
+      Server3: `https://vidsrc.to/embed/${mediaType}/${id}/${season}/${episode}/`,
+      Server4: `https://2embed.org/series.php?id=${id}/${season}/${episode}/`,
+      Server5: `https://www.2embed.cc/embedtv/${id}&s=${season}&e=${episode}/`,
+    }
+  }, [id, season, episode, mediaType])
 
   //===== this code is for watch history =======
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      doc(textDB, "Users", user.uid),
-      { includeMetadataChanges: true },
-      (doc) => {
-        if (doc.data()?.storeHistory) {
-          addHistoryOrLibrary(user?.uid, "history", "series", id)
-        }
-      }
-    )
+    if (user && user.uid) {
+      const unsubscribe = onSnapshot(doc(textDB, "Users", user?.uid), (doc) =>
+        setHistoryToggle(doc.data()?.storeHistory)
+      )
+    }
+  }, [user, user?.uid])
 
-    return () => unsubscribe()
-  }, [user?.uid, addHistoryOrLibrary, id])
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (historyToggle && user?.uid) {
+        const nonNullContentId = id ?? ""
+        addHistoryOrLibrary(user?.uid, "history", "series", nonNullContentId)
+      }
+    }, 1000)
+
+    return () => clearTimeout(timeout)
+  }, [addHistoryOrLibrary, historyToggle, id, user?.uid])
 
   useEffect(() => {
     if (serverState in servers) {
-      setCurrentServer(servers[serverState])
+      setCurrentServer(servers[serverState as keyof typeof servers])
     }
 
     pathname.includes("/TVSeries") ? setMediaType("tv") : setMediaType("movie")
@@ -67,7 +68,16 @@ const servers: Servers = useMemo(() => {
     setTimeout(() => {
       setIsLoading(false)
     }, 2000)
-  }, [serverState, mediaType, id, season, episode, pathname, setIsLoading, servers])
+  }, [
+    serverState,
+    mediaType,
+    id,
+    season,
+    episode,
+    pathname,
+    setIsLoading,
+    servers,
+  ])
 
   return (
     <>
@@ -99,7 +109,7 @@ const servers: Servers = useMemo(() => {
               ))}
             </ul>
             <EpisodeList />
-            <SeasonCards id={id} />
+            <SeasonCards id={id || ""} />
           </div>
         </div>
         <MediaDetails

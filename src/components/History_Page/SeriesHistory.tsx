@@ -1,14 +1,14 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
-import { AiOutlineClose } from "react-icons/ai"
 import { useLocation } from "react-router"
+import { AiOutlineClose } from "react-icons/ai"
 
-import { doc, onSnapshot } from "firebase/firestore"
 import { TOKEN_AUTH } from "../../config/TMDB_API"
-import { textDB } from "../../config/firebase"
-import { useAuthContext } from "../../contexts/AuthContext"
-import { useDBContext } from "../../contexts/DBContext"
 import CategoryCard from "../Common/CategoryCard"
+import { doc, onSnapshot } from "firebase/firestore"
+import { textDB } from "../../config/firebase"
+import { useDBContext } from "../../contexts/DBContext"
+import { useAuthContext } from "../../contexts/AuthContext"
 
 export default function SeriesHistory({ reload }) {
   const { user } = useAuthContext()
@@ -18,10 +18,8 @@ export default function SeriesHistory({ reload }) {
   const location = useLocation().pathname.split("/")[2]
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      doc(textDB, "Users", user.uid),
-      { includeMetadataChanges: true },
-      (doc) => setSeriesIds(doc.data()[location].series)
+    const unsubscribe = onSnapshot(doc(textDB, "Users", user.uid), (doc) =>
+      setSeriesIds(doc.data()[location].series)
     )
   }, [])
 
@@ -50,7 +48,7 @@ export default function SeriesHistory({ reload }) {
       .catch((error) => {
         console.error(error)
       })
-  }, [reload, seriesIds])
+  }, [seriesIds])
 
   const handleDelete = (idToDelete) => {
     const newIds = [...seriesIds]

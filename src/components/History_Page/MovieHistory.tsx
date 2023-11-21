@@ -1,14 +1,14 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
-import { AiOutlineClose } from "react-icons/ai"
 import { useLocation } from "react-router"
+import { AiOutlineClose } from "react-icons/ai"
 
-import { doc, onSnapshot } from "firebase/firestore"
 import { TOKEN_AUTH } from "../../config/TMDB_API"
-import { textDB } from "../../config/firebase"
+import CategoryCard from "../Common/CategoryCard"
 import { useAuthContext } from "../../contexts/AuthContext"
 import { useDBContext } from "../../contexts/DBContext"
-import CategoryCard from "../Common/CategoryCard"
+import { textDB } from "../../config/firebase"
+import { doc, onSnapshot } from "firebase/firestore"
 
 export default function MovieHistory({ reload }) {
   const { user } = useAuthContext()
@@ -19,10 +19,8 @@ export default function MovieHistory({ reload }) {
   const location = useLocation().pathname.split("/")[2]
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      doc(textDB, "Users", user.uid),
-      { includeMetadataChanges: true },
-      (doc) => setMovieIds(doc.data()[location].movies)
+    const unsubscribe = onSnapshot(doc(textDB, "Users", user.uid), (doc) =>
+      setMovieIds(doc.data()[location].movies)
     )
   }, [location, user.uid])
 
@@ -51,7 +49,7 @@ export default function MovieHistory({ reload }) {
       .catch((error) => {
         console.error(error)
       })
-  }, [reload, movieIds])
+  }, [movieIds])
 
   const handleDelete = (idToDelete) => {
     const newIds = [...movieIds]

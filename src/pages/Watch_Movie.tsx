@@ -1,6 +1,5 @@
 import { doc, onSnapshot } from "firebase/firestore"
 import { useEffect, useState } from "react"
-import useFetchDetails from "../Hooks/useFetchDetails"
 import {
   Footer,
   MediaDetails,
@@ -9,20 +8,21 @@ import {
   MediaReviews,
 } from "../components"
 import { textDB } from "../config/firebase"
-import { useAuthContext } from "../contexts/AuthContext"
-import { useDBContext } from "../contexts/DBContext"
-import { useDataContext } from "../contexts/DataContext"
+import { AuthContextProps, useAuthContext } from "../contexts/AuthContext"
+import { DBContextProps, useDBContext } from "../contexts/DBContext"
+import useFetchDetails from "../hooks/useFetchDetails"
 
 export default function WatchMovie() {
-  const { id, isLoading, setIsLoading, pathname } = useFetchDetails()
-  const [path, setPath] = useState()
+  const { id, setIsLoading, pathname } = useFetchDetails()
+  const [path, setPath] = useState<string>()
+  const [historyToggle, setHistoryToggle] = useState(true)
 
   const [servers, setServers] = useState(
     `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1`
   )
-  const { sidebar } = useDataContext()
-  const { user } = useAuthContext()
-  const { addHistoryOrLibrary } = useDBContext()
+  //   const { sidebar } = useDataContext() as DataContextProps
+  const { user } = useAuthContext() as AuthContextProps
+  const { addHistoryOrLibrary } = useDBContext() as DBContextProps
 
   const server1 = `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1`
   const server2 = `https://vidsrc.me/embed/${path}?tmdb=${id}`
@@ -32,18 +32,23 @@ export default function WatchMovie() {
 
   //---this will be a listener for the toggle history
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      doc(textDB, "Users", user.uid),
-      { includeMetadataChanges: true },
-      (doc) => {
-        if (doc.data().storeHistory) {
-          addHistoryOrLibrary(user?.uid, "history", "movies", id)
-        }
-      }
-    )
+    if (user && user.uid) {
+      const unsubscribe = onSnapshot(doc(textDB, "Users", user?.uid), (doc) =>
+        setHistoryToggle(doc.data()?.storeHistory)
+      )
+    }
+  }, [user, user?.uid])
 
-    return () => unsubscribe()
-  }, [id])
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (historyToggle && user?.uid) {
+        const nonNullContentId = id ?? ""
+        addHistoryOrLibrary(user?.uid, "history", "movies", nonNullContentId)
+      }
+    }, 1000)
+
+    return () => clearTimeout(timeout)
+  }, [addHistoryOrLibrary, historyToggle, id, user?.uid])
 
   useEffect(() => {
     pathname.includes("/TVSeries") ? setPath("tv") : setPath("movie")

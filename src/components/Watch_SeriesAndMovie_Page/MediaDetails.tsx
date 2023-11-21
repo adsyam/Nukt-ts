@@ -3,25 +3,32 @@ import { faStar as faStarRegular } from "@fortawesome/free-regular-svg-icons"
 import { faStar } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useState } from "react"
-import useFetchDetails from "../../Hooks/useFetchDetails"
-import useFetchTrailer from "../../Hooks/useFetchTrailer"
-import useResponsive from "../../Hooks/useResponsive"
-import { useAuthContext } from "../../contexts/AuthContext"
-import { useDBContext } from "../../contexts/DBContext"
+import useFetchDetails from "../../hooks/useFetchDetails"
+import useFetchTrailer from "../../hooks/useFetchTrailer"
+// import useResponsive from "../../Hooks/useResponsive"
+import { AuthContextProps, useAuthContext } from "../../contexts/AuthContext"
+import { DBContextProps, useDBContext } from "../../contexts/DBContext"
 import TrailerModal from "../Modal/TrailerModal"
 
-export default function MediaDetails({ Season, Episode, mediaType, id }) {
+interface MediaDetailsProps {
+  Season?: string
+  Episode?: string
+  mediaType?: string | boolean
+  id?: string
+}
+
+export default function MediaDetails({ Season, Episode, mediaType, id }: MediaDetailsProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [expandSynopsis, setExpandSynopsis] = useState(false)
   const [starRate, setStarRate] = useState(0)
   const { data, pathname } = useFetchDetails()
   const { getTrailer } = useFetchTrailer(mediaType, id)
-  const { md, sm, xsm, xxsm, screen } = useResponsive()
+//   const { md, sm, xsm, xxsm, screen } = useResponsive()
 
-  const { user } = useAuthContext()
-  const { addHistoryOrLibrary } = useDBContext()
+  const { user } = useAuthContext() as AuthContextProps
+  const { addHistoryOrLibrary } = useDBContext() as DBContextProps
 
-  const handleAddToLibrary = (e) => {
+  const handleAddToLibrary = (e: FormDataEvent) => {
     e.preventDefault()
     let type
     if (pathname.includes("Movie")) {

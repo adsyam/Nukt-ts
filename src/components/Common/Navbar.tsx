@@ -33,7 +33,7 @@ export default function Navbar() {
   const { user } = useAuthContext()
   const [searchMobile, setSearchMobile] = useState(false)
   const [showSearchbar, setShowSearchbar] = useState(false)
-  const [reload, setReload] = useState(false)
+//   const [reload, setReload] = useState(false)
   const [screenWidth, setScreenWidth] = useState(window.innerWidth)
   const [imageUrl, setImageUrl] = useState(null)
 
@@ -175,6 +175,7 @@ export default function Navbar() {
                 <FontAwesomeIcon icon={faBell} className="font-[90px]" />
               )}
               <button
+                title="Profile"
                 type="button"
                 onClick={showUserSidebar}
                 className="bg-[#0d0d0d50] rounded-full border-2 border-[#ffffff70]

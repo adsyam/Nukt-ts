@@ -11,17 +11,37 @@ interface DataProviderProps {
   children: ReactNode
 }
 
-interface DataContextProps {
+interface SidebarState {
   sidebar: boolean
   setSidebar: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+interface UserSidebarState {
   userSidebar: boolean
   setUserSidebar: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+interface ActiveState {
   isActive: boolean
-  //   setIsActive: React.Dispatch<React.SetStateAction<boolean>>
+  setIsActive: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+interface DropDownState {
   dropDown: boolean
-  //   setDropDown: React.Dispatch<React.SetStateAction<boolean>>
+  handleDropDown: () => void
+}
+
+interface ModalState {
   modal: boolean
   setModal: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export interface DataContextProps {
+  sidebar: SidebarState
+  userSidebar: UserSidebarState
+  active: ActiveState
+  dropDown: DropDownState
+  modal: ModalState
   location: string
   searchParams: URLSearchParams
   showSidebar: () => void
@@ -86,4 +106,4 @@ function useDataContext() {
   return context
 }
 
-export { useDataContext, DataProvider, DataContext }
+export { DataContext, DataProvider, useDataContext }

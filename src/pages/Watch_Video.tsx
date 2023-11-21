@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from "react"
 
 import { Footer, Reviews, VideoDescriptions, VideosGrid } from "../components"
 import { textDB } from "../config/firebase"
-import { useAuthContext } from "../contexts/AuthContext"
-import { useDBContext } from "../contexts/DBContext"
-import { useDataContext } from "../contexts/DataContext"
+import { AuthContextProps, useAuthContext } from "../contexts/AuthContext"
+import { DBContextProps, useDBContext } from "../contexts/DBContext"
+import { DataContextProps, useDataContext } from "../contexts/DataContext"
 import {
   useFetchRelatedVideos,
   useFetchStats,
@@ -19,28 +19,29 @@ export default function WatchVideo() {
   const videoDetails = useFetchStats(id)
   const videos = useFetchRelatedVideos(id)
   const comments = useFetchVideoComments(id)
-  const { user } = useAuthContext()
-  const { sidebar } = useDataContext()
-  const { addHistoryOrLibrary } = useDBContext()
+  const { user } = useAuthContext() as AuthContextProps
+  const { sidebar } = useDataContext() as DataContextProps
+  const { addHistoryOrLibrary } = useDBContext() as DBContextProps
   const videoRef = useRef(null)
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      doc(textDB, "Users", user.uid),
-      { includeMetadataChanges: true },
-      (doc) => setHistoryToggle(doc.data().storeHistory)
-    )
-  }, [user.uid])
+    if (user && user.uid) {
+      const unsubscribe = onSnapshot(doc(textDB, "Users", user?.uid), (doc) =>
+        setHistoryToggle(doc.data()?.storeHistory)
+      )
+    }
+  }, [user, user?.uid])
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (historyToggle) {
-        addHistoryOrLibrary(user?.uid, "history", "videos", id)
+      if (historyToggle && user?.uid) {
+        const nonNullContentId = id ?? "" // Provide a default value if id is null
+        addHistoryOrLibrary(user?.uid, "history", "videos", nonNullContentId)
       }
     }, 1000)
 
     return () => clearTimeout(timeout)
-  }, [videoDetails])
+  }, [addHistoryOrLibrary, historyToggle, id, user?.uid, videoDetails])
 
   if (!videoDetails) {
     return (
@@ -64,6 +65,7 @@ export default function WatchVideo() {
             <div className="w-full p-[1rem]">
               <div className="">
                 <iframe
+                  title="YouTube video player"
                   ref={videoRef}
                   key={id}
                   src={`https://www.youtube.com/embed/${id}`}

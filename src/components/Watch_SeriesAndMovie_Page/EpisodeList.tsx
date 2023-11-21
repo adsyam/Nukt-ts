@@ -4,7 +4,7 @@ import useFetchDetails from "../../hooks/useFetchDetails"
 import useResponsive from "../../Hooks/useResponsive"
 
 export default function EpisodeList() {
-  const { id, season, episode } = useParams()
+  const { id, season, episode } = useParams<string>()
   const { data } = useFetchDetails()
   const { responsiveEpisodeList } = useResponsive()
   const navigate = useNavigate()
@@ -15,9 +15,9 @@ export default function EpisodeList() {
     <div className={`${responsiveEpisodeList}`}>
       {data?.seasons &&
         data.seasons
-          .filter((ep) => ep.season_number === parseInt(season))
+          .filter((ep) => ep.season_number === Number(season))
           .map((ep, i) =>
-            parseInt(season) > ep.season_number ? (
+            Number(season) > ep.season_number ? (
               <div key={i} className="text-white">
                 No episode available
               </div>
@@ -28,7 +28,7 @@ export default function EpisodeList() {
                   whileHover={{ scale: 1.05 }}
                   onClick={() => navigate(`/TVSeries/${id}/${season}/${i + 1}`)}
                   className={`w-12 text-center border-2 rounded-md  ${
-                    parseInt(episode) === i + 1
+                    Number(episode) === i + 1
                       ? "border-[2px] border-[#7300FF90]"
                       : "border-[#868686] text-[#868686]"
                   }`}

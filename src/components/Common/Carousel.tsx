@@ -23,7 +23,7 @@ export default function Carousel({ mediaType }: CarouselProps) {
   const [url, setUrl] = useState(
     `${TMDB_BASE_URL}/trending/all/day?api_key=${API_KEY}`
   )
-  const { sidebar } = useDataContext()
+  const { sidebar = false } = useDataContext() || {}
   const { getTrailer } = useFetchTrailer(mediaType, getId)
 
   const location = useLocation()
@@ -88,15 +88,17 @@ export default function Carousel({ mediaType }: CarouselProps) {
       >
         {data
           .filter((d) => {
-            if (pathname.includes("trending")) {
-              if (mediaType === "tv") {
-                return d.media_type === "tv"
-              } else if (mediaType === "movie") {
-                return d.media_type === "movie"
-              }
-            } else {
-              return true
-            }
+           const mediaType: "tv" | "movie" | null = null
+
+           if (pathname.includes("trending")) {
+             if (mediaType === "tv") {
+               return d.media_type === (mediaType as "tv")
+             } else if (mediaType === "movie") {
+               return d.media_type === (mediaType as "movie")
+             }
+           } else {
+             return true
+           }
             return false
           })
           .map((d) => (

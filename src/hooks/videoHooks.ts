@@ -64,7 +64,9 @@ export const useFetchChannelDetails = (param: string) => {
         //   setChannelDetail(null)
         // }
 
-        setChannelDetail( data.items && data.items.length > 0 ? data.items[0] : null)
+        setChannelDetail(
+          data.items && data.items.length > 0 ? data.items[0] : null
+        )
       } catch (err) {
         console.error(err)
       } finally {
@@ -94,9 +96,9 @@ export const useFetchChannelVideos = (param: string) => {
 //this will be used in the watch page for the review section
 export const useFetchVideoComments = (param: string) => {
   const [comments, setComments] = useState(null)
-  const fetchVideoComments = useFetchRapid(`commentThreads?part=snippet&videoId=${param}`).then((data) =>
-      setComments(data?.items)
-    )
+  const fetchVideoComments = useFetchRapid(
+    `commentThreads?part=snippet&videoId=${param}`
+  ).then((data) => setComments(data?.items))
   useEffect(() => {
     fetchVideoComments
   }, [fetchVideoComments, param])
@@ -104,9 +106,13 @@ export const useFetchVideoComments = (param: string) => {
   return comments
 }
 
-export const useFetchSubsVideos = (subChannels) => {
-  const [data, setData] = useState([])
-  const fetchSubsVideos = 
+interface UseFetchSubProps {
+  channelId: string
+  videoId: string
+}
+
+export const useFetchSubsVideos = (subChannels: string[]) => {
+  const [data, setData] = useState<UseFetchSubProps[]>()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -123,7 +129,7 @@ export const useFetchSubsVideos = (subChannels) => {
           (response) => response?.items || []
         )
 
-        setData((prevData) => [...flattenedData])
+        setData(() => [...flattenedData])
       } catch (error) {
         console.error("Error fetching data:", error)
       }
@@ -135,8 +141,8 @@ export const useFetchSubsVideos = (subChannels) => {
   return data
 }
 
-export const useFetchSubChannels = (subChannels) => {
-  const [data, setData] = useState([])
+export const useFetchSubChannels = (subChannels: string[]) => {
+  const [data, setData] = useState<UseFetchSubProps[]>([])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -151,7 +157,7 @@ export const useFetchSubChannels = (subChannels) => {
           (response) => response?.items || []
         )
 
-        setData((prevData) => [...flattenedData])
+        setData(() => [...flattenedData])
       } catch (error) {
         console.error("Error fetching data:", error)
       }
@@ -163,8 +169,8 @@ export const useFetchSubChannels = (subChannels) => {
   return data
 }
 
-export const useFetchVideoDetail = (videoIds) => {
-  const [data, setData] = useState([])
+export const useFetchVideoDetail = (videoIds: string[]) => {
+  const [data, setData] = useState<UseFetchSubProps[]>()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -179,7 +185,7 @@ export const useFetchVideoDetail = (videoIds) => {
           (response) => response?.items || []
         )
 
-        setData((prevData) => [...flattenedData])
+        setData(() => [...flattenedData])
       } catch (error) {
         console.error("Error fetching data:", error)
       }

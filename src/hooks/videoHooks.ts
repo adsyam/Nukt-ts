@@ -94,10 +94,14 @@ export const useFetchChannelVideos = (param: string) => {
   const [videos, setVideos] = useState([])
 
   useEffect(() => {
-    const data = useFetchRapid(
-      `search?channelId=${param}&part=snippet&order=date`
-    )
-    setVideos(data?.items)
+    const fetchData = async () => {
+      const data = await useFetchRapid(
+        `search?channelId=${param}&part=snippet&order=date`
+      )
+      setVideos(data?.items)
+    }
+
+    fetchData()
   }, [param])
 
   return videos
@@ -108,8 +112,14 @@ export const useFetchChannelVideos = (param: string) => {
 export const useFetchVideoComments = (param: string) => {
   const [comments, setComments] = useState(null)
   useEffect(() => {
-    const data = useFetchRapid(`commentThreads?part=snippet&videoId=${param}`)
-    setComments(data?.items)
+    const fetchData = async () => {
+      const data = await useFetchRapid(
+        `commentThreads?part=snippet&videoId=${param}`
+      )
+      setComments(data?.items)
+    }
+
+    fetchData()
   }, [param])
 
   return comments

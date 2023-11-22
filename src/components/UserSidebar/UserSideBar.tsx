@@ -31,12 +31,6 @@ export default function UserSidebar({
     return (document.body.style.overflow = "hidden")
   }
 
-  useEffect(() => {
-    if (!user) {
-      setUserSidebar({ type: "TOGGLE_USER_SIDEBAR" })
-    }
-  }, [user, setUserSidebar])
-
   return (
     <aside
       className={`absolute h-fit text-black font-medium top-[4rem] right-[2rem]  bg-[#ffffff90] p-[1rem]

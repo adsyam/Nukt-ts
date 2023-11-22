@@ -41,7 +41,6 @@ export const useFetchStats = (param: string) => {
   return stats
 }
 
-
 export const useFetchRelatedVideos = (param: string) => {
   const [videos, setVideos] = useState(null)
 
@@ -91,13 +90,12 @@ export const useFetchChannelDetails = (param: string) => {
 
 //this custom hook will get channel contents on the URL query paramenter
 //this will be mainly used on the profile page to generate all the video contents of that channel
-export const useFetchChannelVideos = (param) => {
+export const useFetchChannelVideos = (param: string) => {
   const [videos, setVideos] = useState([])
 
   useEffect(() => {
-    useFetch(`search?channelId=${param}&part=snippet&order=date`).then((data) =>
-      setVideos(data?.items)
-    )
+    const data = useFetch(`search?channelId=${param}&part=snippet&order=date`)
+    setVideos(data?.items)
   }, [param])
 
   return videos
@@ -108,9 +106,8 @@ export const useFetchChannelVideos = (param) => {
 export const useFetchVideoComments = (param: string) => {
   const [comments, setComments] = useState(null)
   useEffect(() => {
-    useFetch(`commentThreads?part=snippet&videoId=${param}`).then((data) =>
-      setComments(data?.items)
-    )
+    const data = useFetch(`commentThreads?part=snippet&videoId=${param}`)
+    setComments(data?.items)
   }, [param])
 
   return comments

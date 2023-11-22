@@ -13,8 +13,8 @@ interface DataProviderProps {
 }
 
 type Action =
-  | { type: "TOGGLE_SIDEBAR" }
-  | { type: "TOGGLE_USER_SIDEBAR" }
+  | { type: "TOGGLE_SIDEBAR"; payload: boolean }
+  | { type: "TOGGLE_USER_SIDEBAR"; payload: boolean }
   | { type: "SET_IS_ACTIVE"; payload: boolean }
   | { type: "TOGGLE_DROPDOWN" }
   | { type: "SET_MODAL"; payload: boolean }
@@ -93,8 +93,10 @@ const DataProvider = ({ children }: DataProviderProps) => {
     }
   }, [])
 
-  const showSidebar = () => dispatch({ type: "TOGGLE_SIDEBAR" })
-  const showUserSidebar = () => dispatch({ type: "TOGGLE_USER_SIDEBAR" })
+  const showSidebar = (value: boolean = !state.sidebar) =>
+    dispatch({ type: "TOGGLE_SIDEBAR", payload: value })
+  const showUserSidebar = (value: boolean = !state.userSidebar) =>
+    dispatch({ type: "TOGGLE_USER_SIDEBAR", payload: value })
   const handleDropDown = () => dispatch({ type: "TOGGLE_DROPDOWN" })
 
   return (

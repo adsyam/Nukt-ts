@@ -1,4 +1,5 @@
 import {
+  User,
   UserCredential,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -11,47 +12,13 @@ import {
   createContext,
   useContext,
   useEffect,
-  useReducer,
+  useState,
 } from "react"
 import { useNavigate } from "react-router-dom"
 import { auth, googleProvider } from "../config/firebase"
 
 interface AuthProviderProps {
   children: ReactNode
-}
-
-interface AuthState {
-  user: {
-    uid: string
-  } | null
-  loading: boolean
-}
-
-type AuthAction =
-  | { type: "SET_USER"; payload: { uid: string } }
-  | { type: "SET_LOADING"; payload: boolean }
-
-const initialState: AuthState = {
-  user: null,
-  loading: true,
-}
-
-const authReducer = (state: AuthState, action: AuthAction): AuthState => {
-  switch (action.type) {
-    case "SET_USER":
-      return {
-        ...state,
-        user: { uid: action.payload.uid },
-        loading: false,
-      }
-    case "SET_LOADING":
-      return {
-        ...state,
-        loading: action.payload,
-      }
-    default:
-      return state
-  }
 }
 
 export interface AuthContextProps {
@@ -63,7 +30,7 @@ export interface AuthContextProps {
     providerData?: {
       providerId: string
     }[]
-    displayName?: string
+    displayName?: string | null
     auth?: {
       currentUser: {
         providerData: {
@@ -72,7 +39,7 @@ export interface AuthContextProps {
       }
     }
     uid?: string
-    photoURL?: string
+    photoURL?: string | null
   } | null
 }
 
@@ -80,53 +47,26 @@ const AuthContext = createContext<AuthContextProps | null>(null)
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const navigate = useNavigate()
-  const [state, dispatch] = useReducer(authReducer, initialState)
+  const [user, setUser] = useState<User | null>(null)
 
-  const createUser = async (email: string, password: string) => {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      )
-      dispatch({ type: "SET_USER", payload: { uid: userCredential.user.uid } })
-      return userCredential
-    } catch (error) {
-      console.error(error)
-      throw error
-    }
+  const [loading, setLoading] = useState(true)
+
+  const createUser = (email: string, password: string) => {
+    return createUserWithEmailAndPassword(auth, email, password)
   }
 
-  const signInUser = async (email: string, password: string) => {
-    try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      )
-      dispatch({ type: "SET_USER", payload: { uid: userCredential.user.uid } })
-      return userCredential
-    } catch (error) {
-      console.error(error)
-      throw error
-    }
+  const signInUser = (email: string, password: string) => {
+    return signInWithEmailAndPassword(auth, email, password)
   }
 
-  const signInWithGoogle = async () => {
-    try {
-      const userCredential = await signInWithPopup(auth, googleProvider)
-      dispatch({ type: "SET_USER", payload: { uid: userCredential.user.uid } })
-      return userCredential
-    } catch (error) {
-      console.error(error)
-      throw error
-    }
+  const signInWithGoogle = () => {
+    return signInWithPopup(auth, googleProvider)
   }
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      dispatch({ type: "SET_USER", payload: { uid: currentUser?.uid || "" } })
-      dispatch({ type: "SET_LOADING", payload: false })
+      setLoading(false)
+      setUser(currentUser || null)
     })
 
     return () => {
@@ -136,17 +76,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const logout = async () => {
     try {
-      const user = auth.currentUser
-
-      if (user) {
-        await auth.signOut()
-        dispatch({ type: "SET_USER", payload: { uid: "" } })
-        navigate("/login")
-      } else {
-        console.error("User not authenticated")
-      }
+      await signOut(auth)
+      return navigate("/login")
     } catch (error) {
-      console.error("Error during logout:", error)
+      console.log(error)
     }
   }
 
@@ -156,11 +89,11 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         createUser,
         signInUser,
         signInWithGoogle,
-        user : state.user,
+        user,
         logout,
       }}
     >
-      {!state.loading && children}
+      {!loading && children}
     </AuthContext.Provider>
   )
 }

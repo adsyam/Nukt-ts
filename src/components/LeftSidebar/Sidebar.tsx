@@ -9,12 +9,15 @@ import SidebarMenu from "./SidebarMenu"
 export default function Sidebar({ showSidebar }: { showSidebar: boolean }) {
   const location = useLocation()
   const pathname = location.pathname
-  const { user } = useAuthContext() as AuthContextProps
-  const { setSidebar } = useDataContext() as DataContextProps
+  const { user, logout } = useAuthContext() as AuthContextProps
+  const { setSidebar, setUserSidebar } = useDataContext() as DataContextProps
 
   useEffect(() => {
-    if (!user) setSidebar({ type: "TOGGLE_SIDEBAR" })
-  }, [user, setSidebar])
+    if (logout && !user) {
+      setSidebar({ type: "TOGGLE_SIDEBAR", payload: false })
+      setUserSidebar({ type: "TOGGLE_USER_SIDEBAR", payload: false })
+    }
+  }, [user, setSidebar, logout, setUserSidebar])
 
   return (
     <aside

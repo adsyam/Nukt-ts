@@ -250,36 +250,31 @@ export const AppRouter = createBrowserRouter([
       },
       {
         path: "/profile/:id",
+        element: (
+          <ProtectedRoute>
+            <UserProfile />
+          </ProtectedRoute>
+        ),
         children: [
           {
-            path: "/profile/:id",
-            element: (
-              <ProtectedRoute>
-                <UserProfile />
-              </ProtectedRoute>
-            ),
-            children: [
-              {
-                path: "home",
-                element: <ProfileHome />,
-              },
-              {
-                path: "contents",
-                element: <ProfileContents />,
-              },
-              {
-                path: "playlist",
-                element: <ProfilePlaylist />,
-              },
-              {
-                path: "downloads",
-                element: <ProfileDownloads />,
-              },
-              {
-                path: "about",
-                element: <ProfileAbout />,
-              },
-            ],
+            path: "home",
+            element: <ProfileHome />,
+          },
+          {
+            path: "contents",
+            element: <ProfileContents />,
+          },
+          {
+            path: "playlist",
+            element: <ProfilePlaylist />,
+          },
+          {
+            path: "downloads",
+            element: <ProfileDownloads />,
+          },
+          {
+            path: "about",
+            element: <ProfileAbout />,
           },
         ],
       },

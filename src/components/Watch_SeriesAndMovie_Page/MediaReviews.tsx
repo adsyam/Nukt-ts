@@ -438,7 +438,7 @@ export default function MediaReviews({ id }: { id: string }) {
       <button
         onClick={toggleShowAll}
         className="text-white"
-        disabled={review!.length <= 1}
+        // disabled={review?.length <= 1}
       >
         {review?.length !== 1
           ? review?.length === 0

@@ -1,13 +1,4 @@
 import {
-  createContext,
-  useContext,
-  useEffect,
-  useReducer,
-  useState,
-  ReactNode,
-} from "react"
-import { useNavigate } from "react-router-dom"
-import {
   UserCredential,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -15,6 +6,14 @@ import {
   signInWithPopup,
   signOut,
 } from "firebase/auth"
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+} from "react"
+import { useNavigate } from "react-router-dom"
 import { auth, googleProvider } from "../config/firebase"
 
 interface AuthProviderProps {
@@ -55,14 +54,14 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   }
 }
 
-interface AuthContextProps {
+export interface AuthContextProps {
   createUser: (email: string, password: string) => Promise<UserCredential>
   signInUser: (email: string, password: string) => Promise<UserCredential>
   signInWithGoogle: () => Promise<UserCredential>
   logout: () => Promise<void>
   user: {
     uid: string
-  } | null
+  } 
 }
 
 const AuthContext = createContext<AuthContextProps | null>(null)

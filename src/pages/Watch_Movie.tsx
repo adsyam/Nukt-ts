@@ -91,7 +91,7 @@ export default function WatchMovie() {
         </div>
         <MediaDetails
           id={id}
-          mediaType={pathname.includes("Movie") && "movie"}
+          mediaType={"movie"}
         />
       </div>
       <MediaReviews id={id} />

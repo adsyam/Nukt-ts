@@ -1,34 +1,15 @@
 import {
+  Dispatch,
+  ReactNode,
   createContext,
   useContext,
   useEffect,
   useReducer,
-  ReactNode,
 } from "react"
 import { useLocation } from "react-router-dom"
 
 interface DataProviderProps {
   children: ReactNode
-}
-
-interface SidebarState {
-  sidebar: boolean
-}
-
-interface UserSidebarState {
-  userSidebar: boolean
-}
-
-interface ActiveState {
-  isActive: boolean
-}
-
-interface DropDownState {
-  dropDown: boolean
-}
-
-interface ModalState {
-  modal: boolean
 }
 
 type Action =
@@ -38,29 +19,36 @@ type Action =
   | { type: "TOGGLE_DROPDOWN" }
   | { type: "SET_MODAL"; payload: boolean }
 
+export interface DataContextProps {
+  showSidebar: () => void
+  setSidebar: Dispatch<Action>
+  showUserSidebar: () => void
+  setUserSidebar: Dispatch<Action>
+  handleDropDown: () => void
+  isActive: boolean
+  modal: boolean
+  setModal: Dispatch<Action>
+  location: string
+  searchParams: URLSearchParams
+  sidebar: boolean
+}
+
 interface State {
-  sidebar: SidebarState
-  userSidebar: UserSidebarState
-  active: ActiveState
-  dropDown: DropDownState
-  modal: ModalState
+  sidebar: boolean
+  userSidebar: boolean
+  active: boolean
+  dropDown: boolean
+  modal: boolean
   location: string
   searchParams: URLSearchParams
 }
 
-export interface DataContextProps extends State {
-  showSidebar: () => void
-  showUserSidebar: () => void
-  handleDropDown: () => void
-  isActive: boolean
-}
-
 const initialState: State = {
-  sidebar: { sidebar: false },
-  userSidebar: { userSidebar: false },
-  active: { isActive: false },
-  dropDown: { dropDown: false },
-  modal: { modal: false },
+  sidebar: false,
+  userSidebar: false,
+  active: false,
+  dropDown: false,
+  modal: false,
   location: "",
   searchParams: new URLSearchParams(""),
 }
@@ -68,30 +56,15 @@ const initialState: State = {
 const dataReducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "TOGGLE_SIDEBAR":
-      return {
-        ...state,
-        sidebar: { sidebar: !state.sidebar.sidebar },
-      }
+      return { ...state, sidebar: !state.sidebar }
     case "TOGGLE_USER_SIDEBAR":
-      return {
-        ...state,
-        userSidebar: { userSidebar: !state.userSidebar.userSidebar },
-      }
+      return { ...state, userSidebar: !state.userSidebar }
     case "SET_IS_ACTIVE":
-      return {
-        ...state,
-        active: { isActive: action.payload },
-      }
+      return { ...state, active: action.payload }
     case "TOGGLE_DROPDOWN":
-      return {
-        ...state,
-        dropDown: { dropDown: !state.dropDown.dropDown },
-      }
+      return { ...state, dropDown: !state.dropDown }
     case "SET_MODAL":
-      return {
-        ...state,
-        modal: { modal: action.payload },
-      }
+      return { ...state, modal: action.payload }
     default:
       return state
   }
@@ -128,9 +101,13 @@ const DataProvider = ({ children }: DataProviderProps) => {
         ...state,
         location,
         showSidebar,
-        isActive: state.active.isActive,
+        setSidebar: dispatch,
         showUserSidebar,
+        setUserSidebar: dispatch,
         handleDropDown,
+        isActive: state.active,
+        modal: state.modal,
+        setModal: dispatch,
       }}
     >
       {children}

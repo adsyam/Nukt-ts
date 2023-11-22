@@ -2,8 +2,14 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { API_KEY, TMDB_BASE_URL } from "../config/TMDB_API"
 
-export default function useFetchTrailer(mediaType, id) {
-  const [getTrailer, setGetTrailer] = useState([])
+interface TrailerProps {
+    key: string
+    type: string
+    id: string
+}
+
+export default function useFetchTrailer(mediaType: string | undefined, id: string) {
+  const [getTrailer, setGetTrailer] = useState<TrailerProps[]>()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -14,7 +20,7 @@ export default function useFetchTrailer(mediaType, id) {
 
         setGetTrailer(
           response.data.results
-            .filter((td) => td.type === "Trailer")
+            .filter((td: TrailerProps) => td.type === "Trailer")
             .slice(0, 1)
         )
       } catch (error) {

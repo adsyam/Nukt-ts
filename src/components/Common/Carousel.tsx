@@ -7,23 +7,23 @@ import { Autoplay, EffectFade } from "swiper/modules"
 import { Swiper, SwiperSlide } from "swiper/react"
 import useFetchTrailer from "../../hooks/useFetchTrailer"
 import { API_KEY, TMDB_BASE_URL } from "../../config/TMDB_API"
-import { useDataContext } from "../../contexts/DataContext"
+import { DataContextProps, useDataContext } from "../../contexts/DataContext"
 import TrailerModal from "../Modal/TrailerModal"
 import GenreMap from "./GenreMap"
+import { CategoryProps } from "../../interface/Global_Interface"
 
 interface CarouselProps {
     mediaType: string
 }
 
 export default function Carousel({ mediaType }: CarouselProps) {
-  const [data, setData] = useState<[]>([])
-//   const [isloading, setIsLoading] = useState(true)
+  const [data, setData] = useState<CategoryProps[] | null>(null)
   const [isOpen, setIsOpen] = useState(false)
-  const [getId, setGetId] = useState<number>()
+  const [getId, setGetId] = useState<string>("")
   const [url, setUrl] = useState(
     `${TMDB_BASE_URL}/trending/all/day?api_key=${API_KEY}`
   )
-  const { sidebar = false } = useDataContext() || {}
+  const { sidebar = false } = useDataContext() as DataContextProps
   const { getTrailer } = useFetchTrailer(mediaType, getId)
 
   const location = useLocation()
@@ -57,12 +57,8 @@ export default function Carousel({ mediaType }: CarouselProps) {
         const response = await axios.get(url)
 
         setData(response.data.results)
-        // setTimeout(() => {
-        //   setIsLoading(false)
-        // }, 1600)
       } catch (error) {
         console.error("Error fething data (CAROUSEL):", error)
-        // setIsLoading(false)
       }
     }
 
@@ -71,7 +67,6 @@ export default function Carousel({ mediaType }: CarouselProps) {
 
   return (
     <>
-      {/* {!isloading ? ( */}
       <Swiper
         centeredSlides={true}
         autoplay={{
@@ -87,7 +82,7 @@ export default function Carousel({ mediaType }: CarouselProps) {
         }`}
       >
         {data
-          .filter((d) => {
+          ?.filter((d) => {
            const mediaType: "tv" | "movie" | null = null
 
            if (pathname.includes("trending")) {
@@ -154,7 +149,7 @@ export default function Carousel({ mediaType }: CarouselProps) {
                           ? `/TVSeries/${d.id}/1/1`
                           : `/Movie/${d.id}`
                       }
-                      scroll={true}
+                    //   scroll={true}
                       onClick={() => setGetId(d.id)}
                     >
                       WATCH NOW
@@ -165,7 +160,7 @@ export default function Carousel({ mediaType }: CarouselProps) {
                     >
                       WATCH TRAILER
                     </button>
-                    {getTrailer.map((res, i) => (
+                    {getTrailer?.map((res, i) => (
                       <TrailerModal
                         key={i}
                         trailerKey={res.key}
@@ -179,22 +174,6 @@ export default function Carousel({ mediaType }: CarouselProps) {
             </SwiperSlide>
           ))}
       </Swiper>
-      {/* ) : (
-        <div
-          className={`${
-            sidebar
-              ? "translate-x-[15rem] origin-left duration-300 w-[85%]"
-              : "w-full origin-right duration-300"
-          }`}
-        >
-          <Player
-            autoplay
-            loop
-            // src={loader_Peek}
-            className="flex justify-center h-[70vh] w-[40vw]"
-          />
-        </div>
-      )} */}
     </>
   )
 }

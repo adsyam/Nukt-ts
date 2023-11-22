@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app"
 import { getAuth, GoogleAuthProvider } from "firebase/auth"
-import { getFirestore } from "firebase/firestore"
+import { collection, getFirestore } from "firebase/firestore"
 import { getStorage } from "firebase/storage"
 
 const firebaseConfig = {
@@ -17,4 +17,4 @@ export const auth = getAuth(app)
 export const googleProvider = new GoogleAuthProvider()
 googleProvider.addScope("email")
 export const fileDB = getStorage(app)
-export const textDB = getFirestore(app)
+export const textDB = collection(getFirestore(app), "Users")

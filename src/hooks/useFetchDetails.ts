@@ -4,6 +4,8 @@ import { useLocation, useParams } from "react-router"
 import { API_KEY, TMDB_BASE_URL } from "../config/TMDB_API"
 
 export interface useFetchDetailsData {
+  vote_count: number
+  vote_average: number
   original_name: string
   original_title: string
   seasons?: {

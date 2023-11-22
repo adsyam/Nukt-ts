@@ -13,8 +13,8 @@ import TrailerModal from "../Modal/TrailerModal"
 interface MediaDetailsProps {
   Season?: string
   Episode?: string
-  mediaType?: string | boolean
-  id?: string
+  mediaType?: string | undefined
+  id: string
 }
 
 export default function MediaDetails({ Season, Episode, mediaType, id }: MediaDetailsProps) {
@@ -28,7 +28,9 @@ export default function MediaDetails({ Season, Episode, mediaType, id }: MediaDe
   const { user } = useAuthContext() as AuthContextProps
   const { addHistoryOrLibrary } = useDBContext() as DBContextProps
 
-  const handleAddToLibrary = (e: FormDataEvent) => {
+  const handleAddToLibrary = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     e.preventDefault()
     let type
     if (pathname.includes("Movie")) {
@@ -96,7 +98,7 @@ export default function MediaDetails({ Season, Episode, mediaType, id }: MediaDe
               >
                 WATCH TRAILER
               </button>
-              {getTrailer.map((td, index) => (
+              {getTrailer?.map((td, index) => (
                 <TrailerModal
                   key={index}
                   trailerKey={td.key}
@@ -105,7 +107,9 @@ export default function MediaDetails({ Season, Episode, mediaType, id }: MediaDe
                 />
               ))}
               <button
-                onClick={(e) => handleAddToLibrary(e)}
+                onClick={(e) =>
+                  handleAddToLibrary(e)
+                }
                 className="rounded-md px-3 py-1 bg-[#ffffff05] border-2 border-[#7300FF99] hover:bg-[#7300FF20] text-[#7300FF99] transition-all text-center align-middle hover:text-white/30"
               >
                 &nbsp;ADD TO THE LIBRARY

@@ -14,7 +14,6 @@ import {
 import { textDB } from "../config/firebase"
 import { AuthContextProps, useAuthContext } from "../contexts/AuthContext"
 import { DBContextProps, useDBContext } from "../contexts/DBContext"
-import { DataContextProps, useDataContext } from "../contexts/DataContext"
 import useFetchDetails from "../hooks/useFetchDetails"
 
 export default function WatchSeries() {
@@ -25,7 +24,6 @@ export default function WatchSeries() {
   const [historyToggle, setHistoryToggle] = useState(true)
 
   const { user } = useAuthContext() as AuthContextProps
-  const { sidebar } = useDataContext() as DataContextProps
   const { addHistoryOrLibrary } = useDBContext() as DBContextProps
 
   const servers = useMemo(() => {

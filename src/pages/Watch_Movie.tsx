@@ -90,7 +90,7 @@ export default function WatchMovie() {
           <MediaRecommendation id={id} />
         </div>
         <MediaDetails
-          id={id}
+          id={id || ""}
           mediaType={"movie"}
         />
       </div>

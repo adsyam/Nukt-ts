@@ -2,12 +2,12 @@ import { faAngleRight } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { motion } from "framer-motion"
 import { Link } from "react-router-dom"
-import { useDataContext } from "../../contexts/DataContext"
+import { DataContextProps, useDataContext } from "../../contexts/DataContext"
 import { feedCategories } from "../../utils/index"
 import { VideoCategories } from "../index"
 
 export default function VideoFeed() {
-  const { sidebar } = useDataContext()
+  const { sidebar } = useDataContext() as DataContextProps
 
   return (
     <motion.section

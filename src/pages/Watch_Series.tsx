@@ -111,7 +111,7 @@ export default function WatchSeries() {
           </div>
         </div>
         <MediaDetails
-          id={id}
+          id={id || ""}
           Season={season}
           Episode={episode}
           mediaType={mediaType}

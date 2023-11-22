@@ -1,10 +1,14 @@
-import { useDataContext } from "../../contexts/DataContext"
+import { DataContextProps, useDataContext } from "../../contexts/DataContext"
 import { useFetchVideoDetails } from "../../hooks/videoHooks"
 import VideosGrid from "./VideosGrid"
 import VideosLinear from "./VideosLinear"
 
-export default function VideoCategories({ catergoryName }) {
-  const { location } = useDataContext()
+interface VideoCategoriesProps {
+    catergoryName: string
+}
+
+export default function VideoCategories({ catergoryName }: VideoCategoriesProps) {
+  const { location } = useDataContext() as DataContextProps
 
   return (
     <>

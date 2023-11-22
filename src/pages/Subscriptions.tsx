@@ -18,20 +18,26 @@ interface UserData {
   url: string
 }
 interface Channel {
-    channel: {
-        id: {
-            channelId: string
-            snippet: {
-                title: {
-                    thumbnails: {
-                        high: {
-                            url: string
-                        }
-                    }
-                }
-            }
-        }
+  statistics: {
+    subscriberCount: string
+  }
+  snippet: {
+    thumbnails: {
+      high: {
+        url: string
+      }
     }
+    title: {
+      thumbnails: {
+        high: {
+          url: string
+        }
+      }
+    }
+  }
+  id: {
+    channelId: string
+  }
 }
 
 export default function Subscriptions() {
@@ -47,19 +53,19 @@ export default function Subscriptions() {
     useDBContext() as DBContextProps
 
   useEffect(() => {
-      const unsubscribe = onSnapshot(
-        doc(textDB, "Users", user?.uid),
-        { includeMetadataChanges: true },
-        (doc) => setSubChannels(doc.data()?.subscriptions?.channels)
-      )
+    const unsubscribe = onSnapshot(
+      doc(textDB, "Users", user?.uid),
+      { includeMetadataChanges: true },
+      (doc) => setSubChannels(doc.data()?.subscriptions?.channels)
+    )
   }, [reload, user?.uid])
 
   useEffect(() => {
-      const unsubscribe = onSnapshot(
-        doc(textDB, "Users", user?.uid),
-        { includeMetadataChanges: true },
-        (doc) => setSubUsers(doc.data()?.subscriptions?.users)
-      )
+    const unsubscribe = onSnapshot(
+      doc(textDB, "Users", user?.uid),
+      { includeMetadataChanges: true },
+      (doc) => setSubUsers(doc.data()?.subscriptions?.users)
+    )
 
     const getData = async () => {
       try {
@@ -97,11 +103,11 @@ export default function Subscriptions() {
   ) => {
     e.preventDefault()
     try {
-        removeSubscription(user?.uid, type, id)
-        removeSubscribers(id, user?.uid).then(() => {
-          alert("Successfully unsubscribed")
-          setReload(!reload)
-        })
+      removeSubscription(user?.uid, type, id)
+      removeSubscribers(id, user?.uid).then(() => {
+        alert("Successfully unsubscribed")
+        setReload(!reload)
+      })
     } catch (err) {
       console.log(err)
     }
@@ -110,7 +116,7 @@ export default function Subscriptions() {
   const videos = useFetchSubsVideos(subChannels)
   const channels: Channel[] = useFetchSubChannels(subChannels)
 
-  if (!videos || loading) return
+  if (!videos || loading) return null
 
   return (
     <section
@@ -142,7 +148,7 @@ export default function Subscriptions() {
             <div className="flex flex-wrap items-center gap-5">
               {channels.map((item) => (
                 <div
-                  key={item?.id?.channelId || item?.id}
+                  key={item?.id?.channelId || String(item?.id) }
                   className="w-full md:w-[300px] flex flex-col gap-1 justify-center items-center"
                 >
                   <div
@@ -159,7 +165,7 @@ export default function Subscriptions() {
                           toggleUnsubscribe(
                             e,
                             "channels",
-                            item?.id?.channelId || item?.id
+                            item?.id?.channelId || item?.id.toString()
                           )
                         }
                         className="capitalize w-max bg-white/50 p-[.3rem] md:p-[.5rem] rounded-md
@@ -170,7 +176,7 @@ export default function Subscriptions() {
                     </div>
                     <img
                       src={item?.snippet?.thumbnails?.high?.url}
-                      alt={item?.snippet?.title}
+                      alt={String(item?.snippet?.title)}
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -179,7 +185,7 @@ export default function Subscriptions() {
                     className="w-max flex flex-col justify-center items-center"
                   >
                     <p className="flex items-center gap-1">
-                      {item?.snippet?.title}
+                      {String(item?.snippet?.title)}
                       <AiFillCheckCircle />
                     </p>
                     <div>

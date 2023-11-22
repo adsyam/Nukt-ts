@@ -21,7 +21,7 @@ interface VideoCardProps {
       videoId: string
     }
   }
-  item: {
+  item?: {
     snippet: {
       channelId: string
       channelTitle: string
@@ -52,7 +52,7 @@ export default function VideoCard({ video, item, index }: VideoCardProps) {
           user?.uid,
           "library",
           "videos",
-          video?.id?.videoId || item?.id
+          (video?.id?.videoId || item?.id) as string
         )
       }
 

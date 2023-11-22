@@ -281,54 +281,6 @@ export default function Reviews({ id }: { id: string }) {
               )}
             </div>
           ))}
-          {/* {comments.slice(0, visible).map((comment, i) => (
-            <>
-              {containsHtmlTags(
-                comment?.snippet?.topLevelComment?.snippet?.textDisplay
-              ) ? (
-                ""
-              ) : (
-                <div key={comment?.id} className="flex gap-[1rem] mb-[1.5rem]">
-                  <img
-                    src={
-                      comment?.snippet?.topLevelComment?.snippet
-                        ?.authorProfileImageUrl || "https://i.pravatar.cc/50"
-                    }
-                    alt=""
-                    className="rounded-full w-[45px] h-[45px]"
-                  />
-                  <div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <h2>
-                        {
-                          comment?.snippet?.topLevelComment?.snippet
-                            ?.authorDisplayName
-                        }
-                      </h2>
-                      <p className="text-white/50 text-sm">
-                        posted{" "}
-                        {moment(
-                          comment?.snippet?.topLevelComment?.snippet
-                            ?.publishedAt
-                        ).fromNow()}
-                      </p>
-                    </div>
-                    <div>
-                      <p
-                        style={{ whiteSpace: "pre-line" }}
-                        className="text-[.9rem]"
-                      >
-                        {
-                          comment?.snippet?.topLevelComment?.snippet
-                            ?.textDisplay
-                        }
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </>
-          ))} */}
         </div>
       </div>
       <button

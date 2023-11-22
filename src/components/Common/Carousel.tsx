@@ -149,7 +149,6 @@ export default function Carousel({ mediaType }: CarouselProps) {
                           ? `/TVSeries/${d.id}/1/1`
                           : `/Movie/${d.id}`
                       }
-                    //   scroll={true}
                       onClick={() => setGetId(d.id)}
                     >
                       WATCH NOW

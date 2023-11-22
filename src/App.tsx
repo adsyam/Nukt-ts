@@ -1,4 +1,7 @@
 import { createBrowserRouter } from "react-router-dom"
+import { Suspense, lazy } from "react"
+import { Player } from "@lottiefiles/react-lottie-player"
+import { loader_Geometric } from "./assets"
 
 import {
   Pricing,
@@ -30,12 +33,48 @@ import {
   WatchSeries,
   WatchVideo,
 } from "./pages"
-
 import AppLayout from "./AppLayout"
+
+// const Pricing = lazy(() => import('./components/NoUser/Pricing'))
+// const ProfileAbout = lazy(() => import("./components/UserProfile/Profile_About"))
+// const ProfileContents = lazy(() => import("./components/UserProfile/Profile_Contents"))
+// const ProfileDownloads = lazy(() => import("./components/UserProfile/Profile_Downloads"))
+// const ProfileHome = lazy(() => import("./components/UserProfile/Profile_Home"))
+// const ProfilePlaylist = lazy(() => import("./components/UserProfile/Profile_Playlist"))
+// const ProtectedRoute = lazy(() => import("./components/Route_Protection/ProtectedRoute"))
+// const RedirectRoute = lazy(() => import("./components/Route_Protection/RedirectRoute"))
+
+// const AllCategory = lazy(() => import("./pages/AllCategory"))
+// const Dashboard = lazy(() => import("./pages/Dashboard"))
+// const Feed = lazy(() => import("./pages/Feed"))
+// const ForgotPassword = lazy(() => import("./pages/ForgotPassword"))
+// const History = lazy(() => import("./pages/History"))
+// const Home = lazy(() => import("./pages/Home"))
+// const Library = lazy(() => import("./pages/Library"))
+// const Report = lazy(() => import("./pages/Report"))
+// const SearchMedia = lazy(() => import("./pages/Search_Media"))
+// const SignIn = lazy(() => import("./pages/SignIn"))
+// const SignUp = lazy(() => import("./pages/SignUp"))
+// const Subscriptions = lazy(() => import("./pages/Subscriptions"))
+// const Success = lazy(() => import("./pages/Success"))
+// const UserProfile = lazy(() => import("./pages/UserProfile"))
+// const WatchMovie = lazy(() => import("./pages/Watch_Movie"))
+// const WatchSeries = lazy(() => import("./pages/Watch_Series"))
+// const WatchVideo = lazy(() => import("./pages/Watch_Video"))
+
+// const AppLayout = lazy(() => import("./AppLayout"))
 
 export const AppRouter = createBrowserRouter([
   {
-    element: <AppLayout />,
+    element: (
+      <Suspense
+        fallback={
+          <Player autoplay loop src={loader_Geometric} className="h-[35vh]" />
+        }
+      >
+        <AppLayout />
+      </Suspense>
+    ),
     children: [
       {
         path: "/",

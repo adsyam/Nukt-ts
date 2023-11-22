@@ -5,6 +5,8 @@ import { AuthContextProps, useAuthContext } from "../contexts/AuthContext"
 import { DBContextProps, useDBContext } from "../contexts/DBContext"
 import { DataContextProps, useDataContext } from "../contexts/DataContext"
 import { useFetchChannelDetails } from "../hooks/videoHooks"
+import { Player } from "@lottiefiles/react-lottie-player"
+import { loader_Geometric } from "../assets"
 
 export interface ChannelDetail {
   id: string
@@ -63,7 +65,7 @@ export default function UserProfile() {
       }`}
     >
       {loading ? (
-        "Loading..."
+        <Player autoplay loop src={loader_Geometric} className="h-[35vh]" />
       ) : (
         <>
           <CoverPhoto isUser={isUser} />

@@ -40,8 +40,6 @@ export default function ProfileDetails({
     return () => unsubscribe()
   }, [user?.uid])
 
-  // console.log(subscribe);
-
   useEffect(() => {
     if (!channelDetail?.kind) {
       setIsUser(true)

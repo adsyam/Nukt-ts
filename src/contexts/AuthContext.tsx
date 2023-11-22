@@ -136,11 +136,17 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const logout = async () => {
     try {
-      await signOut(auth)
-      dispatch({ type: "SET_USER", payload: { uid: "" } })
-      navigate("/login")
+      const user = auth.currentUser
+
+      if (user) {
+        await auth.signOut()
+        dispatch({ type: "SET_USER", payload: { uid: "" } })
+        navigate("/login")
+      } else {
+        console.error("User not authenticated")
+      }
     } catch (error) {
-      console.error(error)
+      console.error("Error during logout:", error)
     }
   }
 

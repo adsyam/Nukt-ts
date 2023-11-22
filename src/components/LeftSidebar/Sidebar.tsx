@@ -6,7 +6,6 @@ import { sidebarMenus1 } from "../../utils/index"
 import DropdownBtn from "./DropdownBtn"
 import SidebarMenu from "./SidebarMenu"
 
-
 export default function Sidebar({ showSidebar }: { showSidebar: boolean }) {
   const location = useLocation()
   const pathname = location.pathname
@@ -14,9 +13,8 @@ export default function Sidebar({ showSidebar }: { showSidebar: boolean }) {
   const { setSidebar } = useDataContext() as DataContextProps
 
   useEffect(() => {
-    if (!user) setSidebar({type: "TOGGLE_SIDEBAR"})
-    if (pathname) setSidebar({type: "TOGGLE_SIDEBAR"})
-  }, [user, setSidebar, pathname])
+    if (!user) setSidebar({ type: "TOGGLE_SIDEBAR" })
+  }, [user, setSidebar])
 
   return (
     <aside

@@ -1,41 +1,64 @@
 import { useEffect, useState } from "react"
-import { useFetchRapid } from "./useFetchRapid.ts"
 import { UseFetchSubProps } from "../interface/Global_Interface.ts"
+import { useFetchRapid } from "./useFetchRapid.ts"
 
 export const useFetchVideoDetails = (param: string) => {
   const [detail, setDetail] = useState(null)
-  const fetchDetails = useFetchRapid(`search?part=snippet&q=${param}`).then(
-    (data) => setDetail(data.items)
-  )
 
   useEffect(() => {
-    fetchDetails
-  }, [fetchDetails, param])
+    const fetchData = async () => {
+      try {
+        const data = await useFetchRapid(`search?part=snippet&q=${param}`)
+        setDetail(data.items)
+      } catch (error) {
+        console.error("Error fetching video details:", error)
+      }
+    }
+
+    fetchData()
+  }, [param])
 
   return detail
 }
-
 export const useFetchStats = (param: string) => {
   const [stats, setStats] = useState(null)
-  const fetchStats = useFetchRapid(
-    `videos?part=snippet,statistics&id=${param}`
-  ).then((data) => setStats(data.items[0]))
+
   useEffect(() => {
-    fetchStats
-  }, [fetchStats, param])
+    const fetchData = async () => {
+      try {
+        const data = await useFetchRapid(
+          `videos?part=snippet,statistics&id=${param}`
+        )
+        setStats(data.items[0])
+      } catch (error) {
+        console.error("Error fetching video details:", error)
+      }
+    }
+
+    fetchData()
+  }, [param])
 
   return stats
 }
 
+
 export const useFetchRelatedVideos = (param: string) => {
   const [videos, setVideos] = useState(null)
-  const fetchStats = useFetchRapid(
-    `search?part=snippet&relatedToVideoId=${param}&type=video`
-  ).then((data) => setVideos(data.items))
 
   useEffect(() => {
-    fetchStats
-  }, [fetchStats, param])
+    const fetchData = async () => {
+      try {
+        const data = await useFetchRapid(
+          `search?part=snippet&relatedToVideoId=${param}&type=video`
+        )
+        setVideos(data.items)
+      } catch (error) {
+        console.error("Error fetching video details:", error)
+      }
+    }
+
+    fetchData()
+  }, [param])
 
   return videos
 }
@@ -43,15 +66,18 @@ export const useFetchRelatedVideos = (param: string) => {
 export const useFetchChannelDetails = (param: string) => {
   const [channelDetail, setChannelDetail] = useState(null)
   const [, setIsLoading] = useState(true)
-  const fetchChannelDetails = useFetchRapid(`channels?part=snippet&id=${param}`)
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchChannelDetails
+        setIsLoading(true)
+        const data = await useFetchRapid(`channels?part=snippet&id=${param}`)
 
-        setChannelDetail(
-          data.items && data.items.length > 0 ? data.items[0] : null
-        )
+        if (data.items && data.items.length > 0) {
+          setChannelDetail(data.items[0])
+        } else {
+          setChannelDetail(null)
+        }
       } catch (err) {
         console.error(err)
       } finally {
@@ -59,30 +85,33 @@ export const useFetchChannelDetails = (param: string) => {
       }
     }
     fetchData()
-  }, [fetchChannelDetails, param])
+  }, [param])
   return { channelDetail }
 }
 
-export const useFetchChannelVideos = (param: string) => {
+//this custom hook will get channel contents on the URL query paramenter
+//this will be mainly used on the profile page to generate all the video contents of that channel
+export const useFetchChannelVideos = (param) => {
   const [videos, setVideos] = useState([])
-  const fetchChannelVideos = useFetchRapid(
-    `search?channelId=${param}&part=snippet&order=date`
-  ).then((data) => setVideos(data?.items))
+
   useEffect(() => {
-    fetchChannelVideos
-  }, [fetchChannelVideos, param])
+    useFetch(`search?channelId=${param}&part=snippet&order=date`).then((data) =>
+      setVideos(data?.items)
+    )
+  }, [param])
 
   return videos
 }
 
+//this custom hook will get the user's comments based on the URL query paramenter
+//this will be used in the watch page for the review section
 export const useFetchVideoComments = (param: string) => {
   const [comments, setComments] = useState(null)
-  const fetchVideoComments = useFetchRapid(
-    `commentThreads?part=snippet&videoId=${param}`
-  ).then((data) => setComments(data?.items))
   useEffect(() => {
-    fetchVideoComments
-  }, [fetchVideoComments, param])
+    useFetch(`commentThreads?part=snippet&videoId=${param}`).then((data) =>
+      setComments(data?.items)
+    )
+  }, [param])
 
   return comments
 }

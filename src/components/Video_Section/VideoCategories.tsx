@@ -14,9 +14,9 @@ export default function VideoCategories({ catergoryName }: VideoCategoriesProps)
   return (
     <>
       {location === "/search" ? (
-        <VideosGrid videos={fetchVideoDetails!} />
+        <VideosGrid videos={fetchVideoDetails ?? []} />
       ) : (
-        <VideosLinear videos={fetchVideoDetails!} />
+        <VideosLinear videos={fetchVideoDetails ?? []} />
       )}
     </>
   )

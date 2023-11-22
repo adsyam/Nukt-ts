@@ -32,15 +32,10 @@ export default function UserSidebar({
   }
 
   useEffect(() => {
-    const performLogout = async () => {
-      if (logout) {
-        await logout()
-        setUserSidebar({ type: "TOGGLE_USER_SIDEBAR" })
-      }
+    if (!user) {
+      setUserSidebar({ type: "TOGGLE_USER_SIDEBAR" })
     }
-
-    performLogout()
-  }, [logout, setUserSidebar])
+  }, [user, setUserSidebar])
 
   return (
     <aside
@@ -55,7 +50,9 @@ export default function UserSidebar({
         <div className="w-[50px] h-[50px] rounded-full border-2 overflow-hidden">
           <img
             src={
-              imageUrl || user?.photoURL || "/src/assets/profile-placeholder.svg"
+              imageUrl ||
+              user?.photoURL ||
+              "/src/assets/profile-placeholder.svg"
             }
             alt="user image"
             className="w-full h-full object-cover"

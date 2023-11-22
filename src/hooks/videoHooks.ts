@@ -94,7 +94,9 @@ export const useFetchChannelVideos = (param: string) => {
   const [videos, setVideos] = useState([])
 
   useEffect(() => {
-    const data = useFetch(`search?channelId=${param}&part=snippet&order=date`)
+    const data = useFetchRapid(
+      `search?channelId=${param}&part=snippet&order=date`
+    )
     setVideos(data?.items)
   }, [param])
 
@@ -106,7 +108,7 @@ export const useFetchChannelVideos = (param: string) => {
 export const useFetchVideoComments = (param: string) => {
   const [comments, setComments] = useState(null)
   useEffect(() => {
-    const data = useFetch(`commentThreads?part=snippet&videoId=${param}`)
+    const data = useFetchRapid(`commentThreads?part=snippet&videoId=${param}`)
     setComments(data?.items)
   }, [param])
 

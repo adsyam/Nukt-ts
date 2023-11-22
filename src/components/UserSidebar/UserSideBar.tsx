@@ -13,7 +13,7 @@ export default function UserSidebar({
   showUserSidebar: boolean
 }) {
   const { user, logout } = useAuthContext() as AuthContextProps
-  const { modal, setModal, setUserSidebar } =
+  const { modal, setModal } =
     useDataContext() as DataContextProps
   const [imageUrl, setImageUrl] = useState<string>()
 

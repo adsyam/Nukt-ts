@@ -2,10 +2,11 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { useLocation, useParams } from "react-router"
 import { API_KEY, TMDB_BASE_URL } from "../config/TMDB_API"
+import { CategoryProps } from "../interface/Global_Interface"
 
 export default function useFetchRecommend(  ) {
   const { id } = useParams()
-  const [data, setData] = useState([])
+  const [data, setData] = useState<CategoryProps[]>()
   const location = useLocation()
   const pathname = location.pathname
 

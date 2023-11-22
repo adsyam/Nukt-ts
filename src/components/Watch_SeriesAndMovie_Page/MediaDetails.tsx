@@ -164,7 +164,7 @@ export default function MediaDetails({ Season, Episode, mediaType, id }: MediaDe
               What do you think about this{" "}
               {pathname.includes("TVSeries") ? "series" : "movie"}?
             </p>
-            {[...Array(10)].map((icon, index) => (
+            {[...Array(10)].map((_icon, index) => (
               <FontAwesomeIcon
                 key={index + 1}
                 icon={starRate > index ? faStar : faStarRegular}

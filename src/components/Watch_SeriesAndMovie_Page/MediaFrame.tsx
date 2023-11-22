@@ -1,10 +1,13 @@
 import { Ripples } from "@uiball/loaders"
 import { useEffect, useState } from "react"
-import { useDataContext } from "../../contexts/DataContext"
 
-export default function MediaFrame({ server, id }) {
+interface MediaFrameProps {
+  server: string
+  id: string
+}
+
+export default function MediaFrame({ server, id }: MediaFrameProps) {
   const [isLoading, setIsLoading] = useState(false)
-  const { sidebar } = useDataContext()
 
   useEffect(() => {
     setIsLoading(true)

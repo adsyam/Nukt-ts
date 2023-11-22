@@ -40,3 +40,27 @@ export interface useFetchTMDBProps {
   data?: CategoryProps
   pathname?: string
 }
+
+
+export interface VideosProps {
+  videos: {
+    snippet: {
+      channelId: string
+      channelTitle: string
+      title: string
+      thumbnails: {
+        high: {
+          url: string
+        }
+      }
+    }
+    id: {
+      videoId: string
+      playlistId?: string
+      channelId?: string
+    }
+    statistics: {
+      subscriberCount: string
+    }
+  }[]
+}

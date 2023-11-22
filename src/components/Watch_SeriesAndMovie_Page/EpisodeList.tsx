@@ -1,7 +1,7 @@
 import { motion } from "framer-motion"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import useFetchDetails from "../../hooks/useFetchDetails"
-import useResponsive from "../../Hooks/useResponsive"
+import useResponsive from "../../hooks/useResponsive"
 
 export default function EpisodeList() {
   const { id, season, episode } = useParams<string>()

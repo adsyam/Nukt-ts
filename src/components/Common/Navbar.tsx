@@ -12,8 +12,8 @@ import {} from "react-icons/ai"
 import { Link } from "react-router-dom"
 import { nukt_logo } from "../../assets"
 import { fileDB } from "../../config/firebase"
-import { useAuthContext } from "../../contexts/AuthContext"
-import { useDataContext } from "../../contexts/DataContext"
+import { AuthContextProps, useAuthContext } from "../../contexts/AuthContext"
+import { DataContextProps, useDataContext } from "../../contexts/DataContext"
 import useFetchDetails from "../../hooks/useFetchDetails"
 import Sidebar from "../LeftSidebar/Sidebar"
 import FeedbackModal from "../Modal/FeedbackModal"
@@ -29,13 +29,13 @@ export default function Navbar() {
     showUserSidebar,
     isActive,
     modal,
-  } = useDataContext()
-  const { user } = useAuthContext()
+  } = useDataContext() as DataContextProps
+  const { user } = useAuthContext() as AuthContextProps
   const [searchMobile, setSearchMobile] = useState(false)
   const [showSearchbar, setShowSearchbar] = useState(false)
 //   const [reload, setReload] = useState(false)
   const [screenWidth, setScreenWidth] = useState(window.innerWidth)
-  const [imageUrl, setImageUrl] = useState(null)
+  const [imageUrl, setImageUrl] = useState<string>()
 
   // useEffect(() => {
   //   const timeout = setTimeout(() => {

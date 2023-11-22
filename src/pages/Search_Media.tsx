@@ -1,15 +1,15 @@
 import { Player } from "@lottiefiles/react-lottie-player"
 import { useState } from "react"
-import useSearch from "../Hooks/useSearch"
+import useSearch from "../hooks/useSearch"
 import { loader_Geometric } from "../assets"
 import { CategoryCard, VideoCategories } from "../components"
-import { useDataContext } from "../contexts/DataContext"
+import { DataContextProps, useDataContext } from "../contexts/DataContext"
 
 export default function SearchMedia() {
   const [filter, setFilter] = useState("")
   const [category, setCategory] = useState("all")
   const searchParams = new URLSearchParams(window.location.search).get("q")
-  const { sidebar } = useDataContext()
+  const { sidebar } = useDataContext() as DataContextProps
   const { movieResult, seriesResult, loading } = useSearch(searchParams)
 
   const fadeInVariants = {
@@ -71,7 +71,7 @@ export default function SearchMedia() {
                 <h2 className="mb-1">Movie</h2>
                 <div className="grid grid-cols-8 max-xl:grid-cols-7 max-lg:grid-cols-6 max-md:grid-cols-5 max-sm:grid-cols-4 max-xsm:grid-cols-3 max-xxsm:grid-cols-2 gap-4 text-white">
                   {movieResult
-                    .filter((md) => md.poster_path && md.backdrop_path)
+                    ?.filter((md) => md.poster_path && md.backdrop_path)
                     .map((md, index) => (
                       <CategoryCard
                         key={index}
@@ -97,7 +97,7 @@ export default function SearchMedia() {
                 <h2 className="mb-1">TV Series</h2>
                 <div className="grid grid-cols-8 max-xl:grid-cols-7 max-lg:grid-cols-6 max-md:grid-cols-5 max-sm:grid-cols-4 max-xsm:grid-cols-3 max-xxsm:grid-cols-2 gap-4 text-white">
                   {seriesResult
-                    .filter((tv) => tv.poster_path && tv.backdrop_path)
+                    ?.filter((tv) => tv.poster_path && tv.backdrop_path)
                     .map((tv, index) => (
                       <CategoryCard
                         key={index}

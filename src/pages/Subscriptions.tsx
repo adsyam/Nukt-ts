@@ -6,36 +6,60 @@ import { getDownloadURL, listAll, ref } from "firebase/storage"
 import { Link } from "react-router-dom"
 import VideoCard from "../components/Video_Section/VideoCard"
 import { fileDB, textDB } from "../config/firebase"
-import { useAuthContext } from "../contexts/AuthContext"
-import { useDBContext } from "../contexts/DBContext"
-import { useDataContext } from "../contexts/DataContext"
+import { AuthContextProps, useAuthContext } from "../contexts/AuthContext"
+import { DBContextProps, useDBContext } from "../contexts/DBContext"
+import { DataContextProps, useDataContext } from "../contexts/DataContext"
 import { useFetchSubChannels, useFetchSubsVideos } from "../hooks/videoHooks"
+
+interface UserData {
+  id: string
+  username: string
+  subscribers: number
+  url: string
+}
+interface Channel {
+    channel: {
+        id: {
+            channelId: string
+            snippet: {
+                title: {
+                    thumbnails: {
+                        high: {
+                            url: string
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 export default function Subscriptions() {
   const [manage, setManage] = useState(false)
   const [loading, setLoading] = useState(true)
   const [subChannels, setSubChannels] = useState([])
   const [subUsers, setSubUsers] = useState([])
-  const [userData, setUserData] = useState([])
+  const [userData, setUserData] = useState<UserData[] | null>(null)
   const [reload, setReload] = useState(false)
-  const { sidebar } = useDataContext()
-  const { user } = useAuthContext()
-  const { getUserData, removeSubscription, removeSubscribers } = useDBContext()
+  const { sidebar } = useDataContext() as DataContextProps
+  const { user } = useAuthContext() as AuthContextProps
+  const { getUserData, removeSubscription, removeSubscribers } =
+    useDBContext() as DBContextProps
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      doc(textDB, "Users", user.uid),
-      { includeMetadataChanges: true },
-      (doc) => setSubChannels(doc.data()?.subscriptions?.channels)
-    )
-  }, [reload])
+      const unsubscribe = onSnapshot(
+        doc(textDB, "Users", user?.uid),
+        { includeMetadataChanges: true },
+        (doc) => setSubChannels(doc.data()?.subscriptions?.channels)
+      )
+  }, [reload, user?.uid])
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      doc(textDB, "Users", user.uid),
-      { includeMetadataChanges: true },
-      (doc) => setSubUsers(doc.data()?.subscriptions?.users)
-    )
+      const unsubscribe = onSnapshot(
+        doc(textDB, "Users", user?.uid),
+        { includeMetadataChanges: true },
+        (doc) => setSubUsers(doc.data()?.subscriptions?.users)
+      )
 
     const getData = async () => {
       try {
@@ -55,7 +79,7 @@ export default function Subscriptions() {
         })
 
         const userDataArray = await Promise.all(userDataPromises)
-        setUserData((prevUserData) => [...userDataArray])
+        setUserData(() => [...userDataArray])
       } catch (err) {
         console.log(err)
       } finally {
@@ -64,23 +88,27 @@ export default function Subscriptions() {
     }
 
     getData()
-  }, [manage, reload])
+  }, [getUserData, manage, reload, subUsers, user?.uid])
 
-  const toggleUnsubscribe = (e, type, id) => {
+  const toggleUnsubscribe = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    type: string,
+    id: string
+  ) => {
     e.preventDefault()
     try {
-      removeSubscription(user?.uid, type, id)
-      removeSubscribers(id, user?.uid).then(() => {
-        alert("Successfully unsubscribed")
-        setReload(!reload)
-      })
+        removeSubscription(user?.uid, type, id)
+        removeSubscribers(id, user?.uid).then(() => {
+          alert("Successfully unsubscribed")
+          setReload(!reload)
+        })
     } catch (err) {
       console.log(err)
     }
   }
 
   const videos = useFetchSubsVideos(subChannels)
-  const channels = useFetchSubChannels(subChannels)
+  const channels: Channel[] = useFetchSubChannels(subChannels)
 
   if (!videos || loading) return
 
@@ -175,7 +203,7 @@ export default function Subscriptions() {
               <p className="text-center">You are not subscribed to any users</p>
             )}{" "}
             <div className="flex flex-wrap items-center gap-5">
-              {userData.map((user) => (
+              {userData?.map((user) => (
                 <div
                   key={user?.id}
                   className="w-full md:w-[300px] flex flex-col gap-1 justify-center items-center"

@@ -2,9 +2,20 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { API_KEY, TMDB_BASE_URL } from "../config/TMDB_API"
 
-export default function useSearch(query) {
-  const [movieResult, setMovieResult] = useState([])
-  const [seriesResult, setSeriesResult] = useState([])
+export interface CategoryProps {
+  id: number
+  poster_path: string
+  backdrop_path: string
+  original_name: string
+  original_title: string
+  release_date: string
+  first_air_date: string
+  vote_average: number
+}
+
+export default function useSearch(query: string | null) {
+  const [movieResult, setMovieResult] = useState<CategoryProps[] | null>(null)
+  const [seriesResult, setSeriesResult] = useState<CategoryProps[] | null>(null)
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
 

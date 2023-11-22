@@ -2,8 +2,8 @@ import {
   createContext,
   useContext,
   useEffect,
-  useState,
-  type ReactNode,
+  useReducer,
+  ReactNode,
 } from "react"
 import { useLocation } from "react-router-dom"
 
@@ -13,30 +13,32 @@ interface DataProviderProps {
 
 interface SidebarState {
   sidebar: boolean
-  setSidebar: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 interface UserSidebarState {
   userSidebar: boolean
-  setUserSidebar: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 interface ActiveState {
   isActive: boolean
-  setIsActive: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 interface DropDownState {
   dropDown: boolean
-  handleDropDown: () => void
 }
 
 interface ModalState {
   modal: boolean
-  setModal: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export interface DataContextProps {
+type Action =
+  | { type: "TOGGLE_SIDEBAR" }
+  | { type: "TOGGLE_USER_SIDEBAR" }
+  | { type: "SET_IS_ACTIVE"; payload: boolean }
+  | { type: "TOGGLE_DROPDOWN" }
+  | { type: "SET_MODAL"; payload: boolean }
+
+interface State {
   sidebar: SidebarState
   userSidebar: UserSidebarState
   active: ActiveState
@@ -44,53 +46,91 @@ export interface DataContextProps {
   modal: ModalState
   location: string
   searchParams: URLSearchParams
+}
+
+export interface DataContextProps extends State {
   showSidebar: () => void
   showUserSidebar: () => void
   handleDropDown: () => void
+  isActive: boolean
+}
+
+const initialState: State = {
+  sidebar: { sidebar: false },
+  userSidebar: { userSidebar: false },
+  active: { isActive: false },
+  dropDown: { dropDown: false },
+  modal: { modal: false },
+  location: "",
+  searchParams: new URLSearchParams(""),
+}
+
+const dataReducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case "TOGGLE_SIDEBAR":
+      return {
+        ...state,
+        sidebar: { sidebar: !state.sidebar.sidebar },
+      }
+    case "TOGGLE_USER_SIDEBAR":
+      return {
+        ...state,
+        userSidebar: { userSidebar: !state.userSidebar.userSidebar },
+      }
+    case "SET_IS_ACTIVE":
+      return {
+        ...state,
+        active: { isActive: action.payload },
+      }
+    case "TOGGLE_DROPDOWN":
+      return {
+        ...state,
+        dropDown: { dropDown: !state.dropDown.dropDown },
+      }
+    case "SET_MODAL":
+      return {
+        ...state,
+        modal: { modal: action.payload },
+      }
+    default:
+      return state
+  }
 }
 
 const DataContext = createContext<DataContextProps | null>(null)
 
 const DataProvider = ({ children }: DataProviderProps) => {
-  const [sidebar, setSidebar] = useState(false) //state of sidebar
-  const [userSidebar, setUserSidebar] = useState(false)
-  const [isActive, setIsActive] = useState(false) //state of navbar
-  const [dropDown, setDropDown] = useState(false) //state of dropdown
-  const [modal, setModal] = useState(false) //state of feedback modal
-  const location = useLocation().pathname //get the current page location
-  const searchParams = new URLSearchParams(window.location.search)
+  const [state, dispatch] = useReducer(dataReducer, initialState)
+  const location = useLocation().pathname
 
-  //show sidebar if menu button is clicked
-  const showSidebar = () => setSidebar(!sidebar)
-  const showUserSidebar = () => setUserSidebar(!userSidebar)
-
-  //give navbar a black bg once user scrolldown
   useEffect(() => {
-    window.addEventListener("scroll", () => {
-      window.scrollY > 60 ? setIsActive(true) : setIsActive(false)
-    })
-  })
+    const handleScroll = () => {
+      dispatch({
+        type: "SET_IS_ACTIVE",
+        payload: window.scrollY > 60,
+      })
+    }
 
-  const handleDropDown = () => {
-    dropDown === false ? setDropDown(true) : setDropDown(false)
-  }
+    window.addEventListener("scroll", handleScroll)
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll)
+    }
+  }, [])
+
+  const showSidebar = () => dispatch({ type: "TOGGLE_SIDEBAR" })
+  const showUserSidebar = () => dispatch({ type: "TOGGLE_USER_SIDEBAR" })
+  const handleDropDown = () => dispatch({ type: "TOGGLE_DROPDOWN" })
 
   return (
     <DataContext.Provider
       value={{
-        showSidebar,
-        sidebar,
-        setSidebar,
-        userSidebar,
-        showUserSidebar,
-        setUserSidebar,
-        isActive,
+        ...state,
         location,
-        dropDown,
+        showSidebar,
+        isActive: state.active.isActive,
+        showUserSidebar,
         handleDropDown,
-        searchParams,
-        modal,
-        setModal,
       }}
     >
       {children}

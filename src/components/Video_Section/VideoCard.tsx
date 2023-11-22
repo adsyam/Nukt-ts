@@ -1,27 +1,64 @@
 import { motion } from "framer-motion"
 import { AiOutlinePlus } from "react-icons/ai"
 import { Link, useLocation } from "react-router-dom"
-import { useAuthContext } from "../../contexts/AuthContext"
-import { useDBContext } from "../../contexts/DBContext"
+import { AuthContextProps, useAuthContext } from "../../contexts/AuthContext"
+import { DBContextProps, useDBContext } from "../../contexts/DBContext"
 
-export default function VideoCard({ video, item, index }) {
-  const { user } = useAuthContext()
-  const { addHistoryOrLibrary } = useDBContext()
+
+interface VideoCardProps {
+  video: {
+    snippet: {
+      channelId: string
+      channelTitle: string
+      title: string
+      thumbnails: {
+        high: {
+          url: string
+        }
+      }
+    }
+    id: {
+      videoId: string
+    }
+  }
+  item: {
+    snippet: {
+      channelId: string
+      channelTitle: string
+      title: string
+      thumbnails: {
+        high: {
+          url: string
+        }
+      }
+    }
+    id: string
+  }
+  index?: number
+}
+
+export default function VideoCard({ video, item, index }: VideoCardProps) {
+  const { user } = useAuthContext() as AuthContextProps
+  const { addHistoryOrLibrary } = useDBContext() as DBContextProps
   const location = useLocation().pathname
 
-  const handleAddToLibrary = (e) => {
+  const handleAddToLibrary = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
     e.preventDefault()
     try {
-      addHistoryOrLibrary(
-        user?.uid,
-        "library",
-        "videos",
-        video?.id?.videoId || item?.id
-      )
+      if (video?.id?.videoId) {
+        addHistoryOrLibrary(
+          user?.uid,
+          "library",
+          "videos",
+          video?.id?.videoId || item?.id
+        )
+      }
 
       alert("Successfully added to library")
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
   }
 
@@ -43,7 +80,7 @@ export default function VideoCard({ video, item, index }) {
           variants={fadeInVariants}
           initial="hidden"
           animate="visible"
-          transition={{ delay: index * 0.07 }}
+          transition={{ delay: index! * 0.07 }}
           className="w-full h-[100px] md:h-[160px] overflow-hidden rounded-md"
         >
           <motion.img

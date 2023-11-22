@@ -2,15 +2,7 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { useLocation, useParams } from "react-router"
 import { API_KEY, TMDB_BASE_URL } from "../config/TMDB_API"
-import { CategoryProps } from "../interface/Global_Interface"
-
-interface useFetchTMDBProps {
-  defMediaType?: string
-  defPage?: number
-  category?: string
-  data?: CategoryProps
-  pathname?: string
-}
+import { CategoryProps, useFetchTMDBProps } from "../interface/Global_Interface"
 
 export default function useFetchTMDB({
   defMediaType = "tv",

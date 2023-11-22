@@ -4,7 +4,7 @@ import useFetchTMDB from "../../hooks/useFetchTMDB"
 
 export default function PagingButton() {
   const [category, setCategory] = useState<string>()
-  const { data, pathname } = useFetchTMDB()
+  const { pathname } = useFetchTMDB()
   const { page } = useParams()
   const currentPage = Number(page)
 

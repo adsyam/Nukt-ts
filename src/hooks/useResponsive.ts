@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
 import { useMediaQuery } from "react-responsive"
-import { useDataContext } from "../contexts/DataContext"
+import { DataContextProps, useDataContext } from "../contexts/DataContext"
 
 export default function useResponsive() {
   const [maxCards, setMaxCards] = useState<number>()
-  const { sidebar } = useDataContext()
+  const { sidebar } = useDataContext() as DataContextProps
   const screen = useMediaQuery({ maxWidth: 425 })
   const xxsm = useMediaQuery({ minWidth: 370, maxWidth: 509 })
   const xsm = useMediaQuery({ minWidth: 510, maxWidth: 640 })

@@ -3,8 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Player } from "@lottiefiles/react-lottie-player"
 import { motion } from "framer-motion"
 import { Link } from "react-router-dom"
-import useFetchTMDB from "../../Hooks/useFetchTMDB"
-import useResponsive from "../../Hooks/useResponsive"
+import useFetchTMDB from "../../hooks/useFetchTMDB"
+import useResponsive from "../../hooks/useResponsive"
 import { loader_Geometric } from "../../assets"
 import { useDataContext } from "../../contexts/DataContext"
 import CategoryCard from "../Common/CategoryCard"
@@ -13,11 +13,11 @@ import MediaTypeButton from "../Common/MediaTypeButton"
 export default function TopRated() {
   const { maxCards, responsiveGridCard, screen } = useResponsive()
   const { sidebar } = useDataContext()
-  const { data, isloading, mediaType, setMediaType } = useFetchTMDB(
-    "tv",
-    1,
-    "top_rated"
-  )
+  const { data, isloading, mediaType, setMediaType } = useFetchTMDB({
+    defMediaType: "tv",
+    defPage: 1,
+    category: "top_rated",
+  })
 
   return (
     <>
@@ -66,7 +66,7 @@ export default function TopRated() {
           <div className={responsiveGridCard}>
             {!isloading
               ? data
-                  .filter((d) => d.poster_path && d.backdrop_path)
+                  ?.filter((d) => d.poster_path && d.backdrop_path)
                   .slice(0, maxCards)
                   .map((d, index) => (
                     <CategoryCard
@@ -79,13 +79,13 @@ export default function TopRated() {
                       releaseDate={d.release_date}
                       firstAirDate={d.first_air_date}
                       mediaType={mediaType}
-                      rating={d.vote_average.toFixed(1)}
+                      rating={Number(d.vote_average.toFixed(1))}
                     />
                   ))
               : data
-                  .filter((d) => d.poster_path && d.backdrop_path)
+                  ?.filter((d) => d.poster_path && d.backdrop_path)
                   .slice(0, maxCards)
-                  .map((d, index) => (
+                  .map((_d, index) => (
                     <Player
                       autoplay
                       loop

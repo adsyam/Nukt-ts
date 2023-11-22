@@ -31,3 +31,12 @@ export interface CategoryCardProps {
   releaseDate: string
   firstAirDate: string
 }
+
+
+export interface useFetchTMDBProps {
+  defMediaType?: string
+  defPage?: number
+  category?: string
+  data?: CategoryProps
+  pathname?: string
+}

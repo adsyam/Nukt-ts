@@ -2,21 +2,21 @@ import { faAngleRight } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Player } from "@lottiefiles/react-lottie-player"
 import { Link } from "react-router-dom"
-import useFetchTMDB from "../../Hooks/useFetchTMDB"
-import useResponsive from "../../Hooks/useResponsive"
+import useFetchTMDB from "../../hooks/useFetchTMDB"
+import useResponsive from "../../hooks/useResponsive"
 import { loader_Geometric } from "../../assets"
-import { useDataContext } from "../../contexts/DataContext"
+import { DataContextProps, useDataContext } from "../../contexts/DataContext"
 import CategoryCard from "../Common/CategoryCard"
 import MediaTypeButton from "../Common/MediaTypeButton"
 
 export default function Popular() {
   const { maxCards, responsiveGridCard, screen } = useResponsive()
-  const { sidebar } = useDataContext()
-  const { data, isloading, mediaType, setMediaType } = useFetchTMDB(
-    "tv",
-    1,
-    "popular"
-  )
+  const { sidebar } = useDataContext() as DataContextProps
+  const { data, isloading, mediaType, setMediaType } = useFetchTMDB({
+    defMediaType: "tv",
+    defPage: 1,
+    category: "popular",
+  })
 
   return (
     <>
@@ -55,7 +55,7 @@ export default function Popular() {
         <div className={responsiveGridCard}>
           {!isloading
             ? data
-                .filter((d) => d.poster_path && d.backdrop_path)
+                ?.filter((d) => d.poster_path && d.backdrop_path)
                 .slice(0, maxCards)
                 .map((d, index) => (
                   <CategoryCard
@@ -68,13 +68,13 @@ export default function Popular() {
                     releaseDate={d.release_date}
                     firstAirDate={d.first_air_date}
                     mediaType={mediaType}
-                    rating={d.vote_average.toFixed(1)}
+                    rating={Number(d.vote_average.toFixed(1))}
                   />
                 ))
             : data
-                .filter((d) => d.poster_path && d.backdrop_path)
+                ?.filter((d) => d.poster_path && d.backdrop_path)
                 .slice(0, maxCards)
-                .map((d, index) => (
+                .map((_d, index: number) => (
                   <Player
                     autoplay
                     loop

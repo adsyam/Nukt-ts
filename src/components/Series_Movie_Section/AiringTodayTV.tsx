@@ -3,19 +3,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Player } from "@lottiefiles/react-lottie-player"
 import { motion } from "framer-motion"
 import { Link } from "react-router-dom"
-import useFetchTMDB from "../../Hooks/useFetchTMDB"
+import useFetchTMDB from "../../hooks/useFetchTMDB"
 import { loader_Geometric } from "../../assets"
-import { useDataContext } from "../../contexts/DataContext"
+import { DataContextProps, useDataContext } from "../../contexts/DataContext"
 import CategoryCard from "../Common/CategoryCard"
 import MediaTypeButton from "../Common/MediaTypeButton"
 
 export default function AiringTodayTV() {
-  const { sidebar } = useDataContext()
-  const { data, isloading, mediaType, setMediaType, category } = useFetchTMDB(
-    "tv",
-    1,
-    "airing_today"
-  )
+  const { sidebar } = useDataContext() as DataContextProps
+  const { data, isloading, mediaType, setMediaType, category } = useFetchTMDB({
+    defMediaType: "tv",
+    defPage: 1,
+    category: "airing_today",
+  })
 
   return (
     <>

@@ -6,13 +6,13 @@ import { Link } from "react-router-dom"
 import useFetchTrendingTMDB from "../../Hooks/useFetchTrendingTMDB"
 import useResponsive from "../../Hooks/useResponsive"
 import { loader_Geometric } from "../../assets"
-import { useDataContext } from "../../contexts/DataContext"
+import { DataContextProps, useDataContext } from "../../contexts/DataContext"
 import CategoryCard from "../Common/CategoryCard"
 import MediaTypeButton from "../Common/MediaTypeButton"
 
 export default function Trending() {
   const { maxCards, responsiveGridCard, screen } = useResponsive()
-  const { sidebar } = useDataContext()
+//   const { sidebar } = useDataContext() as DataContextProps
   const { isloading, mediaType, setMediaType, data } = useFetchTrendingTMDB(
     "tv",
     1,

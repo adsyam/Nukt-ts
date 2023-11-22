@@ -9,6 +9,7 @@ import { DBContextProps, useDBContext } from "../contexts/DBContext"
 import { DataContextProps, useDataContext } from "../contexts/DataContext"
 
 export default function History() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [reload, setReload] = useState(false)
   const [historyToggle, setHistoryToggle] = useState(true)
   const location = useLocation().pathname.split("/")[2]
@@ -22,6 +23,8 @@ export default function History() {
     const unsubscribe = onSnapshot(doc(textDB, "Users", user?.uid), (doc) =>
       setHistoryToggle(doc.data()?.storeHistory)
     )
+
+    return () => unsubscribe()
   }, [user?.uid])
 
   //clear the data of localStorage

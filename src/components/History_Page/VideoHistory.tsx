@@ -21,6 +21,8 @@ export default function VideoHistory() {
       { includeMetadataChanges: true },
       (doc) => setVideoIds(doc.data()?.[location].videos)
     )
+
+    return () => unsubscribe()
   }, [location, user?.uid])
 
   const videoDetails = useFetchVideoDetail(videoIds)

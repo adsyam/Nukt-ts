@@ -38,10 +38,13 @@ export default function Subscriptions() {
       { includeMetadataChanges: true },
       (doc) => setSubChannels(doc.data()?.subscriptions?.channels)
     )
+
+    return () => unsubscribe()
   }, [reload, user?.uid])
 
   useEffect(() => {
     if (!user?.uid) return
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const unsubscribe = onSnapshot(
       doc(textDB, "Users", user?.uid),
       { includeMetadataChanges: true },

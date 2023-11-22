@@ -38,11 +38,12 @@ export default function WatchSeries() {
 
   //===== this code is for watch history =======
   useEffect(() => {
-    if (user && user.uid) {
-      const unsubscribe = onSnapshot(doc(textDB, "Users", user?.uid), (doc) =>
-        setHistoryToggle(doc.data()?.storeHistory)
-      )
-    }
+    if (!user?.uid) return
+    const unsubscribe = onSnapshot(doc(textDB, "Users", user?.uid), (doc) =>
+      setHistoryToggle(doc.data()?.storeHistory)
+    )
+
+    return () => unsubscribe()
   }, [user, user?.uid])
 
   useEffect(() => {
@@ -81,10 +82,7 @@ export default function WatchSeries() {
     <>
       <div className="flex gap-4 mx-10 mt-20">
         <div className="flex flex-col w-full gap-4">
-          <MediaFrame
-            id={String(id)}
-            server={String(currentServer)}
-          />
+          <MediaFrame id={String(id)} server={String(currentServer)} />
           <div className="flex flex-col gap-4 border-2 border-[#86868650] p-3 pb-4 rounded-md">
             <ul className="flex flex-wrap text-[#868686] gap-4">
               {[...Array(5)].map((_server, i) => (

@@ -23,6 +23,8 @@ export default function SeriesHistory() {
     const unsubscribe = onSnapshot(doc(textDB, "Users", user.uid), (doc) =>
       setSeriesIds(doc.data()?.[location].series)
     )
+
+    return () => unsubscribe()
   }, [location, user?.uid])
 
   useEffect(() => {

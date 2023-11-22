@@ -53,6 +53,8 @@ export default function VideoDescriptions({ videoDetail }: { videoDetail: VideoD
       { includeMetadataChanges: true },
       (doc) => setSubscribe(doc.data()?.subscriptions["channels"])
     )
+
+    return () => unsubscribe()
   }, [user?.uid])
 
   useEffect(() => {

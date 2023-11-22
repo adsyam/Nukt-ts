@@ -42,6 +42,7 @@ export const useFetchRelatedVideos = (param: string) => {
 
 export const useFetchChannelDetails = (param: string) => {
   const [channelDetail, setChannelDetail] = useState(null)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState(true)
   const fetchChannelDetails = useFetchRapid(`channels?part=snippet&id=${param}`)
   useEffect(() => {

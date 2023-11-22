@@ -7,6 +7,7 @@ import { DBContextProps, useDBContext } from "../contexts/DBContext"
 import { DataContextProps, useDataContext } from "../contexts/DataContext"
 
 export default function History() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [reload, setReload] = useState(false)
   const location = useLocation().pathname.split("/")[2]
   const { sidebar } = useDataContext() as DataContextProps
@@ -14,6 +15,7 @@ export default function History() {
   const { user } = useAuthContext() as AuthContextProps
 
   //clear the data of localStorage
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleClear = () => {
     clearHistoryOrLibrary(String(user?.uid), location)
     setReload(true) //update reload value to rerender the component

@@ -23,6 +23,8 @@ export default function MovieHistory() {
     const unsubscribe = onSnapshot(doc(textDB, "Users", user?.uid), (doc) =>
       setMovieIds(doc?.data()?.[location]?.movies)
     )
+
+    return () => unsubscribe()
   }, [location, user?.uid])
 
   useEffect(() => {

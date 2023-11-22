@@ -18,6 +18,7 @@ export default function WatchVideo() {
 
   const videoDetails = useFetchStats(id)
   const videos = useFetchRelatedVideos(id)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const comments = useFetchVideoComments(id)
   const { user } = useAuthContext() as AuthContextProps
   const { sidebar } = useDataContext() as DataContextProps
@@ -32,6 +33,7 @@ export default function WatchVideo() {
       setHistoryToggle(doc.data()?.storeHistory)
     )
 
+    return () => unsubscribe()
   }, [id, user, user?.uid])
 
   useEffect(() => {

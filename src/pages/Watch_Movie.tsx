@@ -32,11 +32,12 @@ export default function WatchMovie() {
 
   //---this will be a listener for the toggle history
   useEffect(() => {
-    if (user && user.uid) {
+    if (!user?.uid) return
       const unsubscribe = onSnapshot(doc(textDB, "Users", user?.uid), (doc) =>
         setHistoryToggle(doc.data()?.storeHistory)
       )
-    }
+      
+    return () => unsubscribe()
   }, [user, user?.uid])
 
   useEffect(() => {

@@ -9,13 +9,14 @@ interface VideoCategoriesProps {
 
 export default function VideoCategories({ catergoryName }: VideoCategoriesProps) {
   const { location } = useDataContext() as DataContextProps
+  const fetchVideoDetails = useFetchVideoDetails(catergoryName)
 
   return (
     <>
       {location === "/search" ? (
-        <VideosGrid videos={useFetchVideoDetails(catergoryName)} />
+        <VideosGrid videos={fetchVideoDetails} />
       ) : (
-        <VideosLinear videos={useFetchVideoDetails(catergoryName)} />
+        <VideosLinear videos={fetchVideoDetails} />
       )}
     </>
   )

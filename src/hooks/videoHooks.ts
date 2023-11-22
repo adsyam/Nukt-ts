@@ -142,7 +142,7 @@ export const useFetchSubsVideos = (subChannels: string[]) => {
 }
 
 export const useFetchSubChannels = (subChannels: string[]) => {
-  const [data, setData] = useState<UseFetchSubProps[]>([])
+  const [data, setData] = useState<UseFetchSubProps[]>()
 
   useEffect(() => {
     const fetchData = async () => {

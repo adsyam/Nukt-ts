@@ -51,14 +51,15 @@ export default function SignIn() {
     try {
       setLoading(true)
       await signInUser(loginDetail.email, loginDetail.password)
-      return navigate("/home")
+      navigate("/home")
     } catch (error) {
       if (error instanceof Error) {
         setErrorMsg(error.message)
         console.error(error)
       }
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
   return (
     <section className="w-full flex justify-center items-center relative bg-hero-pattern bg-no-repeat bg-cover">

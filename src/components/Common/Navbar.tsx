@@ -43,7 +43,8 @@ export default function Navbar() {
       setSidebar({ type: "TOGGLE_SIDEBAR", payload: false })
       setUserSidebar({ type: "TOGGLE_USER_SIDEBAR", payload: false })
     }
-  }, [isAuthenticated, setSidebar, setUserSidebar, user])
+
+  }, [isAuthenticated, pathname, setSidebar, setUserSidebar, user])
 
   useEffect(() => {
     const listRef = ref(fileDB, `${user?.uid}/profileImage/`)
@@ -151,7 +152,7 @@ export default function Navbar() {
           />
         )}
         <div className="flex items-center gap-2">
-          {user === null ? (
+          {user === null || pathname.includes("signup") ? (
             <Link to="/login" className="bg-[#0d0d0d50] rounded-md p-[.5rem]">
               <span className="uppercase text-[.9rem]">sign in</span>
             </Link>

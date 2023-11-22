@@ -15,7 +15,7 @@ export default function History() {
 
   //clear the data of localStorage
   const handleClear = () => {
-    clearHistoryOrLibrary(user.uid, location)
+    clearHistoryOrLibrary(String(user?.uid), location)
     setReload(true) //update reload value to rerender the component
   }
 
@@ -37,13 +37,13 @@ export default function History() {
       </div>
       <hr className="border-white/20 translate-y-[10rem]" />
       <div className="translate-y-[12rem] flex items-center gap-[2rem] mb-[2rem]">
-        <MovieHistory reload={reload} />
+        <MovieHistory/>
       </div>
       <div className="translate-y-[12rem] flex items-center gap-[2rem] mb-[2rem]">
-        <SeriesHistory reload={reload} />
+        <SeriesHistory />
       </div>
       <div className="translate-y-[12rem] flex items-center gap-[2rem] mb-[2rem]">
-        <VideoHistory reload={reload} />
+        <VideoHistory />
       </div>
     </section>
   )

@@ -1,7 +1,14 @@
 import { AnimatePresence, motion } from "framer-motion"
 import YouTube from "react-youtube"
 
-export default function TrailerModal({ key, trailerKey, isOpen, onClose }) {
+interface TrailerModalProps {
+    key: number
+    trailerKey: string
+    isOpen: boolean
+    onClose: () => void
+}
+
+export default function TrailerModal({ key, trailerKey, isOpen, onClose }: TrailerModalProps) {
   const closeModal = () => {
     onClose()
   }

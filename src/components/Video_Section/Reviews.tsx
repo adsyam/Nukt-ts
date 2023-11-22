@@ -1,24 +1,36 @@
-import { doc, onSnapshot } from "firebase/firestore"
+import {
+  DocumentReference,
+  Unsubscribe,
+  doc,
+  onSnapshot,
+} from "firebase/firestore"
 import { getDownloadURL, listAll, ref } from "firebase/storage"
 import { useEffect, useState } from "react"
 // import { moment as format } from "moment";
 import moment from "moment-timezone"
 import { AiOutlineDelete, AiOutlineEdit, AiOutlineMore } from "react-icons/ai"
 import { fileDB, textDB } from "../../config/firebase"
-import { useAuthContext } from "../../contexts/AuthContext"
-import { useDBContext } from "../../contexts/DBContext"
+import { AuthContextProps, useAuthContext } from "../../contexts/AuthContext"
+import { DBContextProps, useDBContext } from "../../contexts/DBContext"
+import {
+  FilteredReviewDataProps,
+  ReviewDataProps,
+} from "../Watch_SeriesAndMovie_Page/MediaReviews"
 
-export default function Reviews({ comments, id }) {
-  const { user } = useAuthContext()
-  const { addReview, deleteReview, updateReview } = useDBContext()
+export default function Reviews({ id }: { id: string }) {
+  const { user } = useAuthContext() as AuthContextProps
+  const { addReview, deleteReview, updateReview } =
+    useDBContext() as DBContextProps
   const [visible, setVisible] = useState(10)
   const [imageUrl, setImageUrl] = useState("")
   const [reviewInput, setReviewInput] = useState("")
   const [editReview, setEditReview] = useState("")
-  const [reviewData, setReviewData] = useState([])
+  const [reviewData, setReviewData] = useState<
+    FilteredReviewDataProps[] | null
+  >([])
   const [isSubmitted, setIsSubmitted] = useState(false)
-  const [isEdit, setIsEdit] = useState(null)
-  const [options, setOptions] = useState(null)
+  const [isEdit, setIsEdit] = useState<string | null>(null)
+  const [options, setOptions] = useState<string | null>(null)
 
   useEffect(() => {
     const listRef = ref(fileDB, `${user?.uid}/profileImage/`)
@@ -27,75 +39,91 @@ export default function Reviews({ comments, id }) {
         setImageUrl(url)
       })
     })
-  }, [])
+  }, [user?.uid])
 
   useEffect(() => {
-    const reviewsCollectionRef = doc(textDB, "Reviews", id)
-    const unsub = onSnapshot(reviewsCollectionRef, async (snapshot) => {
-      if (snapshot._document === null) {
-        setReviewData([])
-        return unsub()
-      }
-      const newReviewData = await Promise.all(
-        Object.keys(snapshot?._document?.data.value.mapValue.fields).map(
-          async (key) => {
-            const {
-              createdAt: { timestampValue: createdAt },
-              id: { stringValue: userId },
-              review: { stringValue: review },
-              username: { stringValue: username },
-              isEdited: { booleanValue: isEdited },
-            } = snapshot._document.data.value.mapValue.fields[key].mapValue
-              .fields
+    const reviewsCollectionRef: DocumentReference = doc(textDB, "Reviews", id)
+    const unsub: Unsubscribe = onSnapshot(
+      reviewsCollectionRef,
+      async (snapshot) => {
+        if (snapshot.data() === null) {
+          setReviewData([])
+          return unsub()
+        }
+        const newReviewData = await Promise.all(
+          Object.keys(snapshot?.data()?.value.mapValue.fields).map(
+            async (key) => {
+              const {
+                createdAt: { timestampValue: createdAt },
+                id: { stringValue: userId },
+                review: { stringValue: review },
+                username: { stringValue: username },
+                isEdited: { booleanValue: isEdited },
+              } = (snapshot.data()?.value.mapValue.fields[key].mapValue
+                .fields as ReviewDataProps) || {}
 
-            const listRef = ref(fileDB, `${userId}/profileImage/`)
-            try {
-              const response = await listAll(listRef)
-              const url = response.items[0]
-                ? await getDownloadURL(response.items[0])
-                : null
+              const listRef = ref(fileDB, `${userId}/profileImage/`)
+              try {
+                const response = await listAll(listRef)
+                const url = response.items[0]
+                  ? await getDownloadURL(response.items[0])
+                  : null
 
-              return {
-                userId: userId,
-                reviewId: key,
-                username,
-                review,
-                createdAt:
-                  createdAt !== null
-                    ? moment.tz(createdAt, "Asia/Singapore").toDate()
-                    : null,
-                url,
-                isEdited,
+                return {
+                  userId: userId,
+                  reviewId: key,
+                  username,
+                  review,
+                  createdAt:
+                    createdAt !== null
+                      ? moment.tz(createdAt, "Asia/Singapore").toDate()
+                      : null,
+                  url,
+                  isEdited,
+                }
+              } catch (error) {
+                console.error("Error fetching download URL:", error)
+                return null
               }
-            } catch (error) {
-              console.error("Error fetching download URL:", error)
-              return null
             }
-          }
+          )
         )
-      )
 
-      const filteredReviewData = newReviewData.filter(Boolean)
-      filteredReviewData.sort((a, b) => b.createdAt - a.createdAt)
-      setReviewData(filteredReviewData)
-    })
+        const filteredReviewData = newReviewData.filter(
+          Boolean
+        ) as FilteredReviewDataProps[]
+        filteredReviewData.sort((a, b) => {
+          const dateA = a?.createdAt || new Date(0)
+          const dateB = b?.createdAt || new Date(0)
+
+          return dateB.getTime() - dateA.getTime()
+        })
+        setReviewData(filteredReviewData)
+      }
+    )
   }, [isSubmitted, id])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
-    addReview(user?.uid, id, user?.displayName, reviewInput)
+    addReview(String(user?.uid), id, String(user?.displayName), reviewInput)
     setReviewInput("")
     setIsSubmitted(!isSubmitted)
   }
 
-  const handleEdit = (e, reviewId) => {
+  const handleEdit = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    reviewId: string
+  ) => {
     e.preventDefault()
 
     updateReview(reviewId, id, editReview)
     setIsEdit(null), setOptions(null), setEditReview("")
   }
 
-  const handleDelete = (e, reviewId) => {
+  const handleDelete = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    reviewId: string
+  ) => {
     e.preventDefault()
     deleteReview(reviewId, id)
   }
@@ -121,7 +149,7 @@ export default function Reviews({ comments, id }) {
           <img
             src={
               imageUrl ||
-              user.photoURL ||
+              user?.photoURL ||
               "../../assets/profile-placeholder.svg"
             }
             alt=""
@@ -131,8 +159,8 @@ export default function Reviews({ comments, id }) {
             <textarea
               placeholder="Write a review"
               name=""
-              cols="120"
-              rows="2"
+              cols={120}
+              rows={2}
               value={reviewInput}
               onChange={(e) => setReviewInput(e.target.value)}
               className="text-white resize-none outline-none rounded-md p-2 w-full
@@ -165,7 +193,7 @@ export default function Reviews({ comments, id }) {
               <div className="flex gap-4 mb-6">
                 <div className="rounded-full w-[45px] h-[45px] overflow-hidden">
                   <img
-                    src={data?.url}
+                    src={String(data?.url)}
                     alt={data?.username}
                     className="w-full h-full object-cover"
                   />
@@ -186,8 +214,8 @@ export default function Reviews({ comments, id }) {
                     <textarea
                       placeholder="Write a review"
                       name=""
-                      cols="120"
-                      rows="2"
+                      cols={120}
+                      rows={2}
                       value={editReview || data?.review}
                       onChange={(e) => setEditReview(e.target.value)}
                       className="text-white resize-none outline-none rounded-md p-2 w-full
@@ -231,7 +259,7 @@ export default function Reviews({ comments, id }) {
                   ${options === data.reviewId ? "block" : "hidden"}`}
                   >
                     <button
-                      onClick={(e) =>
+                      onClick={() =>
                         setIsEdit((prevOptions) =>
                           prevOptions === data.reviewId ? null : data.reviewId
                         )

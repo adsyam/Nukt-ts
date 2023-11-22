@@ -4,25 +4,17 @@ import { AiOutlineCamera } from "react-icons/ai"
 
 import { useParams } from "react-router"
 import { fileDB } from "../../config/firebase"
-import { useAuthContext } from "../../contexts/AuthContext"
-import { useDBContext } from "../../contexts/DBContext"
+import { AuthContextProps, useAuthContext } from "../../contexts/AuthContext"
+import { DBContextProps, useDBContext } from "../../contexts/DBContext"
 
-export default function ProfilePic({ image, isUser }) {
+export default function ProfilePic({ image, isUser }: { image: string; isUser: boolean }) {
   const { id } = useParams()
-  const inputRef = useRef(null)
-  const { user } = useAuthContext()
-  const { addImage } = useDBContext()
+  const inputRef = useRef<HTMLInputElement | null>(null)
+  const { user } = useAuthContext() as AuthContextProps
+  const { addImage } = useDBContext() as DBContextProps
 
-  const [imageUrl, setImageUrl] = useState(null)
+  const [imageUrl, setImageUrl] = useState<string>()
   const [reload, setReload] = useState(false)
-
-  // useEffect(() => {
-  //   const timeout = setTimeout(() => {
-  //     setReload(!reload);
-  //   }, 1000);
-
-  //   return () => clearTimeout(timeout);
-  // }, [reload]);
 
   useEffect(() => {
     if (isUser) {
@@ -36,12 +28,12 @@ export default function ProfilePic({ image, isUser }) {
   }, [isUser, id, imageUrl])
 
   const handleImageUpload = () => {
-    inputRef.current.click()
+    inputRef.current?.click()
   }
 
-  const handleChange = (input) => {
+  const handleChange = (input: File | null) => {
     if (input !== null) {
-      addImage(user?.uid, "profileImage", input)
+      addImage(String(user?.uid), "profileImage", input)
       setTimeout(() => {
         setReload(!reload)
       }, 1000)
@@ -76,7 +68,7 @@ export default function ProfilePic({ image, isUser }) {
             ref={inputRef}
             type="file"
             className="hidden"
-            onChange={(e) => handleChange(e.target.files[0])}
+            onChange={(e) => handleChange(e.target.files ? e.target.files[0] : null)}
           />
         </div>
       )}

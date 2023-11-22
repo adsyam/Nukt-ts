@@ -10,20 +10,35 @@ import { timeFormat } from "../../utils/timeFormat"
 
 const descriptionStyles = {
   WebkitLineClamp: 5,
-  WebkitBoxOrient: "vertical",
+  WebkitBoxOrient: "vertical" as const,
   display: "-webkit-box",
   overflow: "hidden",
 }
 
-export default function VideoDescriptions({ videoDetail }) {
+interface VideoDetail {
+  snippet: {
+    title: string
+    channelId: string
+    channelTitle: string
+    description: string
+    publishedAt: string
+  }
+  statistics: {
+    viewCount: number
+    likeCount: number
+  }
+}
+
+export default function VideoDescriptions({ videoDetail }: { videoDetail: VideoDetail}) {
   const [isOpen, setIsOpen] = useState(false)
   const [readMore, setReadMore] = useState(false)
-  const [subscribe, setSubscribe] = useState([])
+  const [subscribe, setSubscribe] = useState<string[] | undefined>()
   const [like, setLike] = useState(false)
   const descriptionRef = useRef<HTMLDivElement>(null)
 
   const { user } = useAuthContext() as AuthContextProps
-  const { addSubcription, removeSubscription } = useDBContext() as DBContextProps
+  const { addSubcription, removeSubscription } =
+    useDBContext() as DBContextProps
 
   const {
     snippet: { title, channelId, channelTitle, description, publishedAt },
@@ -31,6 +46,8 @@ export default function VideoDescriptions({ videoDetail }) {
   } = videoDetail
 
   useEffect(() => {
+    if (!user?.uid) return
+
     const unsubscribe = onSnapshot(
       doc(textDB, "Users", user?.uid),
       { includeMetadataChanges: true },
@@ -48,10 +65,10 @@ export default function VideoDescriptions({ videoDetail }) {
   }, [])
 
   const handdleSubscriptions = () => {
-    if (subscribe.includes(channelId)) {
-      removeSubscription(user.uid, "channels", channelId)
+    if (subscribe?.includes(channelId)) {
+      removeSubscription(String(user?.uid), "channels", channelId)
     } else {
-      addSubcription(user.uid, "channels", channelId)
+      addSubcription(String(user?.uid), "channels", channelId)
     }
   }
 
@@ -81,13 +98,13 @@ export default function VideoDescriptions({ videoDetail }) {
           </div>
           <div className="flex items-center gap-3">
             <p className="text-slate-300 border-2 py-[.45rem] px-3 rounded-md">
-              {parseInt(viewCount).toLocaleString() || 0} views
+              {Number(viewCount).toLocaleString() || 0} views
             </p>
             <div className="flex gap-3 items-center border-2 py-1 px-2 rounded-md">
               <p className="text-slate-300">
                 {like
-                  ? (parseInt(likeCount) + 1).toLocaleString()
-                  : parseInt(likeCount).toLocaleString() || 0}
+                  ? (Number(likeCount) + 1).toLocaleString()
+                  : Number(likeCount).toLocaleString() || 0}
               </p>
               <hr className="h-[30px] border-[1px] border-white/20" />
               {like ? (
@@ -115,7 +132,7 @@ export default function VideoDescriptions({ videoDetail }) {
             ref={descriptionRef}
             style={{
               whiteSpace: "pre-line",
-              ...(!isOpen ? descriptionStyles : {}),
+              ...(isOpen ? {} : descriptionStyles),
             }}
           >
             {description}

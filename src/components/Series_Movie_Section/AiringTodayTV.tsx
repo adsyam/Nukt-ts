@@ -56,7 +56,7 @@ export default function AiringTodayTV() {
           >
             {!isloading
               ? data
-                  .filter((d) => d.poster_path && d.backdrop_path)
+                  ?.filter((d) => d.poster_path && d.backdrop_path)
                   .slice(0, 16)
                   .map((d, index) => (
                     <CategoryCard
@@ -73,9 +73,9 @@ export default function AiringTodayTV() {
                     />
                   ))
               : data
-                  .filter((d) => d.poster_path && d.backdrop_path)
+                  ?.filter((d) => d.poster_path && d.backdrop_path)
                   .slice(0, 16)
-                  .map((d, index) => (
+                  .map((_d, index) => (
                     <Player
                       autoplay
                       loop

@@ -1,7 +1,7 @@
 import { Player } from "@lottiefiles/react-lottie-player"
 import { useEffect, useState } from "react"
 import { useLocation } from "react-router"
-import useResponsive from "../Hooks/useResponsive"
+import useResponsive from "../hooks/useResponsive"
 import { loader_Geometric } from "../assets"
 import {
   Carousel,

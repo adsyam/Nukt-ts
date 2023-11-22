@@ -82,15 +82,12 @@ export default function WatchSeries() {
       <div className="flex gap-4 mx-10 mt-20">
         <div className="flex flex-col w-full gap-4">
           <MediaFrame
-            id={id}
-            // season={season}
-            // episode={episode}
-            server={currentServer}
-            // path={mediaType}
+            id={String(id)}
+            server={String(currentServer)}
           />
           <div className="flex flex-col gap-4 border-2 border-[#86868650] p-3 pb-4 rounded-md">
             <ul className="flex flex-wrap text-[#868686] gap-4">
-              {[...Array(5)].map((server, i) => (
+              {[...Array(5)].map((_server, i) => (
                 <motion.li
                   whileHover={{ scale: 1.05 }}
                   role="button"
@@ -117,8 +114,8 @@ export default function WatchSeries() {
           mediaType={mediaType}
         />
       </div>
-      <MediaRecommendation id={id} />
-      <MediaReviews id={id} />
+      <MediaRecommendation />
+      <MediaReviews id={String(id)} />
       <Footer />
       {/* <MediaFrame
         id={id}

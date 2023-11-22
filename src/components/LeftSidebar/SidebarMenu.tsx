@@ -1,17 +1,30 @@
 import { Link } from "react-router-dom"
-import { useAuthContext } from "../../contexts/AuthContext"
-import { useDataContext } from "../../contexts/DataContext"
+import { AuthContextProps, useAuthContext } from "../../contexts/AuthContext"
+import { DataContextProps, useDataContext } from "../../contexts/DataContext"
 
-export default function SidebarMenu({ name, icon, url, index }) {
-  const { modal, setModal } = useDataContext()
-  const { user } = useAuthContext()
+interface SidebarMenuProps {
+  name: string
+  icon: JSX.Element
+  url: string
+  index: number
+}
+
+export default function SidebarMenu({
+  name,
+  icon,
+  url,
+  index,
+}: SidebarMenuProps) {
+  const { modal, setModal } = useDataContext() as DataContextProps
+  const { user } = useAuthContext() as AuthContextProps
 
   return (
     <>
       {name === "send feedback" ? (
         <button
           onClick={() => (
-            setModal(!modal), (document.body.style.overflow = "hidden")
+            setModal({ type: "SET_MODAL", payload: !modal }),
+            (document.body.style.overflow = "hidden")
           )}
           className={`font-fig basis-1 flex items-center justify-start
           cursor-pointer outline-none border-0 py-[.5rem] px-[.9rem]

@@ -15,6 +15,7 @@ export default function VideoHistory() {
   const location = useLocation().pathname.split("/")[2]
 
   useEffect(() => {
+    if (!user?.uid) return
     const unsubscribe = onSnapshot(
       doc(textDB, "Users", user?.uid),
       { includeMetadataChanges: true },
@@ -26,22 +27,28 @@ export default function VideoHistory() {
 
   if (!videoDetails) return
 
-  const handleDelete = (idToDelete: string) => {
+  const handleDelete = (videoToDelete: {
+    channelId?: string | undefined
+    videoId: string
+  }) => {
     const newIds: string[] = [...videoIds]
 
-    const indexToRemove = newIds.indexOf(idToDelete)
+    const indexToRemove = newIds.findIndex(
+      (id: string) => id === videoToDelete.videoId
+    )
     if (indexToRemove !== -1) {
       newIds.splice(indexToRemove, 1)
-      updateHistoryOrLibrary(user.uid, location, "videos", newIds)
+      updateHistoryOrLibrary(String(user?.uid), location, "videos", newIds)
     }
   }
+
 
   return (
     <section className="w-full min-h-max">
       {videoIds.length < 1 ? "" : <h2 className="mb-3 font-medium">Videos</h2>}
       <div className="w-full flex items-center gap-5 flex-wrap relative">
         {videoDetails.map((video, index) => (
-          <div key={video?.id} className="relative group">
+          <div key={video?.id.videoId} className="relative group">
             <VideoCard key={index} item={video} />
             <button
               onClick={() => handleDelete(video?.id)}

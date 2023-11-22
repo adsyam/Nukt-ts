@@ -8,6 +8,8 @@ const apiKeys = [
   import.meta.env.VITE_RAPID_API_KEY_5,
   import.meta.env.VITE_RAPID_API_KEY_6,
   import.meta.env.VITE_RAPID_API_KEY_7,
+  import.meta.env.VITE_RAPID_API_KEY_8,
+  import.meta.env.VITE_RAPID_API_KEY_9,
 ]
 
 const currentApiKeyIndex = 0

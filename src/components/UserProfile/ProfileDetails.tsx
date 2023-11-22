@@ -1,25 +1,44 @@
 import { doc, onSnapshot } from "firebase/firestore"
 import { useEffect, useState } from "react"
 import { textDB } from "../../config/firebase"
-import { useAuthContext } from "../../contexts/AuthContext"
-import { useDBContext } from "../../contexts/DBContext"
+import { AuthContextProps, useAuthContext } from "../../contexts/AuthContext"
+import { DBContextProps, useDBContext } from "../../contexts/DBContext"
+import { ChannelDetail } from "../../pages/UserProfile"
 import ProfileNav from "./ProfileNav"
 
-export default function ProfileDetails({ channelDetail, id }) {
+interface ProfileDetailsProps {
+  channelDetail: ChannelDetail
+  id: string
+}
+
+interface SubscriberState {
+  users: string[]
+  channels: string[]
+}
+
+export default function ProfileDetails({
+  channelDetail,
+  id,
+}: ProfileDetailsProps) {
   const [isUser, setIsUser] = useState(false)
-  const [subscribe, setSubscribe] = useState([])
-  const { user } = useAuthContext()
-  const { addSubcription, removeSubscription, addSubscribers } = useDBContext()
+  const [subscribe, setSubscribe] = useState<SubscriberState>({
+    users: [],
+    channels: [],
+  })
+  const { user } = useAuthContext() as AuthContextProps
+  const { addSubcription, removeSubscription, addSubscribers } =
+    useDBContext() as DBContextProps
 
   useEffect(() => {
+    if (!user?.uid) return
     const unsubscribe = onSnapshot(
-      doc(textDB, "Users", user.uid),
+      doc(textDB, "Users", user?.uid),
       { includeMetadataChanges: true },
       (doc) => setSubscribe(doc.data()?.subscriptions)
     )
 
     return () => unsubscribe()
-  }, [])
+  }, [user?.uid])
 
   // console.log(subscribe);
 
@@ -34,16 +53,16 @@ export default function ProfileDetails({ channelDetail, id }) {
   const handdleSubscriptions = () => {
     if (isUser) {
       if (subscribe["users"]?.includes(id)) {
-        removeSubscription(user?.uid, "users", id)
+        removeSubscription(String(user?.uid), "users", id)
       } else {
-        addSubcription(user?.uid, "users", id)
-        addSubscribers(id, user.uid)
+        addSubcription(String(user?.uid), "users", id)
+        addSubscribers(id, String(user?.uid))
       }
     } else {
       if (subscribe["channels"]?.includes(id)) {
-        removeSubscription(user?.uid, "channels", id)
+        removeSubscription(String(user?.uid), "channels", id)
       } else {
-        addSubcription(user?.uid, "channels", id)
+        addSubcription(String(user?.uid), "channels", id)
       }
     }
   }

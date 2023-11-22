@@ -20,12 +20,14 @@ export default function Home() {
   useEffect(() => {
     const addUserData = async () => {
       try {
-        if (user?.providerData[0].providerId === "google.com") {
-          await addUser(
-            user?.uid,
-            user?.displayName,
-            user?.auth?.currentUser?.providerData[0]?.email
-          )
+        if (user?.providerData !== undefined) {
+          if (user?.providerData[0].providerId === "google.com") {
+            await addUser(
+              String(user?.uid),
+              String(user?.displayName),
+              String(user?.auth?.currentUser?.providerData[0]?.email)
+            )
+          }
         } else {
           await addUser(user?.uid ?? "", user?.displayName ?? "", "")
         }
@@ -35,7 +37,13 @@ export default function Home() {
     }
 
     addUserData()
-  }, [addUser, user?.auth?.currentUser?.providerData, user?.displayName, user?.providerData, user?.uid])
+  }, [
+    addUser,
+    user?.auth?.currentUser?.providerData,
+    user?.displayName,
+    user?.providerData,
+    user?.uid,
+  ])
 
   return (
     <div className="overflow-x-hidden">

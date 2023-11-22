@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import { ProfileNavs } from "../../utils"
 
-export default function ProfileNav({ id }) {
+export default function ProfileNav({ id }: { id: string }) {
   const [selected, setSelected] = useState("home")
 
   return (

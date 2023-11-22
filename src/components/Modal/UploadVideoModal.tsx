@@ -1,27 +1,35 @@
 import { useRef, useState } from "react"
-import { useAuthContext } from "../../contexts/AuthContext"
-import { useDBContext } from "../../contexts/DBContext"
+import { AuthContextProps, useAuthContext } from "../../contexts/AuthContext"
+import { DBContextProps, useDBContext } from "../../contexts/DBContext"
 
-const UploadVideoModal = ({ showModal, onClose }) => {
-  if (!showModal) return
+interface UploadVideoModalProps {
+  showModal: boolean
+  onClose: () => void
+}
+
+const UploadVideoModal = ({ showModal, onClose }: UploadVideoModalProps) => {
   const [title, setTitle] = useState("")
   const [desc, setDesc] = useState("")
   const [tags, setTags] = useState("")
-  const [video, setVideo] = useState("")
-  const [thumbnail, setThumbnail] = useState("")
+  const [video, setVideo] = useState<File | null>()
+  const [thumbnail, setThumbnail] = useState<File | null>()
   const [status, setStatus] = useState(false)
   const videoRef = useRef(null)
   const imageRef = useRef(null)
+  const { user } = useAuthContext() as AuthContextProps
+  const { addVideo } = useDBContext() as DBContextProps
 
-  const { user } = useAuthContext()
-  const { addVideo } = useDBContext()
-  console.log(thumbnail)
-  const handleUpload = (e) => {
+  const handleUpload = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
-    addVideo(user.uid, title, desc, tags, video, thumbnail, status)
-    onClose()
+    if (video instanceof File && thumbnail instanceof File) {
+      addVideo(String(user?.uid), title, desc, tags, video, thumbnail, status)
+      onClose()
+    } else {
+      console.error("Please select both video and thumbnail files")
+    }
   }
 
+  if (!showModal) return
   return (
     <div
       className="fixed left-0 w-full h-[200vh] bg-black/50 z-[999999] overflow-y-hidden
@@ -48,7 +56,6 @@ const UploadVideoModal = ({ showModal, onClose }) => {
         <div className="flex flex-col justify-start w-full">
           <label className="w-max">Description:</label>
           <textarea
-            type="text"
             value={desc}
             onChange={(e) => setDesc(e.target.value)}
             placeholder="Describe your video"
@@ -72,7 +79,9 @@ const UploadVideoModal = ({ showModal, onClose }) => {
             <input
               type="file"
               ref={videoRef}
-              onChange={(e) => setVideo(e.target.files[0])}
+              onChange={(e) =>
+                setVideo(e.target.files ? e.target.files[0] : null)
+              }
               className="w-max cursor-pointer"
             />
           </div>
@@ -81,7 +90,9 @@ const UploadVideoModal = ({ showModal, onClose }) => {
             <input
               type="file"
               ref={imageRef}
-              onChange={(e) => setThumbnail(e.target.files[0])}
+              onChange={(e) =>
+                setThumbnail(e.target.files ? e.target.files[0] : null)
+              }
               className="w-max cursor-pointer"
             />
           </div>
@@ -89,7 +100,7 @@ const UploadVideoModal = ({ showModal, onClose }) => {
         <div className="flex items-center gap-1">
           <input
             type="checkbox"
-            value={status}
+            checked={status}
             onChange={(e) => setStatus(e.target.checked)}
             className="cursor-pointer"
           />

@@ -60,16 +60,25 @@ export interface DBContextProps {
     videoId: string,
     review: string
   ) => Promise<void>
+  addVideo: (
+    userId: string,
+    title: string,
+    description: string,
+    tags: string,
+    videoFile: File,
+    thumbnail: {
+      name: string
+    },
+    status: boolean
+  ) => Promise<void>
 }
-
-
 
 const DBContext = createContext<DBContextProps | null>(null)
 
 const DBProvider = ({ children }: DBProviderProps) => {
   const addUser = async (userId: string, username: string, email: string) => {
     try {
-      const userDocRef = doc(textDB, "Users", userId) 
+      const userDocRef = doc(textDB, "Users", userId)
       const docSnap = await getDoc(userDocRef)
       if (!docSnap.exists()) {
         await setDoc(userDocRef, {
@@ -100,21 +109,18 @@ const DBProvider = ({ children }: DBProviderProps) => {
   }
 
   const getUserData = async (userId: string) => {
-    const userDocRef = doc(textDB, "Users", userId) 
+    const userDocRef = doc(textDB, "Users", userId)
 
     try {
       const doc = await getDoc(userDocRef)
-      return doc.data() 
+      return doc.data()
     } catch (e) {
       console.error("Error getting user doc: ", e)
     }
   }
 
   const addImage = (userId: string, type: string, imageUpload: File) => {
-    const imageRef = ref(
-      fileDB,
-      `${userId}/${type}/${imageUpload.name}` 
-    )
+    const imageRef = ref(fileDB, `${userId}/${type}/${imageUpload.name}`)
 
     const folderRef = ref(fileDB, `${userId}/${type}/`)
 
@@ -165,8 +171,8 @@ const DBProvider = ({ children }: DBProviderProps) => {
   }
 
   const addSubscribers = async (userId: string, id: string) => {
-    const userDocRef = doc(textDB, "Users", userId) 
-    const userDocSnapshot = await getDoc(userDocRef) 
+    const userDocRef = doc(textDB, "Users", userId)
+    const userDocSnapshot = await getDoc(userDocRef)
     const subs = userDocSnapshot.data()?.subscribers
 
     if (!subs.includes(id)) {
@@ -180,8 +186,8 @@ const DBProvider = ({ children }: DBProviderProps) => {
   }
 
   const removeSubscribers = async (userId: string, id: string) => {
-    const userDocRef = doc(textDB, "Users", userId) 
-    const userDocSnapshot = await getDoc(userDocRef) 
+    const userDocRef = doc(textDB, "Users", userId)
+    const userDocSnapshot = await getDoc(userDocRef)
     const subs = userDocSnapshot.data()?.subscribers
 
     if (subs.includes(id)) {
@@ -195,8 +201,8 @@ const DBProvider = ({ children }: DBProviderProps) => {
   }
 
   const switchHistory = async (userId: string) => {
-    const userDocRef = doc(textDB, "Users", userId) 
-    const userDocSnapshot = await getDoc(userDocRef) 
+    const userDocRef = doc(textDB, "Users", userId)
+    const userDocSnapshot = await getDoc(userDocRef)
     const storeHistory = userDocSnapshot.data()?.storeHistory
     let newStatus
     if (storeHistory) {
@@ -217,8 +223,8 @@ const DBProvider = ({ children }: DBProviderProps) => {
     type: string,
     contentId: string
   ) => {
-    const userDocRef = doc(textDB, "Users", userId) 
-    const userDocSnapshot = await getDoc(userDocRef) 
+    const userDocRef = doc(textDB, "Users", userId)
+    const userDocSnapshot = await getDoc(userDocRef)
     const userData = userDocSnapshot.data()
     if (!userData || !userData[path] || !userData[path][type]) {
       console.error(`Invalid type: ${type}`)
@@ -344,6 +350,36 @@ const DBProvider = ({ children }: DBProviderProps) => {
     }
   }
 
+  const addVideo = async (
+    userId: string,
+    title: string,
+    description: string,
+    tags: string,
+    videoFile: File,
+    thumbnail: {
+      name: string
+    },
+    status: boolean
+  ) => {
+    const videoRef = ref(fileDB, `${userId}/videos/${videoFile.name}`)
+    const isPrivateString = status.toString()
+
+    const metadata = {
+      customMetadata: {
+        title: title,
+        description: description,
+        tags: tags,
+        thumbnail: thumbnail.name,
+        isPrivate: isPrivateString,
+      },
+    }
+
+    //upload the video in the videoRef with the metadata
+    uploadBytes(videoRef, videoFile, metadata).then(() => {
+      alert("Upload successful!")
+    })
+  }
+
   return (
     <DBContext.Provider
       value={{
@@ -362,6 +398,7 @@ const DBProvider = ({ children }: DBProviderProps) => {
         addReview,
         deleteReview,
         updateReview,
+        addVideo,
       }}
     >
       {children}

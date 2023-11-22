@@ -10,34 +10,13 @@ import { AuthContextProps, useAuthContext } from "../contexts/AuthContext"
 import { DBContextProps, useDBContext } from "../contexts/DBContext"
 import { DataContextProps, useDataContext } from "../contexts/DataContext"
 import { useFetchSubChannels, useFetchSubsVideos } from "../hooks/videoHooks"
+import { UseFetchSubProps } from "../interface/Global_Interface"
 
 interface UserData {
   id: string
   username: string
   subscribers: number
   url: string
-}
-interface Channel {
-  statistics: {
-    subscriberCount: string
-  }
-  snippet: {
-    thumbnails: {
-      high: {
-        url: string
-      }
-    }
-    title: {
-      thumbnails: {
-        high: {
-          url: string
-        }
-      }
-    }
-  }
-  id: {
-    channelId: string
-  }
 }
 
 export default function Subscriptions() {
@@ -53,6 +32,7 @@ export default function Subscriptions() {
     useDBContext() as DBContextProps
 
   useEffect(() => {
+    if (!user?.uid) return
     const unsubscribe = onSnapshot(
       doc(textDB, "Users", user?.uid),
       { includeMetadataChanges: true },
@@ -61,6 +41,7 @@ export default function Subscriptions() {
   }, [reload, user?.uid])
 
   useEffect(() => {
+    if (!user?.uid) return
     const unsubscribe = onSnapshot(
       doc(textDB, "Users", user?.uid),
       { includeMetadataChanges: true },
@@ -103,8 +84,8 @@ export default function Subscriptions() {
   ) => {
     e.preventDefault()
     try {
-      removeSubscription(user?.uid, type, id)
-      removeSubscribers(id, user?.uid).then(() => {
+      removeSubscription(String(user?.uid), type, id)
+      removeSubscribers(id, String(user?.uid)).then(() => {
         alert("Successfully unsubscribed")
         setReload(!reload)
       })
@@ -114,7 +95,7 @@ export default function Subscriptions() {
   }
 
   const videos = useFetchSubsVideos(subChannels)
-  const channels: Channel[] = useFetchSubChannels(subChannels)
+  const channels: UseFetchSubProps[] | undefined = useFetchSubChannels(subChannels)
 
   if (!videos || loading) return null
 
@@ -146,7 +127,7 @@ export default function Subscriptions() {
               </p>
             )}{" "}
             <div className="flex flex-wrap items-center gap-5">
-              {channels.map((item) => (
+              {channels?.map((item) => (
                 <div
                   key={item?.id?.channelId || String(item?.id) }
                   className="w-full md:w-[300px] flex flex-col gap-1 justify-center items-center"

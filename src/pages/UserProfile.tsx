@@ -6,16 +6,25 @@ import { DBContextProps, useDBContext } from "../contexts/DBContext"
 import { DataContextProps, useDataContext } from "../contexts/DataContext"
 import { useFetchChannelDetails } from "../hooks/videoHooks"
 
-interface Snippet {
-  thumbnails: {
-    high: {
-      url: string
+export interface ChannelDetail {
+  id: string
+  email: string
+  snippet: {
+    title: string
+    customUrl: string
+    thumbnails: {
+      high: {
+        url: string
+      }
     }
   }
-}
-
-interface ChannelDetail {
-  snippet?: Partial<Snippet>
+  username: string
+  subscribers: number[]
+  statistics: {
+    subscriberCount: string
+    videoCount: string
+  }
+  kind: string
 }
 
 export default function UserProfile() {
@@ -27,7 +36,7 @@ export default function UserProfile() {
   const { getUserData } = useDBContext() as DBContextProps
   const [loading, setLoading] = useState(true)
   const [isUser, setIsUser] = useState(true)
-  const [detail, setDetail] = useState<ChannelDetail>({})
+  const [detail, setDetail] = useState<ChannelDetail | null>()
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -36,7 +45,7 @@ export default function UserProfile() {
         setIsUser(false)
         setLoading(false)
       } else {
-        getUserData(id ?? '').then((res) => setDetail(res || {}))
+        getUserData(id ?? "").then((res) => setDetail(res as ChannelDetail))
         setIsUser(true)
         setLoading(false)
       }
@@ -59,10 +68,10 @@ export default function UserProfile() {
         <>
           <CoverPhoto isUser={isUser} />
           <ProfilePic
-            image={detail?.snippet?.thumbnails?.high?.url}
+            image={String(detail?.snippet?.thumbnails?.high?.url)}
             isUser={isUser}
           />
-          <ProfileDetails channelDetail={detail} id={id} />
+          <ProfileDetails channelDetail={detail!} id={String(id)} />
           <Outlet />
         </>
       )}

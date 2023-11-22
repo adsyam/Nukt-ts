@@ -4,24 +4,16 @@ import { AiOutlineCamera } from "react-icons/ai"
 
 import { useParams } from "react-router"
 import { fileDB } from "../../config/firebase"
-import { useAuthContext } from "../../contexts/AuthContext"
-import { useDBContext } from "../../contexts/DBContext"
+import { AuthContextProps, useAuthContext } from "../../contexts/AuthContext"
+import { DBContextProps, useDBContext } from "../../contexts/DBContext"
 
-export default function CoverPhoto({ isUser }) {
+export default function CoverPhoto({ isUser }: { isUser: boolean }) {
   const { id } = useParams()
-  const inputRef = useRef(null)
-  const [image, setImage] = useState(null)
+  const inputRef = useRef<HTMLInputElement | null>(null)
+  const [image, setImage] = useState<string>()
   const [reload, setReload] = useState(false)
-  const { user } = useAuthContext()
-  const { addImage } = useDBContext()
-
-  // useEffect(() => {
-  //   const timeout = setTimeout(() => {
-  //     setReload(!reload);
-  //   }, 1000);
-
-  //   return () => clearTimeout(timeout);
-  // }, [reload]);
+  const { user } = useAuthContext() as AuthContextProps
+  const { addImage } = useDBContext() as DBContextProps
 
   useEffect(() => {
     if (isUser) {
@@ -35,12 +27,12 @@ export default function CoverPhoto({ isUser }) {
   }, [image, id, isUser])
 
   const handleImageUpload = () => {
-    inputRef.current.click()
+    inputRef.current?.click()
   }
 
-  const handleChange = (input) => {
+  const handleChange = (input: File | null) => {
     if (input !== null) {
-      addImage(user?.uid, "coverImage", input)
+      addImage(String(user?.uid), "coverImage", input)
       setTimeout(() => {
         setReload(!reload)
       }, 1000)
@@ -72,7 +64,7 @@ export default function CoverPhoto({ isUser }) {
           <input
             type="file"
             ref={inputRef}
-            onChange={(e) => handleChange(e.target.files[0])}
+            onChange={(e) => handleChange(e.target.files ? e.target.files[0] : null)}
             className="hidden"
           />
         </div>

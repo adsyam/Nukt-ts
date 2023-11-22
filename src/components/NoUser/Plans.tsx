@@ -2,12 +2,12 @@ import { motion } from "framer-motion"
 import { useState } from "react"
 import { AiFillCheckCircle } from "react-icons/ai"
 import { Link } from "react-router-dom"
-import { useDataContext } from "../../contexts/DataContext"
+import { DataContextProps, useDataContext } from "../../contexts/DataContext"
 import { planPrices } from "../../utils"
 
 export default function Plans() {
-  const [selectedPlan, setSelectedPlan] = useState(null)
-  const { location } = useDataContext()
+  const [selectedPlan, setSelectedPlan] = useState<string>()
+  const { location } = useDataContext() as DataContextProps
 
   return (
     <section className="font-fig w-full min-h-screen px-[2rem] py-[5rem]">

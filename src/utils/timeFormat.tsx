@@ -1,30 +1,28 @@
-//custom time format function to format the date published of videos
-export const timeFormat = (publishedAt) => {
-  const dataContainer = new Date(publishedAt)
-  const currentDate = new Date()
-  const timeDifference = currentDate - dataContainer //difference in milliseconds
-  const MILLISECONDS_IN_A_DAY = 24 * 60 * 60 * 1000 //for conversion of milliseconds to day
-  const MILLISECONDS_IN_A_WEEK = 7 * MILLISECONDS_IN_A_DAY //for conversion of milliseconds to week
-  const MILLISECONDS_IN_A_MONTH = 30 * MILLISECONDS_IN_A_DAY //for conversion of milliseconds to month
-  const MILLISECONDS_IN_A_YEAR = 365 * MILLISECONDS_IN_A_DAY //for conversion of milliseconds to year
+export const timeFormat = (publishedAt: string): string => {
+  const dataContainer: Date = new Date(publishedAt)
+  const currentDate: Date = new Date()
+  const timeDifference: number = currentDate.getTime() - dataContainer.getTime() // getTime() returns the number of milliseconds since January 1, 1970
+
+  const MILLISECONDS_IN_A_DAY: number = 24 * 60 * 60 * 1000
+  const MILLISECONDS_IN_A_WEEK: number = 7 * MILLISECONDS_IN_A_DAY
+  const MILLISECONDS_IN_A_MONTH: number = 30 * MILLISECONDS_IN_A_DAY
+  const MILLISECONDS_IN_A_YEAR: number = 365 * MILLISECONDS_IN_A_DAY
 
   if (timeDifference < MILLISECONDS_IN_A_DAY) {
-    return "Today" //if the video is publish within the day
+    return "Today"
   } else if (timeDifference < MILLISECONDS_IN_A_WEEK) {
-    const daysAgo = Math.floor(timeDifference / MILLISECONDS_IN_A_DAY)
-    //if the video is publish within a week
+    const daysAgo: number = Math.floor(timeDifference / MILLISECONDS_IN_A_DAY)
     return `${daysAgo} day${daysAgo > 1 ? "s" : ""} ago`
   } else if (timeDifference < MILLISECONDS_IN_A_MONTH) {
-    const weeksAgo = Math.floor(timeDifference / MILLISECONDS_IN_A_WEEK)
-    //if the video is publish within a month
+    const weeksAgo: number = Math.floor(timeDifference / MILLISECONDS_IN_A_WEEK)
     return `${weeksAgo} week${weeksAgo > 1 ? "s" : ""} ago`
   } else if (timeDifference < MILLISECONDS_IN_A_YEAR) {
-    const monthsAgo = Math.floor(timeDifference / MILLISECONDS_IN_A_MONTH)
-    //if the video is publish within a year
+    const monthsAgo: number = Math.floor(
+      timeDifference / MILLISECONDS_IN_A_MONTH
+    )
     return `${monthsAgo} month${monthsAgo > 1 ? "s" : ""} ago`
   } else {
-    const yearsAgo = Math.floor(timeDifference / MILLISECONDS_IN_A_YEAR)
-    //if the video is publish more than a year ago
+    const yearsAgo: number = Math.floor(timeDifference / MILLISECONDS_IN_A_YEAR)
     return `${yearsAgo} year${yearsAgo > 1 ? "s" : ""} ago`
   }
 }

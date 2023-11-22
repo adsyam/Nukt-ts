@@ -62,7 +62,7 @@ export default function WatchMovie() {
     <>
       <div className="flex gap-4 mx-10 mt-20">
         <div className="flex flex-col w-full gap-4">
-          <MediaFrame id={id} server={servers} />
+          <MediaFrame id={String(id)} server={servers} />
           <div className="">
             <ul className="flex flex-wrap text-[#868686] gap-4">
               {[
@@ -87,14 +87,11 @@ export default function WatchMovie() {
               ))}
             </ul>
           </div>
-          <MediaRecommendation id={id} />
+          <MediaRecommendation />
         </div>
-        <MediaDetails
-          id={id || ""}
-          mediaType={"movie"}
-        />
+        <MediaDetails id={id || ""} mediaType={"movie"} />
       </div>
-      <MediaReviews id={id} />
+      <MediaReviews id={String(id)} />
       <Footer />
       {/* <MediaFrame id={id} server={server} />
       {!isLoading ? (

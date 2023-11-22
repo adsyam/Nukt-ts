@@ -19,10 +19,11 @@ export default function MovieHistory() {
   const location = useLocation().pathname.split("/")[2]
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(doc(textDB, "Users", user.uid), (doc) =>
+    if (!user?.uid) return
+    const unsubscribe = onSnapshot(doc(textDB, "Users", user?.uid), (doc) =>
       setMovieIds(doc?.data()?.[location]?.movies)
     )
-  }, [location, user.uid])
+  }, [location, user?.uid])
 
   useEffect(() => {
     //create an array of promises for fetching movie details
@@ -57,7 +58,7 @@ export default function MovieHistory() {
     const indexToRemove = newIds.indexOf(idToDelete)
     if (indexToRemove !== -1) {
       newIds.splice(indexToRemove, 1)
-      updateHistoryOrLibrary(user.uid, location, "movies", newIds)
+      updateHistoryOrLibrary(String(user?.uid), location, "movies", newIds)
     }
   }
 

@@ -3,11 +3,12 @@ import { useNavigate } from "react-router"
 import { Link } from "react-router-dom"
 import { user } from "../../StateStore"
 
-export default function PaymentForm({ id }) {
+export default function PaymentForm({ id }: { id: string }) {
   const [checked, setChecked] = useState("")
   const navigate = useNavigate()
-  const isChecked = (e) => {
-    checked !== e.target.value ? setChecked(e.target.value) : setChecked("")
+  const isChecked = (e: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
+    const target = e.target as HTMLInputElement
+    checked !== target.value ? setChecked(target.value) : setChecked("")
   }
 
   const handlePayment = () => {
@@ -30,7 +31,7 @@ export default function PaymentForm({ id }) {
                   type="radio"
                   name="payMethod"
                   value="card"
-                  onClick={isChecked}
+                  onClick={(e) => isChecked(e)}
                 />
                 <img src="/assets/visa.png" alt="visa" width={50} />
                 <img src="/assets/mc.png" alt="mastercard" width={50} />
@@ -41,7 +42,7 @@ export default function PaymentForm({ id }) {
                   type="radio"
                   name="payMethod"
                   value="paypal"
-                  onClick={isChecked}
+                  onClick={(e) => isChecked(e)}
                 />
                 <img src="/assets/paypal.png" alt="paypal" width={50} />
               </div>
@@ -50,7 +51,7 @@ export default function PaymentForm({ id }) {
                   type="radio"
                   name="payMethod"
                   value="gcash"
-                  onClick={isChecked}
+                  onClick={(e) => isChecked(e)}
                 />
                 <img src="/assets/gcash.png" alt="gcash" width={50} />
               </div>
@@ -125,7 +126,6 @@ export default function PaymentForm({ id }) {
                   className="w-full py-[5px] rounded-md ps-3 outline-none bg-white/30 border-[1px]"
                 />
                 <textarea
-                  type="text"
                   placeholder="Message"
                   className="w-full py-[5px] rounded-md ps-3 outline-none bg-white/30 border-[1px] resize-none"
                 />

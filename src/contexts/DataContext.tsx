@@ -32,6 +32,7 @@ export interface DataContextProps {
   searchParams: URLSearchParams
   sidebar: boolean
   userSidebar: boolean
+  dropDown: boolean
 }
 
 interface State {

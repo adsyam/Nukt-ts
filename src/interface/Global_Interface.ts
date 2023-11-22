@@ -65,6 +65,9 @@ export interface VideosProps {
 }
 
 export interface UseFetchSubProps {
+  statistics: {
+    subscriberCount: string
+  }
   snippet: {
     channelId: string
     channelTitle: string
@@ -75,7 +78,10 @@ export interface UseFetchSubProps {
       }
     }
   }
-  id: string
+  id: {
+    channelId?: string
+    videoId: string
+  }
 }
 
 export interface VideoCardProps {

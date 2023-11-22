@@ -17,7 +17,7 @@ export default function VideoCard({ video, item, index }: VideoCardProps) {
     try {
       if (video?.id?.videoId) {
         addHistoryOrLibrary(
-          user?.uid,
+          String(user?.uid),
           "library",
           "videos",
           (video?.id?.videoId || item?.id) as string

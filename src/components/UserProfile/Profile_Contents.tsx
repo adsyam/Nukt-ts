@@ -3,25 +3,26 @@ import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
 import { fileDB } from "../../config/firebase"
-import { useAuthContext } from "../../contexts/AuthContext"
+import { AuthContextProps, useAuthContext } from "../../contexts/AuthContext"
 import { useFetchChannelVideos } from "../../hooks/videoHooks"
 import UploadVideoModal from "../Modal/UploadVideoModal"
 import VideosGrid from "../Video_Section/VideosGrid"
 
 export default function Profile_Contents() {
-  const { id } = useParams()
-  const { user } = useAuthContext()
+  const { id } = useParams() as { id: string }
+  const { user } = useAuthContext() as AuthContextProps
   const [showModal, setShowModal] = useState(false)
-  const [videos, setVideos] = useState([])
+  const [videos, setVideos] = useState<string[] | null>(null)
+  const fetchId = useFetchChannelVideos(id)
 
   useEffect(() => {
     const listRef = ref(fileDB, `${id}/videos/`)
     listAll(listRef).then((response) => {
       getDownloadURL(response.items[0]).then((url) => {
-        setVideos((prev) => [url])
+        setVideos(() => [url])
       })
     })
-  }, [])
+  }, [id])
   // console.log(videos);
   const onClose = () => {
     setShowModal(false)
@@ -33,7 +34,9 @@ export default function Profile_Contents() {
     document.body.style.overflow = "hidden"
   }
 
-  if (!id || !user) return
+  if (!id || !user) return null
+
+
   if (id === user.uid) {
     return (
       <div
@@ -49,14 +52,14 @@ export default function Profile_Contents() {
             Upload a video
           </button>
         </div>
-        {videos.length < 1 ? (
+        {videos && videos.length < 1 ? (
           <h2 className="text-[1.1rem]">
             You haven&#39;t uploaded any videos.
           </h2>
         ) : (
           <div>
             <h2>Your Videos</h2>
-            {videos.map((video) => (
+            {videos?.map(() => (
               <div>video</div>
             ))}
           </div>
@@ -70,7 +73,7 @@ export default function Profile_Contents() {
       className="w-full h-full bg-[#0d0d0d] text-white pb-[2rem]
      translate-y-[4rem] md:-translate-y-[4rem]"
     >
-      <VideosGrid videos={useFetchChannelVideos(id)} />
+      <VideosGrid videos={fetchId} />
     </div>
   )
 }

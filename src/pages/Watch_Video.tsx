@@ -25,10 +25,14 @@ export default function WatchVideo() {
   const videoRef = useRef(null)
 
   useEffect(() => {
-      const unsubscribe = onSnapshot(doc(textDB, "Users", user?.uid), (doc) =>
-        setHistoryToggle(doc.data()?.storeHistory)
-      )
-  }, [user, user?.uid])
+    if (!user?.uid) return
+
+    const docRef = doc(textDB, "Users", user?.uid)
+    const unsubscribe = onSnapshot(docRef, (doc) =>
+      setHistoryToggle(doc.data()?.storeHistory)
+    )
+
+  }, [id, user, user?.uid])
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -76,13 +80,13 @@ export default function WatchVideo() {
             </div>
           </div>
           <div className="flex flex-col items-baseline flex-1 w-full lg:flex-row">
-            <Reviews comments={comments} id={id} />
+            <Reviews id={id} />
             <div className="flex flex-col flex-1">
               <p className="text-white text-center text-[1.5rem] font-medium">
                 Related Videos
               </p>
               <div className="">
-                <VideosGrid videos={videos} />
+                <VideosGrid videos={videos!} />
               </div>
             </div>
           </div>

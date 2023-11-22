@@ -2,14 +2,14 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { useLocation } from "react-router"
 import { API_KEY, TMDB_BASE_URL } from "../config/TMDB_API"
-import { useFetchTMDBProps } from "../interface/Global_Interface"
+import { CategoryProps, useFetchTMDBProps } from "../interface/Global_Interface"
 
 export default function useFetchTrendingTMDB({
   defMediaType = "tv",
   defPage = 1,
   category,
 }: useFetchTMDBProps = {}) {
-  const [data, setData] = useState([])
+  const [data, setData] = useState<CategoryProps[]>()
   const [isloading, setIsLoading] = useState(true)
   const [mediaType, setMediaType] = useState(defMediaType)
   const [page, setPage] = useState(defPage)

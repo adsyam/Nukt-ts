@@ -17,19 +17,21 @@ export default function History() {
   const { user } = useAuthContext() as AuthContextProps
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(doc(textDB, "Users", user.uid), (doc) =>
+    if (!user?.uid) return
+
+    const unsubscribe = onSnapshot(doc(textDB, "Users", user?.uid), (doc) =>
       setHistoryToggle(doc.data()?.storeHistory)
     )
-  }, [user.uid])
+  }, [user?.uid])
 
   //clear the data of localStorage
   const handleClear = () => {
-    clearHistoryOrLibrary(user.uid, location)
+    clearHistoryOrLibrary(String(user?.uid), location)
     setReload(true) //update reload value to rerender the component
   }
 
   const handleSwitch = () => {
-    switchHistory(user.uid)
+    switchHistory(String(user?.uid))
   }
 
   return (
@@ -63,13 +65,13 @@ export default function History() {
       </div>
       <hr className="border-white/20 translate-y-[10rem]" />
       <div className="translate-y-[12rem] flex items-center gap-[2rem] mb-[2rem]">
-        <MovieHistory reload={reload} />
+        <MovieHistory />
       </div>
       <div className="translate-y-[12rem] flex items-center gap-[2rem] mb-[2rem]">
-        <SeriesHistory reload={reload} />
+        <SeriesHistory />
       </div>
       <div className="translate-y-[12rem] flex items-center gap-[2rem] mb-[2rem]">
-        <VideoHistory reload={reload} />
+        <VideoHistory />
       </div>
     </section>
   )

@@ -1,20 +1,21 @@
 import { useEffect } from "react"
 import { useLocation } from "react-router-dom"
-import { useAuthContext } from "../../contexts/AuthContext"
-import { useDataContext } from "../../contexts/DataContext"
+import { AuthContextProps, useAuthContext } from "../../contexts/AuthContext"
+import { DataContextProps, useDataContext } from "../../contexts/DataContext"
 import { sidebarMenus1 } from "../../utils/index"
 import DropdownBtn from "./DropdownBtn"
 import SidebarMenu from "./SidebarMenu"
 
-export default function Sidebar({ showSidebar }) {
+
+export default function Sidebar({ showSidebar }: { showSidebar: boolean }) {
   const location = useLocation()
   const pathname = location.pathname
-  const { user } = useAuthContext()
-  const { setSidebar } = useDataContext()
+  const { user } = useAuthContext() as AuthContextProps
+  const { setSidebar } = useDataContext() as DataContextProps
 
   useEffect(() => {
-    if (!user) setSidebar(false)
-    if (pathname) setSidebar(false)
+    if (!user) setSidebar({type: "TOGGLE_SIDEBAR"})
+    if (pathname) setSidebar({type: "TOGGLE_SIDEBAR"})
   }, [user, setSidebar, pathname])
 
   return (
@@ -54,7 +55,7 @@ export default function Sidebar({ showSidebar }) {
               <SidebarMenu
                 name={menu.name}
                 icon={menu.icon}
-                url={menu.url}
+                url={menu.url || ""}
                 key={index}
                 index={index}
               />

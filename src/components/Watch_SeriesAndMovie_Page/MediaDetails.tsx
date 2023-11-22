@@ -40,7 +40,7 @@ export default function MediaDetails({ Season, Episode, mediaType, id }: MediaDe
     }
 
     try {
-      addHistoryOrLibrary(user?.uid, "library", type, id)
+      addHistoryOrLibrary(String(user?.uid), "library", type, id)
 
       alert("Successfully added to library")
     } catch (err) {

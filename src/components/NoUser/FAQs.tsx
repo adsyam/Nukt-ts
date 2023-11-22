@@ -3,12 +3,12 @@ import { BiChevronDown, BiChevronUp } from "react-icons/bi"
 import { FAQsDetails } from "../../utils"
 
 export default function FAQs() {
-  const [selected, setSelected] = useState(null)
+  const [selected, setSelected] = useState<number>()
 
-  const toggle = (i) => {
-    if (selected === i) return setSelected(null)
+  const toggle = (index: number) => {
+    if (selected === index) return setSelected(undefined)
 
-    setSelected(i)
+    setSelected(index)
   }
 
   return (

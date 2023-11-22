@@ -12,7 +12,7 @@ export default function Banner() {
   const navigate = useNavigate()
   const userSnap = useSnapshot(user)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (userSnap.email === "") return setIsEmpty(true)
 
@@ -37,7 +37,7 @@ export default function Banner() {
           Entertainment!
         </p>
         <form
-          onSubmit={handleSubmit}
+          onSubmit={(e) => handleSubmit(e)}
           className="w-[80%] flex flex-col md:flex-row justify-center items-center gap-2"
         >
           <div className="w-full group relative">

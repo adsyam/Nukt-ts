@@ -4,29 +4,29 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useState } from "react"
 import { AiOutlineClose } from "react-icons/ai"
 import { nukt_logo } from "../../assets"
-import { useAuthContext } from "../../contexts/AuthContext"
-import { useDBContext } from "../../contexts/DBContext"
-import { useDataContext } from "../../contexts/DataContext"
+import { AuthContextProps, useAuthContext } from "../../contexts/AuthContext"
+import { DBContextProps, useDBContext } from "../../contexts/DBContext"
+import { DataContextProps, useDataContext } from "../../contexts/DataContext"
 
-export default function FeedbackModal({ active }) {
-  const { modal, setModal } = useDataContext()
-  const { user } = useAuthContext()
-  const { addUserFeedback } = useDBContext()
+export default function FeedbackModal({ active }: { active: boolean }) {
+  const { modal, setModal } = useDataContext() as DataContextProps
+  const { user } = useAuthContext() as AuthContextProps
+  const { addUserFeedback } = useDBContext() as DBContextProps
 
   const [rating, setRating] = useState(0)
   const [feedback, setFeedback] = useState("")
-  const [hover, setHover] = useState(null)
+  const [hover, setHover] = useState<number | null>(null)
   const [sendFeedback, setSendFeedback] = useState(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
 
-    addUserFeedback(user?.uid, user?.displayName, feedback, rating)
+    addUserFeedback(String(user?.uid), String(user?.displayName), feedback, rating)
     setSendFeedback(true)
   }
 
   const toggleCloseModal = () => {
-    setModal(!modal)
+    setModal({type: "SET_MODAL", payload: !modal})
     setSendFeedback(false)
     setRating(0)
     document.body.style.overflow = "auto"
@@ -50,7 +50,7 @@ export default function FeedbackModal({ active }) {
             </div>
             <button
               onClick={() => (
-                setModal(!modal), (document.body.style.overflow = "auto")
+                setModal({type: "SET_MODAL", payload: !modal}), (document.body.style.overflow = "auto")
               )}
             >
               <AiOutlineClose size={25} />
@@ -58,7 +58,7 @@ export default function FeedbackModal({ active }) {
           </div>
           <div>
             <p className="capitalize">how was your experience?</p>
-            {[...Array(5)].map((icon, index) => (
+            {[...Array(5)].map((_icon, index) => (
               <FontAwesomeIcon
                 key={index}
                 icon={faStar}
@@ -74,8 +74,8 @@ export default function FeedbackModal({ active }) {
             <p className="capitalize">additional comments or suggestions</p>
             <div>
               <textarea
-                cols="40"
-                rows="10"
+                cols={40}
+                rows={10}
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
                 className="resize-none text-black px-1 rounded-md w-full"

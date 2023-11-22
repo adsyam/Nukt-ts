@@ -6,13 +6,13 @@ import { Link } from "react-router-dom"
 import useFetchTMDB from "../../hooks/useFetchTMDB"
 import useResponsive from "../../hooks/useResponsive"
 import { loader_Geometric } from "../../assets"
-import { useDataContext } from "../../contexts/DataContext"
+import { DataContextProps, useDataContext } from "../../contexts/DataContext"
 import CategoryCard from "../Common/CategoryCard"
 import MediaTypeButton from "../Common/MediaTypeButton"
 
 export default function TopRated() {
   const { maxCards, responsiveGridCard, screen } = useResponsive()
-  const { sidebar } = useDataContext()
+  const { sidebar } = useDataContext()  as DataContextProps
   const { data, isloading, mediaType, setMediaType } = useFetchTMDB({
     defMediaType: "tv",
     defPage: 1,

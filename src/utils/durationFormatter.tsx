@@ -1,4 +1,4 @@
-export const durationFormatter = ({ duration }) => {
+export const durationFormatter = ({ duration }: { duration: string }) => {
   //use a regular expression to extract hours, minutes, and seconds
   const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/)
 

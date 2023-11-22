@@ -19,7 +19,7 @@ import { fileDB, textDB } from "../../config/firebase"
 import { AuthContextProps, useAuthContext } from "../../contexts/AuthContext"
 import { DBContextProps, useDBContext } from "../../contexts/DBContext"
 
-interface ReviewDataProps {
+export interface ReviewDataProps {
   createdAt: {
     timestampValue: string
   }
@@ -32,9 +32,12 @@ interface ReviewDataProps {
   username: {
     stringValue: string
   }
+  isEdited: {
+    booleanValue: boolean
+  }
 }
 
-interface FilteredReviewDataProps {
+export interface FilteredReviewDataProps {
   userId: string
   reviewId: string
   username: string
@@ -159,7 +162,7 @@ export default function MediaReviews({ id }: { id: string }) {
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
-    addReview(user?.uid, id, user?.displayName, reviewInput)
+    addReview(String(user?.uid), id, String(user?.displayName), reviewInput)
     setReviewInput("")
     setIsSubmitted(!isSubmitted)
   }

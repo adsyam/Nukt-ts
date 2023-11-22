@@ -1,9 +1,20 @@
 import { MdKeyboardArrowDown } from "react-icons/md"
 import { Link } from "react-router-dom"
-import { useDataContext } from "../../contexts/DataContext"
+import { DataContextProps, useDataContext } from "../../contexts/DataContext"
 
-export default function DropdownBtn({ name, icon, list, index }) {
-  const { handleDropDown, dropDown } = useDataContext()
+interface DropdownBtnProps {
+  name: string
+  icon: JSX.Element
+  url?: string
+  list?: {
+    category: string
+    url: string
+  }[]
+  index: number
+}
+
+export default function DropdownBtn({ name, icon, list, index }: DropdownBtnProps) {
+  const { handleDropDown, dropDown } = useDataContext() as DataContextProps
 
   return (
     <>
@@ -24,7 +35,7 @@ export default function DropdownBtn({ name, icon, list, index }) {
       </button>
       {dropDown ? (
         <div className="transition-all duration-300 ease-in-out">
-          {list.map((item, index) => (
+          {list?.map((item, index) => (
             <Link
               key={index}
               to={`${item.url}?q=${item.category}`}

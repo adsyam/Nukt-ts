@@ -1,7 +1,17 @@
 import { motion } from "framer-motion"
 import { useLocation } from "react-router"
 
-export default function MediaTypeButton({ setMediaType, mediaType, category }) {
+interface MediaTypeButtonProps {
+    setMediaType: (mediaType: string) => void
+    mediaType: string
+    category?: string
+}
+
+export default function MediaTypeButton({
+  setMediaType,
+  mediaType,
+  category,
+}: MediaTypeButtonProps) {
   const location = useLocation()
   const pathname = location.pathname
   return (
@@ -29,8 +39,7 @@ export default function MediaTypeButton({ setMediaType, mediaType, category }) {
         </motion.button>
       )}
 
-      {pathname.includes("popular") ||
-      pathname.includes("trending") ? (
+      {pathname.includes("popular") || pathname.includes("trending") ? (
         <motion.button
           whileTap={{ scale: 1.1 }}
           onClick={() => setMediaType("video")}

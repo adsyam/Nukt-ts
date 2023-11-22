@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
-import useFetchTMDB from "../../Hooks/useFetchTMDB"
+import useFetchTMDB from "../../hooks/useFetchTMDB"
 
 export default function PagingButton() {
-  const [category, setCategory] = useState()
+  const [category, setCategory] = useState<string>()
   const { data, pathname } = useFetchTMDB()
   const { page } = useParams()
-  const currentPage = parseInt(page)
+  const currentPage = Number(page)
 
   useEffect(() => {
     if (pathname.includes("popular")) setCategory("popular")
@@ -27,9 +27,7 @@ export default function PagingButton() {
       </Link>
       <Link
         className="py-1 px-2 rounded-md hover:bg-[#ffffff30] duration-300"
-        to={`/home/${category}/${
-          currentPage === data.total_pages ? currentPage : currentPage + 1
-        }`}
+        to={`/home/${category}/${currentPage + 1}`}
       >
         Next
       </Link>

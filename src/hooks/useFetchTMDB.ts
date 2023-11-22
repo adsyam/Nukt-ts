@@ -2,14 +2,23 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { useLocation, useParams } from "react-router"
 import { API_KEY, TMDB_BASE_URL } from "../config/TMDB_API"
+import { CategoryProps } from "../interface/Global_Interface"
 
-export default function useFetchTMDB(
+interface useFetchTMDBProps {
+  defMediaType?: string
+  defPage?: number
+  category?: string
+  data?: CategoryProps
+  pathname?: string
+}
+
+export default function useFetchTMDB({
   defMediaType = "tv",
   defPage = 1,
-  category
-) {
+  category,
+}: useFetchTMDBProps = {}) {
   const { page } = useParams()
-  const [data, setData] = useState([])
+  const [data, setData] = useState<CategoryProps[] | null>(null)
   const [isloading, setIsLoading] = useState(true)
   const [mediaType, setMediaType] = useState(defMediaType)
   const [pages, setPage] = useState(defPage)
@@ -39,12 +48,12 @@ export default function useFetchTMDB(
         } else {
           response = await axios.get(
             `${TMDB_BASE_URL}/${mediaType}/${category}?api_key=${API_KEY}&page=${
-              pathname.includes(page) ? page : 1
+              pathname.includes(String(page)) ? page : 1
             }`
           )
         }
 
-        setData(response.data.results)
+        setData(response?.data.results)
         setTimeout(() => {
           setIsLoading(false)
         }, 1300)

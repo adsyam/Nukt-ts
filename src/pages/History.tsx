@@ -4,23 +4,23 @@ import { useLocation } from "react-router"
 
 import { MovieHistory, SeriesHistory, VideoHistory } from "../components/index"
 import { textDB } from "../config/firebase"
-import { useAuthContext } from "../contexts/AuthContext"
-import { useDBContext } from "../contexts/DBContext"
-import { useDataContext } from "../contexts/DataContext"
+import { AuthContextProps, useAuthContext } from "../contexts/AuthContext"
+import { DBContextProps, useDBContext } from "../contexts/DBContext"
+import { DataContextProps, useDataContext } from "../contexts/DataContext"
 
 export default function History() {
   const [reload, setReload] = useState(false)
   const [historyToggle, setHistoryToggle] = useState(true)
   const location = useLocation().pathname.split("/")[2]
-  const { sidebar } = useDataContext()
-  const { clearHistoryOrLibrary, switchHistory } = useDBContext()
-  const { user } = useAuthContext()
+  const { sidebar } = useDataContext() as DataContextProps
+  const { clearHistoryOrLibrary, switchHistory } = useDBContext() as DBContextProps
+  const { user } = useAuthContext() as AuthContextProps
 
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(textDB, "Users", user.uid), (doc) =>
-      setHistoryToggle(doc.data().storeHistory)
+      setHistoryToggle(doc.data()?.storeHistory)
     )
-  }, [])
+  }, [user.uid])
 
   //clear the data of localStorage
   const handleClear = () => {

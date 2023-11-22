@@ -1,18 +1,12 @@
-import { useState } from "react"
-import { useLocation } from "react-router"
-
 import { MovieHistory, SeriesHistory, VideoHistory } from "../components/index"
-import { AuthContextProps, useAuthContext } from "../contexts/AuthContext"
-import { DBContextProps, useDBContext } from "../contexts/DBContext"
 import { DataContextProps, useDataContext } from "../contexts/DataContext"
 
 export default function History() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [reload, setReload] = useState(false)
-  const location = useLocation().pathname.split("/")[2]
+  //   const [reload, setReload] = useState(false)
+  //   const location = useLocation().pathname.split("/")[2]
   const { sidebar } = useDataContext() as DataContextProps
-  const { clearHistoryOrLibrary } = useDBContext() as DBContextProps
-  const { user } = useAuthContext() as AuthContextProps
+  //   const { clearHistoryOrLibrary } = useDBContext() as DBContextProps
+  //   const { user } = useAuthContext() as AuthContextProps
 
   //   const handleClear = () => {
   //     clearHistoryOrLibrary(String(user?.uid), location)

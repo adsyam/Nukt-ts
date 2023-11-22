@@ -52,13 +52,13 @@ export interface DBContextProps {
     userId: string,
     videoId: string,
     username: string,
-    review: number
+    review: string
   ) => Promise<void>
   deleteReview: (userId: string, videoId: string) => Promise<void>
   updateReview: (
     reviewId: string,
     videoId: string,
-    review: number
+    review: string
   ) => Promise<void>
 }
 
@@ -291,7 +291,7 @@ const DBProvider = ({ children }: DBProviderProps) => {
     userId: string,
     videoId: string,
     username: string,
-    review: number
+    review: string
   ) => {
     try {
       const reviewDocRef = doc(textDB, "Reviews", videoId)
@@ -326,7 +326,7 @@ const DBProvider = ({ children }: DBProviderProps) => {
   const updateReview = async (
     reviewId: string,
     videoId: string,
-    review: number
+    review: string
   ) => {
     try {
       const reviewDocRef = doc(textDB, "Reviews", videoId)

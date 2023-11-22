@@ -2,10 +2,6 @@ import { motion } from "framer-motion"
 import { Link, useParams } from "react-router-dom"
 import useFetchDetails from "../../hooks/useFetchDetails"
 
-interface Data {
-    seasons: Season[]
-}
-
 interface SeasonCardsProps {
     id: string
 }

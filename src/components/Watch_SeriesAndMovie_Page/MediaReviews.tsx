@@ -1,7 +1,12 @@
 import { faStar } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import axios from "axios"
-import { doc, onSnapshot } from "firebase/firestore"
+import {
+  DocumentReference,
+  Unsubscribe,
+  doc,
+  onSnapshot,
+} from "firebase/firestore"
 import { getDownloadURL, listAll, ref } from "firebase/storage"
 import { motion } from "framer-motion"
 import moment from "moment-timezone"
@@ -11,24 +16,66 @@ import { useLocation } from "react-router"
 import { defprofile } from "../../assets"
 import { TOKEN_AUTH } from "../../config/TMDB_API"
 import { fileDB, textDB } from "../../config/firebase"
-import { useAuthContext } from "../../contexts/AuthContext"
-import { useDBContext } from "../../contexts/DBContext"
+import { AuthContextProps, useAuthContext } from "../../contexts/AuthContext"
+import { DBContextProps, useDBContext } from "../../contexts/DBContext"
 
-export default function MediaReviews({ id }) {
-  const { user } = useAuthContext()
-  const { addReview, deleteReview, updateReview } = useDBContext()
-  const [review, setReview] = useState([])
+interface ReviewDataProps {
+  createdAt: {
+    timestampValue: string
+  }
+  id: {
+    stringValue: string
+  }
+  review: {
+    stringValue: string
+  }
+  username: {
+    stringValue: string
+  }
+}
+
+interface FilteredReviewDataProps {
+  userId: string
+  reviewId: string
+  username: string
+  review: string
+  createdAt: Date | null
+  url: string | null
+  isEdited: boolean
+}
+
+interface ReviewApiProps {
+  id: string
+  author: string
+  created_at: string
+  author_details: {
+    rating: number
+  }
+  content: string
+}
+
+interface ExpandedMap {
+  [key: string]: boolean
+}
+
+export default function MediaReviews({ id }: { id: string }) {
+  const { user } = useAuthContext() as AuthContextProps
+  const { addReview, deleteReview, updateReview } =
+    useDBContext() as DBContextProps
+  const [review, setReview] = useState<ReviewApiProps[]>()
   const [showReviews, setShowReviews] = useState(false)
-  const [expanded, setExpanded] = useState({})
+  const [expanded, setExpanded] = useState<ExpandedMap>()
   const [showRest, setShowRest] = useState(1)
-  const [path, setPath] = useState()
+  const [path, setPath] = useState<string>()
   const [imageUrl, setImageUrl] = useState("")
-  const [reviewInput, setReviewInput] = useState("")
-  const [reviewData, setReviewData] = useState([])
+  const [reviewInput, setReviewInput] = useState<string>("")
+  const [reviewData, setReviewData] = useState<
+    FilteredReviewDataProps[] | null
+  >()
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [editReview, setEditReview] = useState("")
-  const [isEdit, setIsEdit] = useState(null)
-  const [options, setOptions] = useState(null)
+  const [isEdit, setIsEdit] = useState<string | null>(null)
+  const [options, setOptions] = useState<string | null>(null)
 
   const location = useLocation()
   const pathname = location.pathname
@@ -40,7 +87,7 @@ export default function MediaReviews({ id }) {
         setImageUrl(url)
       })
     })
-  }, [imageUrl])
+  }, [imageUrl, user?.uid])
 
   useEffect(() => {
     if (pathname.includes("/TVSeries")) {
@@ -51,79 +98,94 @@ export default function MediaReviews({ id }) {
   }, [pathname])
 
   useEffect(() => {
-    const reviewsCollectionRef = doc(textDB, "Reviews", id)
-    const unsub = onSnapshot(reviewsCollectionRef, async (snapshot) => {
-      if (snapshot._document === null) {
-        setReviewData([])
-        return unsub()
-      }
-      const newReviewData = await Promise.all(
-        Object.keys(snapshot._document.data.value.mapValue.fields).map(
-          async (key) => {
-            const {
-              createdAt: { timestampValue: createdAt },
-              id: { stringValue: userId },
-              review: { stringValue: review },
-              username: { stringValue: username },
-            } = snapshot._document.data.value.mapValue.fields[key].mapValue
-              .fields
+    const reviewsCollectionRef: DocumentReference = doc(textDB, "Reviews", id)
+    const unsub: Unsubscribe = onSnapshot(
+      reviewsCollectionRef,
+      async (snapshot) => {
+        if (snapshot.data() === null) {
+          setReviewData([])
+          return unsub()
+        }
+        const newReviewData = await Promise.all(
+          Object.keys(snapshot.data()?.value.mapValue.fields).map(
+            async (key) => {
+              const {
+                createdAt: { timestampValue: createdAt },
+                id: { stringValue: userId },
+                review: { stringValue: review },
+                username: { stringValue: username },
+              } = (snapshot.data()?.value.mapValue.fields[key].mapValue
+                .fields as ReviewDataProps) || {}
 
-            const listRef = ref(fileDB, `${userId}/profileImage/`)
-            try {
-              const response = await listAll(listRef)
-              const url = response.items[0]
-                ? await getDownloadURL(response.items[0])
-                : null
+              const listRef = ref(fileDB, `${userId}/profileImage/`)
+              try {
+                const response = await listAll(listRef)
+                const url = response.items[0]
+                  ? await getDownloadURL(response.items[0])
+                  : null
 
-              return {
-                userId: userId,
-                reviewId: key,
-                username,
-                review,
-                createdAt:
-                  createdAt !== null
-                    ? moment.tz(createdAt, "Asia/Singapore").toDate()
-                    : null,
-                url,
+                return {
+                  userId: userId,
+                  reviewId: key,
+                  username,
+                  review,
+                  createdAt:
+                    createdAt !== null
+                      ? moment.tz(createdAt, "Asia/Singapore").toDate()
+                      : null,
+                  url,
+                }
+              } catch (error) {
+                console.error("Error fetching download URL:", error)
+                return null
               }
-            } catch (error) {
-              console.error("Error fetching download URL:", error)
-              return null
             }
-          }
+          )
         )
-      )
 
-      const filteredReviewData = newReviewData.filter(Boolean)
-      filteredReviewData.sort((a, b) => b.createdAt - a.createdAt)
-      console.log(filteredReviewData)
-      setReviewData(filteredReviewData)
-    })
+        const filteredReviewData = newReviewData.filter(
+          Boolean
+        ) as FilteredReviewDataProps[]
+        filteredReviewData.sort((a, b) => {
+          const dateA = a?.createdAt || new Date(0)
+          const dateB = b?.createdAt || new Date(0)
+
+          return dateB.getTime() - dateA.getTime()
+        })
+        setReviewData(filteredReviewData)
+      }
+    )
   }, [isSubmitted, id, path])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
     addReview(user?.uid, id, user?.displayName, reviewInput)
     setReviewInput("")
     setIsSubmitted(!isSubmitted)
   }
 
-  const handleEdit = (e, reviewId) => {
+  const handleEdit = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    reviewId: string
+  ) => {
     e.preventDefault()
 
     updateReview(reviewId, id, editReview)
     setIsEdit(null), setOptions(null), setEditReview("")
   }
 
-  const handleDelete = (e, reviewId) => {
+  const handleDelete = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    reviewId: string
+  ) => {
     e.preventDefault()
     deleteReview(reviewId, id)
   }
 
-  const toggleExpanded = (reviewId) => {
+  const toggleExpanded = (reviewId: string) => {
     setExpanded((prevMap) => ({
       ...prevMap,
-      [reviewId]: !prevMap[reviewId],
+      [reviewId]: !prevMap?.[reviewId],
     }))
   }
 
@@ -163,8 +225,12 @@ export default function MediaReviews({ id }) {
     visible: { opacity: 1 },
   }
 
-  function formatDate(dateString) {
-    const options = { year: "numeric", month: "long", day: "numeric" }
+  function formatDate(dateString: string | number | Date) {
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }
     const date = new Date(dateString)
     return date.toLocaleDateString("en-US", options)
   }
@@ -206,7 +272,7 @@ export default function MediaReviews({ id }) {
       </div>
       <div className={`${!showReviews ? "" : "overflow-y-scroll h-[70vh]"}`}>
         {/* our review data */}
-        {reviewData.slice(0, showRest).map((review) => (
+        {reviewData?.slice(0, showRest).map((review) => (
           <div
             key={review.reviewId}
             className="w-full flex justify-between items-center text-white"
@@ -214,7 +280,7 @@ export default function MediaReviews({ id }) {
             <div className="w-full flex gap-4 my-6 px-10">
               <div className="rounded-full w-[45px] h-[45px] overflow-hidden">
                 <img
-                  src={review?.url}
+                  src={String(review?.url)}
                   alt={review?.username}
                   className="w-full h-full object-cover"
                 />
@@ -235,8 +301,8 @@ export default function MediaReviews({ id }) {
                   <textarea
                     placeholder="Write a review"
                     name=""
-                    cols="120"
-                    rows="2"
+                    cols={120}
+                    rows={2}
                     value={editReview || review?.review}
                     onChange={(e) => setEditReview(e.target.value)}
                     className="text-white resize-none outline-none rounded-md p-2 w-full
@@ -278,7 +344,7 @@ export default function MediaReviews({ id }) {
                   ${options === review.reviewId ? "block" : "hidden"}`}
                 >
                   <button
-                    onClick={(e) =>
+                    onClick={() =>
                       setIsEdit((prevOptions) =>
                         prevOptions === review.reviewId ? null : review.reviewId
                       )
@@ -298,7 +364,7 @@ export default function MediaReviews({ id }) {
             )}
           </div>
         ))}
-        {review.slice(0, showRest).map((r, index) => (
+        {review?.slice(0, showRest).map((r, index) => (
           <motion.div
             key={r.id}
             className="flex flex-col gap-3"
@@ -310,6 +376,7 @@ export default function MediaReviews({ id }) {
             <div className="text-white flex gap-2 ml-16 max-xsm:ml-4 mt-3">
               <div className="flex gap-3">
                 <img
+                  title="user profile"
                   className="rounded-full max-h-[45px]"
                   src={`https://xsgames.co/randomusers/assets/avatars/pixel/${
                     index + 1
@@ -335,7 +402,7 @@ export default function MediaReviews({ id }) {
               </div>
             </div>
             <div className="text-white font-thin opacity-80 mb-4 xsm:ml-32 max-xsm:ml-4">
-              {expanded[r.id] ? (
+              {expanded?.[r.id] ? (
                 <div dangerouslySetInnerHTML={{ __html: r.content }}></div>
               ) : (
                 <div
@@ -349,7 +416,7 @@ export default function MediaReviews({ id }) {
                 onClick={() => toggleExpanded(r.id)}
                 className="text-[#7300FF] italic"
               >
-                {expanded[r.id] ? (
+                {expanded?.[r.id] ? (
                   <>
                     <span className="mr-1">&nbsp;</span>
                     <span className="underline">show less</span>
@@ -368,10 +435,10 @@ export default function MediaReviews({ id }) {
       <button
         onClick={toggleShowAll}
         className="text-white"
-        disabled={review.length <= 1}
+        disabled={review!.length <= 1}
       >
-        {review.length !== 1
-          ? review.length === 0
+        {review?.length !== 1
+          ? review?.length === 0
             ? "There are no reviews"
             : !showReviews
             ? "Show All Reviews"

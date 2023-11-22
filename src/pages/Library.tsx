@@ -14,12 +14,10 @@ export default function History() {
   const { clearHistoryOrLibrary } = useDBContext() as DBContextProps
   const { user } = useAuthContext() as AuthContextProps
 
-  //clear the data of localStorage
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleClear = () => {
-    clearHistoryOrLibrary(String(user?.uid), location)
-    setReload(true) //update reload value to rerender the component
-  }
+  //   const handleClear = () => {
+  //     clearHistoryOrLibrary(String(user?.uid), location)
+  //     setReload(true) //update reload value to rerender the component
+  //   }
 
   return (
     <section
@@ -39,7 +37,7 @@ export default function History() {
       </div>
       <hr className="border-white/20 translate-y-[10rem]" />
       <div className="translate-y-[12rem] flex items-center gap-[2rem] mb-[2rem]">
-        <MovieHistory/>
+        <MovieHistory />
       </div>
       <div className="translate-y-[12rem] flex items-center gap-[2rem] mb-[2rem]">
         <SeriesHistory />

@@ -2,16 +2,15 @@ import { faAngleRight } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Player } from "@lottiefiles/react-lottie-player"
 import { Link } from "react-router-dom"
+import { loader_Geometric } from "../../assets"
 import useFetchTMDB from "../../hooks/useFetchTMDB"
 import useResponsive from "../../hooks/useResponsive"
-import { loader_Geometric } from "../../assets"
-import { DataContextProps, useDataContext } from "../../contexts/DataContext"
 import CategoryCard from "../Common/CategoryCard"
 import MediaTypeButton from "../Common/MediaTypeButton"
 
 export default function Popular() {
   const { maxCards, responsiveGridCard, screen } = useResponsive()
-  const { sidebar } = useDataContext() as DataContextProps
+  //   const { sidebar } = useDataContext() as <DataContextProps></DataContextProps>
   const { data, isloading, mediaType, setMediaType } = useFetchTMDB({
     defMediaType: "tv",
     defPage: 1,

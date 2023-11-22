@@ -6,11 +6,7 @@ import { textDB } from "../config/firebase"
 import { AuthContextProps, useAuthContext } from "../contexts/AuthContext"
 import { DBContextProps, useDBContext } from "../contexts/DBContext"
 import { DataContextProps, useDataContext } from "../contexts/DataContext"
-import {
-  useFetchRelatedVideos,
-  useFetchStats,
-  useFetchVideoComments,
-} from "../hooks/videoHooks"
+import { useFetchRelatedVideos, useFetchStats } from "../hooks/videoHooks"
 
 export default function WatchVideo() {
   const id = new URLSearchParams(window.location.search).get("v") ?? ""
@@ -18,8 +14,7 @@ export default function WatchVideo() {
 
   const videoDetails = useFetchStats(id)
   const videos = useFetchRelatedVideos(id)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const comments = useFetchVideoComments(id)
+  //   const comments = useFetchVideoComments(id)
   const { user } = useAuthContext() as AuthContextProps
   const { sidebar } = useDataContext() as DataContextProps
   const { addHistoryOrLibrary } = useDBContext() as DBContextProps

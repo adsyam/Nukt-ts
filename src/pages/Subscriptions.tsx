@@ -45,7 +45,7 @@ export default function Subscriptions() {
   useEffect(() => {
     if (!user?.uid) return
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const unsubscribe = onSnapshot(
+    onSnapshot(
       doc(textDB, "Users", user?.uid),
       { includeMetadataChanges: true },
       (doc) => setSubUsers(doc.data()?.subscriptions?.users)
@@ -98,7 +98,8 @@ export default function Subscriptions() {
   }
 
   const videos = useFetchSubsVideos(subChannels)
-  const channels: UseFetchSubProps[] | undefined = useFetchSubChannels(subChannels)
+  const channels: UseFetchSubProps[] | undefined =
+    useFetchSubChannels(subChannels)
 
   if (!videos || loading) return null
 
@@ -132,7 +133,7 @@ export default function Subscriptions() {
             <div className="flex flex-wrap items-center gap-5">
               {channels?.map((item) => (
                 <div
-                  key={item?.id?.channelId || String(item?.id) }
+                  key={item?.id?.channelId || String(item?.id)}
                   className="w-full md:w-[300px] flex flex-col gap-1 justify-center items-center"
                 >
                   <div

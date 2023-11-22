@@ -9,8 +9,7 @@ import { DBContextProps, useDBContext } from "../contexts/DBContext"
 import { DataContextProps, useDataContext } from "../contexts/DataContext"
 
 export default function History() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [reload, setReload] = useState(false)
+  const [, setReload] = useState(false)
   const [historyToggle, setHistoryToggle] = useState(true)
   const location = useLocation().pathname.split("/")[2]
   const { sidebar } = useDataContext() as DataContextProps

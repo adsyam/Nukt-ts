@@ -18,6 +18,7 @@ import { TOKEN_AUTH } from "../../config/TMDB_API"
 import { fileDB, textDB } from "../../config/firebase"
 import { AuthContextProps, useAuthContext } from "../../contexts/AuthContext"
 import { DBContextProps, useDBContext } from "../../contexts/DBContext"
+import useResponsive from "../../hooks/useResponsive"
 
 export interface ReviewDataProps {
   createdAt: {
@@ -82,6 +83,7 @@ export default function MediaReviews({ id }: { id: string }) {
 
   const location = useLocation()
   const pathname = location.pathname
+  const { lgBelow } = useResponsive()
 
   useEffect(() => {
     const listRef = ref(fileDB, `${user?.uid}/profileImage/`)
@@ -239,7 +241,11 @@ export default function MediaReviews({ id }: { id: string }) {
   }
 
   return (
-    <div className="my-12 flex flex-col gap-2 mx-24 max-lg:mx-20 max-sm:mx-12 p-3">
+    <div
+      className={`my-12 flex flex-col gap-2 p-3 ${
+        lgBelow ? "" : "mx-24 max-lg:mx-20 max-sm:mx-12"
+      }`}
+    >
       <div className="w-full flex gap-5">
         <img
           src={imageUrl || defprofile}

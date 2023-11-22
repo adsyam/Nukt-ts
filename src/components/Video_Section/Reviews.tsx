@@ -140,44 +140,46 @@ export default function Reviews({ id }: { id: string }) {
 
   return (
     <section
-      className="text-white w-full lg:max-w-[50%] p-[2rem]
-      flex flex-1 flex-col justify-center items-start"
+      className="text-white w-full p-[2rem]
+      flex flex-1 flex-col items-start"
     >
-      <div className="flex flex-col gap-[1.5rem] max-w-full">
+      <div className="flex flex-col max-w-full">
         <h2 className="font-bold">{reviewData.length} Reviews</h2>
-        <div className="flex gap-3">
-          <img
-            src={
-              imageUrl ||
-              user?.photoURL ||
-              "../../assets/profile-placeholder.svg"
-            }
-            alt=""
-            className="rounded-full h-[50px]"
-          />
-          <div className="flex flex-col gap-3">
-            <textarea
-              placeholder="Write a review"
-              name=""
-              cols={120}
-              rows={2}
-              value={reviewInput}
-              onChange={(e) => setReviewInput(e.target.value)}
-              className="text-white resize-none outline-none rounded-md p-2 w-full
-              bg-black/80 focus:outline-white/30"
-            />
-            <div className="w-full flex gap-5">
+        <div className="flex gap-4 my-6">
+          <div className="flex flex-col gap-4">
+            <div className="flex gap-3">
+              <img
+                src={
+                  imageUrl ||
+                  user?.photoURL ||
+                  "../../assets/profile-placeholder.svg"
+                }
+                alt=""
+                className="w-[45px] h-[45px] object-cover rounded-full"
+              />
+              <textarea
+                placeholder="Write a review"
+                name=""
+                cols={120}
+                rows={2}
+                value={reviewInput}
+                onChange={(e) => setReviewInput(e.target.value)}
+                className="resize-none text-black/90 outline-none rounded-md p-2
+                  bg-white/90 focus:outline-white/30 w-[90%] h-[45px]"
+              />
+            </div>
+            <div className="flex gap-4 ml-16">
               <button
                 onClick={(e) => handleSubmit(e)}
-                className={`w-max  px-[1rem] rounded-md hover:bg-white/50 ${
-                  reviewInput.length === 0 ? "bg-white/10" : "bg-white/50"
+                className={`w-max border-2 border-[#7300FF90] px-[1rem] rounded-md hover:bg-[#86868650] ${
+                  reviewInput.length === 0 ? "bg-[#86868630]" : "bg-white/50"
                 }`}
               >
                 Submit
               </button>
               <button
                 onClick={() => setReviewInput("")}
-                className="w-max bg-white/10 px-[1rem] rounded-md hover:bg-white/50"
+                className="w-max border-2 border-[#7300FF90] bg-[#86868630] px-[1rem] rounded-md hover:bg-[#86868650]"
               >
                 Cancel
               </button>
@@ -331,7 +333,7 @@ export default function Reviews({ id }: { id: string }) {
       </div>
       <button
         onClick={toggleLoadComments}
-        className="bg-white/30 w-max mx-auto mt-[1rem] p-[.3rem] rounded-md"
+        className="w-max mx-auto mt-[1rem] p-[.3rem] rounded-md"
       >
         {visible === Infinity ? "Load less reviews" : "Load more reviews"}
       </button>

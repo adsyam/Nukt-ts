@@ -30,7 +30,7 @@ export interface AuthContextProps {
     providerData?: {
       providerId: string
     }[]
-    displayName?: string | null
+    displayName?: string
     auth?: {
       currentUser: {
         providerData: {
@@ -39,16 +39,23 @@ export interface AuthContextProps {
       }
     }
     uid?: string
-    photoURL?: string | null
+    photoURL?: string
   } | null
+  isAuthenticated: boolean | null
 }
 
 const AuthContext = createContext<AuthContextProps | null>(null)
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const navigate = useNavigate()
-  const [user, setUser] = useState<User | null>(null)
-
+  const [user, setUser] = useState<{
+    providerData?: { providerId: string }[] | undefined
+    displayName?: string | undefined
+    auth?: { currentUser: { providerData: { email: string }[] } } | undefined
+    uid?: string | undefined
+    photoURL?: string | undefined
+  } | null>(null)
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
   const [loading, setLoading] = useState(true)
 
   const createUser = (email: string, password: string) => {
@@ -64,9 +71,16 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser: User | null) => {
       setLoading(false)
-      setUser(currentUser || null)
+      if (currentUser !== null) {
+        setUser({
+          ...currentUser,
+          displayName: currentUser.displayName ?? undefined,
+          photoURL: currentUser.photoURL ?? undefined,
+        })
+        setIsAuthenticated(!!currentUser)
+      }
     })
 
     return () => {
@@ -77,9 +91,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const logout = async () => {
     try {
       await signOut(auth)
+      setUser(null)
       return navigate("/login")
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
 
@@ -90,6 +105,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         signInUser,
         signInWithGoogle,
         user,
+        isAuthenticated,
         logout,
       }}
     >

@@ -4,6 +4,7 @@ import { useLocation, useParams } from "react-router"
 import { API_KEY, TMDB_BASE_URL } from "../config/TMDB_API"
 
 export interface useFetchDetailsData {
+  runtime: ReactNode
   vote_count: number
   vote_average: number
   original_name: string

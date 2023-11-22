@@ -58,9 +58,9 @@ const initialState: State = {
 const dataReducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "TOGGLE_SIDEBAR":
-      return { ...state, sidebar: !state.sidebar }
+      return { ...state, sidebar: action.payload || !state.sidebar, userSidebar: false }
     case "TOGGLE_USER_SIDEBAR":
-      return { ...state, userSidebar: !state.userSidebar }
+      return { ...state, userSidebar: action.payload || !state.userSidebar, sidebar: false }
     case "SET_IS_ACTIVE":
       return { ...state, active: action.payload }
     case "TOGGLE_DROPDOWN":
@@ -93,10 +93,13 @@ const DataProvider = ({ children }: DataProviderProps) => {
     }
   }, [])
 
-  const showSidebar = (value: boolean = !state.sidebar) =>
-    dispatch({ type: "TOGGLE_SIDEBAR", payload: value })
-  const showUserSidebar = (value: boolean = !state.userSidebar) =>
-    dispatch({ type: "TOGGLE_USER_SIDEBAR", payload: value })
+  const showSidebar = () =>
+    dispatch({ type: "TOGGLE_SIDEBAR", payload: Boolean(!state.sidebar) })
+  const showUserSidebar = () =>
+    dispatch({
+      type: "TOGGLE_USER_SIDEBAR",
+      payload: Boolean(!state.userSidebar),
+    })
   const handleDropDown = () => dispatch({ type: "TOGGLE_DROPDOWN" })
 
   return (

@@ -10,17 +10,21 @@ import { Link, useLocation } from "react-router-dom"
 import { nukt_logo } from "../../assets/index"
 import { AuthContextProps, useAuthContext } from "../../contexts/AuthContext"
 import { DataContextProps, useDataContext } from "../../contexts/DataContext"
+import useResponsive from "../../hooks/useResponsive"
 import { FooterLinks1, FooterLinks2 } from "../../utils"
 
 export default function Footer() {
   const { sidebar } = useDataContext() as DataContextProps
   const { user } = useAuthContext() as AuthContextProps
+  const { lgBelow } = useResponsive()
   const location = useLocation()
   const pathname = location.pathname
 
   return (
     <footer
-      className={`w-full text-white bg-transparent flex flex-col font-fig px-[2rem] ${
+      className={`w-full text-white bg-transparent flex flex-col font-fig  ${
+        lgBelow ? "" : "px-[2rem]"
+      } ${
         pathname.includes("login") || pathname.includes("signup")
           ? "absolute bottom-0 opacity-75"
           : ""
@@ -130,7 +134,7 @@ export default function Footer() {
                     className="w-[90%] bg-transparent outline-none border-none text-white ps-2"
                   />
                   <button className="text-white pr-2">
-                    <BsFillSendFill/>
+                    <BsFillSendFill />
                   </button>
                 </form>
               </div>

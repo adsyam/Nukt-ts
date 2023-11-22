@@ -91,18 +91,20 @@ export default function VideoDescriptions({ videoDetail }: { videoDetail: VideoD
             </Link>
             <button
               onClick={handdleSubscriptions}
-              className={`px-2 rounded-md capitalize py-2 ${
-                subscribe?.includes(channelId) ? "bg-[#389FDD]" : "bg-white/50"
+              className={`px-5 py-2 rounded-md capitalize ${
+                subscribe?.includes(channelId)
+                  ? "bg-[#7300FF90]"
+                  : "bg-white/10"
               }`}
             >
               {!subscribe?.includes(channelId) ? "subscribe" : "subscribed"}
             </button>
           </div>
           <div className="flex items-center gap-3">
-            <p className="text-slate-300 border-2 py-[.45rem] px-3 rounded-md">
+            <p className="text-slate-300 border-2 border-white/20 px-5 py-2 rounded-md">
               {Number(viewCount).toLocaleString() || 0} views
             </p>
-            <div className="flex gap-3 items-center border-2 py-1 px-2 rounded-md">
+            <div className="flex gap-3 items-center border-2 border-white/20 px-3 py-[2.5px] rounded-md">
               <p className="text-slate-300">
                 {like
                   ? (Number(likeCount) + 1).toLocaleString()
@@ -113,7 +115,7 @@ export default function VideoDescriptions({ videoDetail }: { videoDetail: VideoD
                 <div className="text-[1.5rem]">
                   <AiFillLike
                     onClick={() => setLike(!like)}
-                    className="cursor-pointer"
+                    className="cursor-pointer text-[#7300FF]"
                   />
                 </div>
               ) : (
@@ -128,7 +130,7 @@ export default function VideoDescriptions({ videoDetail }: { videoDetail: VideoD
           </div>
         </div>
         <hr />
-        <div className="bg-white/20 rounded-md p-2">
+        <div className="bg-white/5 border border-white/20 rounded-md p-2">
           <div>{timeFormat(publishedAt)}</div>
           <div
             ref={descriptionRef}
@@ -140,7 +142,10 @@ export default function VideoDescriptions({ videoDetail }: { videoDetail: VideoD
             {description}
           </div>
           {readMore && (
-            <button onClick={() => setIsOpen(!isOpen)}>
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="text-white/30"
+            >
               {isOpen ? "Read less" : "Read more"}
             </button>
           )}

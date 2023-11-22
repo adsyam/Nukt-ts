@@ -8,7 +8,7 @@ export default function MediaRecommendation() {
   const [mediaType, setMediaType] = useState<string>()
 
   const { data, pathname } = useFetchRecommend()
-  const { maxCards } = useResponsive()
+  const { maxCards, lgBelow } = useResponsive()
 
   const fadeInVariants = {
     hidden: { opacity: 0 },
@@ -26,7 +26,7 @@ export default function MediaRecommendation() {
   return (
     <div
       className={`text-white ${
-        pathname.includes("Movie")
+        pathname.includes("Movie") || lgBelow
           ? "mt-10 mx-2"
           : "mx-24 max-lg:mx-20 max-sm:mx-12 py-12 px-3"
       } `}

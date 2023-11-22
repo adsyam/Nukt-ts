@@ -10,12 +10,16 @@ import {
 import { textDB } from "../config/firebase"
 import { AuthContextProps, useAuthContext } from "../contexts/AuthContext"
 import { DBContextProps, useDBContext } from "../contexts/DBContext"
+import { DataContextProps, useDataContext } from "../contexts/DataContext"
 import useFetchDetails from "../hooks/useFetchDetails"
+import useResponsive from "../hooks/useResponsive"
 
 export default function WatchMovie() {
   const { id, setIsLoading, pathname } = useFetchDetails()
   const [path, setPath] = useState<string>()
   const [historyToggle, setHistoryToggle] = useState(true)
+  const { lgBelow } = useResponsive()
+  const { sidebar } = useDataContext() as DataContextProps
 
   const [servers, setServers] = useState(
     `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1`
@@ -33,10 +37,10 @@ export default function WatchMovie() {
   //---this will be a listener for the toggle history
   useEffect(() => {
     if (!user?.uid) return
-      const unsubscribe = onSnapshot(doc(textDB, "Users", user?.uid), (doc) =>
-        setHistoryToggle(doc.data()?.storeHistory)
-      )
-      
+    const unsubscribe = onSnapshot(doc(textDB, "Users", user?.uid), (doc) =>
+      setHistoryToggle(doc.data()?.storeHistory)
+    )
+
     return () => unsubscribe()
   }, [user, user?.uid])
 
@@ -58,6 +62,57 @@ export default function WatchMovie() {
       setIsLoading(false)
     }, 2000)
   }, [pathname, id, setIsLoading])
+
+  if (lgBelow)
+    return (
+      <>
+        <div className="flex gap-4 mx-10 mt-20">
+          <div>
+            <MediaFrame id={String(id)} server={servers} />
+            <div
+              className={`${
+                sidebar
+                  ? "translate-x-[15rem] origin-left duration-300 w-[85%]"
+                  : "w-full origin-right duration-300"
+              }`}
+            >
+              <div className="flex flex-col gap-4">
+                <div className="flex gap-4">
+                  <MediaDetails id={String(id)} mediaType={"movie"} />
+                </div>
+              </div>
+              <div className="flex flex-col gap-2 p-2 mx-24 text-white rounded-md max-lg:mx-20 max-sm:mx-12">
+                <ul className="flex flex-wrap items-center gap-2">
+                  {[
+                    { name: "Server 1", url: server1 },
+                    { name: "Server 2", url: server2 },
+                    { name: "Server 3", url: server3 },
+                    { name: "Server 4", url: server4 },
+                    { name: "Server 5", url: server5 },
+                  ].map((server, index) => (
+                    <li
+                      role="button"
+                      key={index}
+                      onClick={() => setServers(server.url)}
+                      className={`px-2 border-2  rounded-md ${
+                        servers === server.url
+                          ? "border-[#7300FF90]"
+                          : "border-[#86868680]"
+                      }`}
+                    >
+                      {server.name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <MediaRecommendation />
+              <MediaReviews id={String(id)} />
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </>
+    )
 
   return (
     <>

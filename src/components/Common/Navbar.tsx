@@ -29,13 +29,21 @@ export default function Navbar() {
     showUserSidebar,
     isActive,
     modal,
+    setSidebar, 
+    setUserSidebar,
   } = useDataContext() as DataContextProps
-  const { user } = useAuthContext() as AuthContextProps
+  const { user, isAuthenticated } = useAuthContext() as AuthContextProps
   const [searchMobile, setSearchMobile] = useState(false)
   const [showSearchbar, setShowSearchbar] = useState(false)
   const [screenWidth, setScreenWidth] = useState(window.innerWidth)
   const [imageUrl, setImageUrl] = useState<string>()
 
+  useEffect(() => {
+    if (isAuthenticated && user !== null) {
+      setSidebar({ type: "TOGGLE_SIDEBAR", payload: false })
+      setUserSidebar({ type: "TOGGLE_USER_SIDEBAR", payload: false })
+    }
+  }, [isAuthenticated, setSidebar, setUserSidebar, user])
 
   useEffect(() => {
     const listRef = ref(fileDB, `${user?.uid}/profileImage/`)
@@ -188,7 +196,7 @@ export default function Navbar() {
           )}
         </div>
       </nav>
-      <Sidebar showSidebar={sidebar} />
+      <Sidebar />
       <FeedbackModal active={modal} />
     </>
   )

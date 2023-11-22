@@ -13,8 +13,7 @@ export default function UserSidebar({
   showUserSidebar: boolean
 }) {
   const { user, logout } = useAuthContext() as AuthContextProps
-  const { modal, setModal } =
-    useDataContext() as DataContextProps
+  const { modal, setModal } = useDataContext() as DataContextProps
   const [imageUrl, setImageUrl] = useState<string>()
 
   useEffect(() => {
@@ -32,62 +31,64 @@ export default function UserSidebar({
   }
 
   return (
-    <aside
-      className={`absolute h-fit text-black font-medium top-[4rem] right-[2rem]  bg-[#ffffff90] p-[1rem]
+    <>
+      <aside
+        className={`absolute h-fit text-black font-medium top-[4rem] right-[2rem]  bg-[#ffffff90] p-[1rem]
     rounded-md shadow-sm border-2 border-[#ffffff30] shadow-white ${
       showUserSidebar
         ? "origin-top-right scale-1 duration-300 ease-in-out"
         : "origin-top-right scale-0 duration-300 ease-in-out"
     }`}
-    >
-      <div className="flex items-center gap-4 mb-3">
-        <div className="w-[50px] h-[50px] rounded-full border-2 overflow-hidden">
-          <img
-            src={
-              imageUrl ||
-              user?.photoURL ||
-              "/src/assets/profile-placeholder.svg"
-            }
-            alt="user image"
-            className="w-full h-full object-cover"
-          />
-        </div>
-
-        <div>
-          <h2>{user?.displayName || "Guest User"}</h2>
-          <p>
-            {user?.auth?.currentUser?.providerData[0]?.email ||
-              "sample@email.com"}
-          </p>
-        </div>
-      </div>
-      <hr />
-      <div className="flex flex-col gap-3 mt-[1rem]">
-        {UserSidebarMenu.map((item, index) => (
-          <div key={index}>
-            {item.name === "sign out" || item.name === "send feedback" ? (
-              <button
-                onClick={item.name === "sign out" ? logout : toggleModal}
-                className="uppercase hover:text-[#7300FF] hover:font-bold text-start"
-              >
-                {item.name}
-              </button>
-            ) : (
-              <Link
-                key={index}
-                to={
-                  item.name === "my profile"
-                    ? `/profile/${user?.uid}`
-                    : item.url
-                }
-                className="uppercase hover:text-[#7300FF] hover:font-bold"
-              >
-                {item.name}
-              </Link>
-            )}
+      >
+        <div className="flex items-center gap-4 mb-3">
+          <div className="w-[50px] h-[50px] rounded-full border-2 overflow-hidden">
+            <img
+              src={
+                imageUrl ||
+                user?.photoURL ||
+                "/src/assets/profile-placeholder.svg"
+              }
+              alt="user image"
+              className="w-full h-full object-cover"
+            />
           </div>
-        ))}
-      </div>
-    </aside>
+
+          <div>
+            <h2>{user?.displayName || "Guest User"}</h2>
+            <p>
+              {user?.auth?.currentUser?.providerData[0]?.email ||
+                "sample@email.com"}
+            </p>
+          </div>
+        </div>
+        <hr />
+        <div className="flex flex-col gap-3 mt-[1rem]">
+          {UserSidebarMenu.map((item, index) => (
+            <div key={index}>
+              {item.name === "sign out" || item.name === "send feedback" ? (
+                <button
+                  onClick={item.name === "sign out" ? logout : toggleModal}
+                  className="uppercase hover:text-[#7300FF] hover:font-bold text-start"
+                >
+                  {item.name}
+                </button>
+              ) : (
+                <Link
+                  key={index}
+                  to={
+                    item.name === "my profile"
+                      ? `/profile/${user?.uid}`
+                      : item.url
+                  }
+                  className="uppercase hover:text-[#7300FF] hover:font-bold"
+                >
+                  {item.name}
+                </Link>
+              )}
+            </div>
+          ))}
+        </div>
+      </aside>
+    </>
   )
 }

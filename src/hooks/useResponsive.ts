@@ -6,6 +6,7 @@ export default function useResponsive() {
   const [maxCards, setMaxCards] = useState<number>()
   const { sidebar } = useDataContext() as DataContextProps
   const screen = useMediaQuery({ maxWidth: 425 })
+  const lgBelow = useMediaQuery({ maxWidth: 1024 })
   const xxsm = useMediaQuery({ minWidth: 370, maxWidth: 509 })
   const xsm = useMediaQuery({ minWidth: 510, maxWidth: 640 })
   const sm = useMediaQuery({ minWidth: 640, maxWidth: 768 })
@@ -35,8 +36,10 @@ export default function useResponsive() {
     responsiveEpisodeList,
     screen,
     md,
+    lg,
     sm,
     xsm,
     xxsm,
+    lgBelow,
   }
 }

@@ -1,21 +1,21 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
-import { useLocation } from "react-router"
 import { AiOutlineClose } from "react-icons/ai"
-
-import { TOKEN_AUTH } from "../../config/TMDB_API"
-import CategoryCard from "../Common/CategoryCard"
-import { useAuthContext } from "../../contexts/AuthContext"
-import { useDBContext } from "../../contexts/DBContext"
-import { textDB } from "../../config/firebase"
+import { useLocation } from "react-router"
 import { doc, onSnapshot } from "firebase/firestore"
+import { TOKEN_AUTH } from "../../config/TMDB_API"
+import { textDB } from "../../config/firebase"
+import { AuthContextProps, useAuthContext } from "../../contexts/AuthContext"
+import { DBContextProps, useDBContext } from "../../contexts/DBContext"
+import { CategoryProps } from "../../interface/Global_Interface"
+import CategoryCard from "../Common/CategoryCard"
 
-export default function MovieHistory({ reload }) {
-  const { user } = useAuthContext()
-  const { updateHistoryOrLibrary } = useDBContext()
+export default function MovieHistory() {
+  const { user } = useAuthContext() as AuthContextProps
+  const { updateHistoryOrLibrary } = useDBContext() as DBContextProps
 
-  const [movieIds, setMovieIds] = useState([])
-  const [movieDetails, setMovieDetails] = useState([])
+  const [movieIds, setMovieIds] = useState<string[]>([])
+  const [movieDetails, setMovieDetails] = useState<CategoryProps[]>()
   const location = useLocation().pathname.split("/")[2]
 
   useEffect(() => {
@@ -51,26 +51,21 @@ export default function MovieHistory({ reload }) {
       })
   }, [movieIds])
 
-  const handleDelete = (idToDelete) => {
-    const newIds = [...movieIds]
+  const handleDelete = (idToDelete: string) => {
+    const newIds: string[] = [...movieIds]
 
-    const indexToRemove = newIds.indexOf(idToDelete.toString())
+    const indexToRemove = newIds.indexOf(idToDelete)
     if (indexToRemove !== -1) {
       newIds.splice(indexToRemove, 1)
       updateHistoryOrLibrary(user.uid, location, "movies", newIds)
     }
   }
 
-  const fadeInVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 },
-  }
-
   return (
     <div className="flex flex-col gap-3">
       {movieIds.length < 1 ? "" : <h2>Movies</h2>}
       <div className="flex gap-5 flex-wrap">
-        {movieDetails.map((movieDetail, index) => (
+        {movieDetails?.map((movieDetail, index) => (
           <div key={movieDetail?.id} className="w-[200px] relative group">
             <CategoryCard
               key={movieDetail.id}
@@ -82,7 +77,7 @@ export default function MovieHistory({ reload }) {
               releaseDate={movieDetail.release_date}
               firstAirDate={movieDetail.first_air_date}
               mediaType={"movie"}
-              rating={movieDetail.vote_average.toFixed(1)}
+              rating={Number(movieDetail.vote_average.toFixed(1))}
             />
             <button
               onClick={() => handleDelete(movieDetail?.id)}

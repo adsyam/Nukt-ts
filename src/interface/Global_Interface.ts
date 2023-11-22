@@ -11,6 +11,7 @@ export interface CategoryProps {
   media_type: string
   vote_count: number
   total_pages?: number
+  genre_ids: number[]
 }
 
 export interface CategoryCardProps {
@@ -32,7 +33,6 @@ export interface CategoryCardProps {
   firstAirDate: string
 }
 
-
 export interface useFetchTMDBProps {
   defMediaType?: string
   defPage?: number
@@ -40,7 +40,6 @@ export interface useFetchTMDBProps {
   data?: CategoryProps
   pathname?: string
 }
-
 
 export interface VideosProps {
   videos: {
@@ -63,4 +62,24 @@ export interface VideosProps {
       subscriberCount: string
     }
   }[]
+}
+
+export interface UseFetchSubProps {
+  snippet: {
+    channelId: string
+    channelTitle: string
+    title: string
+    thumbnails: {
+      high: {
+        url: string
+      }
+    }
+  }
+  id: string
+}
+
+export interface VideoCardProps {
+  video?: UseFetchSubProps
+  item?: UseFetchSubProps
+  index?: number
 }

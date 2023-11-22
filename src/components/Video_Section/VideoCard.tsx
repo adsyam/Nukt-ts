@@ -3,39 +3,7 @@ import { AiOutlinePlus } from "react-icons/ai"
 import { Link, useLocation } from "react-router-dom"
 import { AuthContextProps, useAuthContext } from "../../contexts/AuthContext"
 import { DBContextProps, useDBContext } from "../../contexts/DBContext"
-
-
-interface VideoCardProps {
-  video: {
-    snippet: {
-      channelId: string
-      channelTitle: string
-      title: string
-      thumbnails: {
-        high: {
-          url: string
-        }
-      }
-    }
-    id: {
-      videoId: string
-    }
-  }
-  item?: {
-    snippet: {
-      channelId: string
-      channelTitle: string
-      title: string
-      thumbnails: {
-        high: {
-          url: string
-        }
-      }
-    }
-    id: string
-  }
-  index?: number
-}
+import { VideoCardProps } from "../../interface/Global_Interface"
 
 export default function VideoCard({ video, item, index }: VideoCardProps) {
   const { user } = useAuthContext() as AuthContextProps

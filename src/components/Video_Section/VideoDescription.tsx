@@ -4,8 +4,8 @@ import { Link } from "react-router-dom"
 
 import { doc, onSnapshot } from "firebase/firestore"
 import { textDB } from "../../config/firebase"
-import { useAuthContext } from "../../contexts/AuthContext"
-import { useDBContext } from "../../contexts/DBContext"
+import { AuthContextProps, useAuthContext } from "../../contexts/AuthContext"
+import { DBContextProps, useDBContext } from "../../contexts/DBContext"
 import { timeFormat } from "../../utils/timeFormat"
 
 const descriptionStyles = {
@@ -20,10 +20,10 @@ export default function VideoDescriptions({ videoDetail }) {
   const [readMore, setReadMore] = useState(false)
   const [subscribe, setSubscribe] = useState([])
   const [like, setLike] = useState(false)
-  const descriptionRef = useRef(null)
+  const descriptionRef = useRef<HTMLDivElement>(null)
 
-  const { user } = useAuthContext()
-  const { addSubcription, removeSubscription } = useDBContext()
+  const { user } = useAuthContext() as AuthContextProps
+  const { addSubcription, removeSubscription } = useDBContext() as DBContextProps
 
   const {
     snippet: { title, channelId, channelTitle, description, publishedAt },

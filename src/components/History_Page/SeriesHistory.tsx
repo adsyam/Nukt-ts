@@ -7,21 +7,22 @@ import { TOKEN_AUTH } from "../../config/TMDB_API"
 import CategoryCard from "../Common/CategoryCard"
 import { doc, onSnapshot } from "firebase/firestore"
 import { textDB } from "../../config/firebase"
-import { useDBContext } from "../../contexts/DBContext"
-import { useAuthContext } from "../../contexts/AuthContext"
+import { DBContextProps, useDBContext } from "../../contexts/DBContext"
+import { AuthContextProps, useAuthContext } from "../../contexts/AuthContext"
+import { CategoryProps } from "../../interface/Global_Interface"
 
-export default function SeriesHistory({ reload }) {
-  const { user } = useAuthContext()
-  const { updateHistoryOrLibrary } = useDBContext()
+export default function SeriesHistory() {
+  const { user } = useAuthContext() as AuthContextProps
+  const { updateHistoryOrLibrary } = useDBContext() as DBContextProps
   const [seriesIds, setSeriesIds] = useState([])
-  const [seriesDetails, setSeriesDetails] = useState([])
+  const [seriesDetails, setSeriesDetails] = useState<CategoryProps[]>([])
   const location = useLocation().pathname.split("/")[2]
 
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(textDB, "Users", user.uid), (doc) =>
-      setSeriesIds(doc.data()[location].series)
+      setSeriesIds(doc.data()?.[location].series)
     )
-  }, [])
+  }, [location, user.uid])
 
   useEffect(() => {
     //create an array of promises for fetching movie details
@@ -50,19 +51,14 @@ export default function SeriesHistory({ reload }) {
       })
   }, [seriesIds])
 
-  const handleDelete = (idToDelete) => {
-    const newIds = [...seriesIds]
+  const handleDelete = (idToDelete: string) => {
+    const newIds: string[] = [...seriesIds]
 
-    const indexToRemove = newIds.indexOf(idToDelete.toString())
+    const indexToRemove = newIds.indexOf(idToDelete)
     if (indexToRemove !== -1) {
       newIds.splice(indexToRemove, 1)
       updateHistoryOrLibrary(user.uid, location, "series", newIds)
     }
-  }
-
-  const fadeInVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 },
   }
 
   return (
@@ -81,7 +77,7 @@ export default function SeriesHistory({ reload }) {
               releaseDate={seriesDetail.release_date}
               firstAirDate={seriesDetail.first_air_date}
               mediaType={"tv"}
-              rating={seriesDetail.vote_average.toFixed(1)}
+              rating={Number(seriesDetail.vote_average.toFixed(1))}
             />
             <button
               onClick={() => handleDelete(seriesDetail?.id)}

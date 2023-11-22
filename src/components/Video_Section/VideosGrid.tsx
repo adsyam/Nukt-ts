@@ -1,13 +1,14 @@
+import { VideosProps } from "../../interface/Global_Interface";
 import ChannelCard from "./ChannelCard";
 import VideoCard from "./VideoCard";
 
-export default function VideosGrid({ videos }) {
+export default function VideosGrid({ videos }: VideosProps) {
   if (!videos) {
     return (
       <section className="text-white text-[1.5rem] text-center font-medium">
         Loading...
       </section>
-    );
+    )
   }
 
   return (
@@ -23,5 +24,5 @@ export default function VideosGrid({ videos }) {
         </div>
       ))}
     </div>
-  );
+  )
 }

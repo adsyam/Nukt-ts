@@ -1,4 +1,10 @@
-export default function GenreMap({ CarouselGenre }) {
+interface CarouselProps {
+  CarouselGenre: {
+    genre_ids: number[]
+  }
+}
+
+export default function GenreMap({ CarouselGenre }: CarouselProps) {
   const genres = [
     {
       id: 28,

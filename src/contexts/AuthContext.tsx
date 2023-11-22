@@ -72,6 +72,7 @@ export interface AuthContextProps {
       }
     }
     uid: string
+    photoURL: string
   }
 }
 

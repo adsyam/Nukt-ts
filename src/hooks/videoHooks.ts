@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useFetchRapid } from "./useFetchRapid.ts"
+import { UseFetchSubProps } from "../interface/Global_Interface.ts"
 
 export const useFetchVideoDetails = (param: string) => {
   const [detail, setDetail] = useState(null)
@@ -48,12 +49,6 @@ export const useFetchChannelDetails = (param: string) => {
       try {
         const data = await fetchChannelDetails
 
-        // if (data.items && data.items.length > 0) {
-        //   setChannelDetail(data.items[0])
-        // } else {
-        //   setChannelDetail(null)
-        // }
-
         setChannelDetail(
           data.items && data.items.length > 0 ? data.items[0] : null
         )
@@ -90,11 +85,6 @@ export const useFetchVideoComments = (param: string) => {
   }, [fetchVideoComments, param])
 
   return comments
-}
-
-interface UseFetchSubProps {
-  channelId: string
-  videoId: string
 }
 
 export const useFetchSubsVideos = (subChannels: string[]) => {

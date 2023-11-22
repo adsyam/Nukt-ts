@@ -31,6 +31,7 @@ export interface DataContextProps {
   location: string
   searchParams: URLSearchParams
   sidebar: boolean
+  userSidebar: boolean
 }
 
 interface State {

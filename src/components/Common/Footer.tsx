@@ -8,13 +8,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { BsFillSendFill } from "react-icons/bs"
 import { Link, useLocation } from "react-router-dom"
 import { nukt_logo } from "../../assets/index"
-import { useAuthContext } from "../../contexts/AuthContext"
-import { useDataContext } from "../../contexts/DataContext"
+import { AuthContextProps, useAuthContext } from "../../contexts/AuthContext"
+import { DataContextProps, useDataContext } from "../../contexts/DataContext"
 import { FooterLinks1, FooterLinks2 } from "../../utils"
 
 export default function Footer() {
-  const { sidebar } = useDataContext()
-  const { user } = useAuthContext()
+  const { sidebar } = useDataContext() as DataContextProps
+  const { user } = useAuthContext() as AuthContextProps
   const location = useLocation()
   const pathname = location.pathname
 
@@ -35,7 +35,7 @@ export default function Footer() {
         }`}
         >
           <div className="flex items-center gap-4">
-            <img src={nukt_logo} className="w-[100px]" />
+            <img alt="nukt" src={nukt_logo} className="w-[100px]" />
             <h2 className="uppercase font-medium text-[2.5rem]">nukt</h2>
           </div>
           <div className="w-full xl:w-[70%] flex flex-col lg:flex-row items-center">
@@ -46,7 +46,7 @@ export default function Footer() {
                     key={index}
                     className="capitalize text-[1rem] hover:text-[#7300FF]"
                   >
-                    <Link>{item.name}</Link>
+                    <Link to={"#"}>{item.name}</Link>
                   </li>
                 ))}
               </ul>
@@ -56,7 +56,7 @@ export default function Footer() {
                     key={index}
                     className="capitalize text-[1rem] hover:text-[#7300FF]"
                   >
-                    <Link>{item.name}</Link>
+                    <Link to={"#"}>{item.name}</Link>
                   </li>
                 ))}
               </ul>
@@ -71,7 +71,10 @@ export default function Footer() {
                 </h2>
                 <ul className="flex gap-4 items-center justify-center">
                   <li>
-                    <Link className="hover:text-[#7300FF] hover:scale-[1.5]">
+                    <Link
+                      to={"#"}
+                      className="hover:text-[#7300FF] hover:scale-[1.5]"
+                    >
                       <FontAwesomeIcon
                         icon={faInstagram}
                         className="text-[30px]"
@@ -79,7 +82,7 @@ export default function Footer() {
                     </Link>
                   </li>
                   <li>
-                    <Link className="hover:text-[#7300FF]">
+                    <Link to={"#"} className="hover:text-[#7300FF]">
                       <FontAwesomeIcon
                         icon={faTiktok}
                         className="text-[30px]"
@@ -87,7 +90,7 @@ export default function Footer() {
                     </Link>
                   </li>
                   <li>
-                    <Link className="hover:text-[#7300FF]">
+                    <Link to={"#"} className="hover:text-[#7300FF]">
                       <FontAwesomeIcon
                         icon={faFacebook}
                         className="text-[30px]"
@@ -95,7 +98,7 @@ export default function Footer() {
                     </Link>
                   </li>
                   <li>
-                    <Link className="hover:text-[#7300FF]">
+                    <Link to={"#"} className="hover:text-[#7300FF]">
                       <FontAwesomeIcon
                         icon={faXTwitter}
                         className="text-[30px]"
@@ -104,10 +107,10 @@ export default function Footer() {
                   </li>
                 </ul>
                 <div className="flex flex-col items-center underline">
-                  <Link className="hover:text-[#7300FF]">
+                  <Link to={"#"} className="hover:text-[#7300FF]">
                     yambaoadrianne@gmail.com
                   </Link>
-                  <Link className="hover:text-[#7300FF]">
+                  <Link to={"#"} className="hover:text-[#7300FF]">
                     danemaas16@gmail.com
                   </Link>
                 </div>
@@ -127,7 +130,7 @@ export default function Footer() {
                     className="w-[90%] bg-transparent outline-none border-none text-white ps-2"
                   />
                   <button className="text-white pr-2">
-                    <BsFillSendFill />
+                    <BsFillSendFill/>
                   </button>
                 </form>
               </div>

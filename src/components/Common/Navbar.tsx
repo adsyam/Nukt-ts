@@ -33,17 +33,9 @@ export default function Navbar() {
   const { user } = useAuthContext() as AuthContextProps
   const [searchMobile, setSearchMobile] = useState(false)
   const [showSearchbar, setShowSearchbar] = useState(false)
-//   const [reload, setReload] = useState(false)
   const [screenWidth, setScreenWidth] = useState(window.innerWidth)
   const [imageUrl, setImageUrl] = useState<string>()
 
-  // useEffect(() => {
-  //   const timeout = setTimeout(() => {
-  //     setReload(!reload);
-  //   }, 1000);
-
-  //   return () => clearTimeout(timeout);
-  // }, [reload]);
 
   useEffect(() => {
     const listRef = ref(fileDB, `${user?.uid}/profileImage/`)

@@ -39,7 +39,7 @@ export interface DBContextProps {
     userId: string,
     path: string,
     type: string,
-    newIds: string
+    newIds: string[]
   ) => Promise<void>
   clearHistoryOrLibrary: (userId: string, path: string) => Promise<void>
   addUserFeedback: (
@@ -239,7 +239,7 @@ const DBProvider = ({ children }: DBProviderProps) => {
     userId: string,
     path: string,
     type: string,
-    newIds: string
+    newIds: string[]
   ) => {
     const userDocRef = doc(textDB, "Users", userId)
     const userDocSnapshot = await getDoc(userDocRef)

@@ -5,7 +5,13 @@ import { useState } from "react"
 import { AiOutlineClose } from "react-icons/ai"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 
-export default function Searchbar({ searchMobile, showSearchbar, onClose }) {
+interface SearchBarProps {
+    searchMobile: boolean
+    showSearchbar: boolean
+    onClose: () => void
+}
+
+export default function Searchbar({ searchMobile, showSearchbar, onClose }: SearchBarProps) {
   const [search, setSearch] = useState("")
   const location = useLocation()
   const pathname = location.pathname
@@ -21,7 +27,7 @@ export default function Searchbar({ searchMobile, showSearchbar, onClose }) {
   }
   const navigate = useNavigate()
 
-  function searchEnter(e) {
+  function searchEnter(e: React.KeyboardEvent<HTMLInputElement>) {
     if (search !== "") {
       if (e.key === "Enter") {
         navigate(`/search?q=${search}`)
@@ -49,7 +55,7 @@ export default function Searchbar({ searchMobile, showSearchbar, onClose }) {
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search Movies, TV Series, and more"
           style={searchStyle}
-          onKeyDown={searchEnter}
+          onKeyDown={(e) => searchEnter(e)}
           className="w-[300px] md:w-[400px] ps-[1rem] outline-none border-0 backdrop-blur-none"
         />
         <Link

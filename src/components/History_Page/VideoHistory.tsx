@@ -3,14 +3,14 @@ import { useEffect, useState } from "react"
 import { AiOutlineClose } from "react-icons/ai"
 import { useLocation } from "react-router"
 import { textDB } from "../../config/firebase"
-import { useAuthContext } from "../../contexts/AuthContext"
-import { useDBContext } from "../../contexts/DBContext"
+import { AuthContextProps, useAuthContext } from "../../contexts/AuthContext"
+import { DBContextProps, useDBContext } from "../../contexts/DBContext"
 import { useFetchVideoDetail } from "../../hooks/videoHooks"
 import VideoCard from "../Video_Section/VideoCard"
 
-export default function VideoHistory({ reload }) {
-  const { user } = useAuthContext()
-  const { updateHistoryOrLibrary } = useDBContext()
+export default function VideoHistory() {
+  const { user } = useAuthContext() as AuthContextProps
+  const { updateHistoryOrLibrary } = useDBContext() as DBContextProps
   const [videoIds, setVideoIds] = useState([])
   const location = useLocation().pathname.split("/")[2]
 
@@ -18,18 +18,18 @@ export default function VideoHistory({ reload }) {
     const unsubscribe = onSnapshot(
       doc(textDB, "Users", user?.uid),
       { includeMetadataChanges: true },
-      (doc) => setVideoIds(doc.data()[location].videos)
+      (doc) => setVideoIds(doc.data()?.[location].videos)
     )
-  }, [])
+  }, [location, user?.uid])
 
   const videoDetails = useFetchVideoDetail(videoIds)
 
   if (!videoDetails) return
 
-  const handleDelete = (idToDelete) => {
-    const newIds = [...videoIds]
+  const handleDelete = (idToDelete: string) => {
+    const newIds: string[] = [...videoIds]
 
-    const indexToRemove = newIds.indexOf(idToDelete.toString())
+    const indexToRemove = newIds.indexOf(idToDelete)
     if (indexToRemove !== -1) {
       newIds.splice(indexToRemove, 1)
       updateHistoryOrLibrary(user.uid, location, "videos", newIds)

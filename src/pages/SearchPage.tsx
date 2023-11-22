@@ -27,7 +27,7 @@ export default function SearchPage() {
           Showing results for{" "}
           <span className="text-[#7300FF]">{searchParams}</span>
         </p>
-        <VideoCategories catergoryName={searchParams} />
+        <VideoCategories catergoryName={String(searchParams)} />
       </section>
       <Footer />
     </>

@@ -1,13 +1,13 @@
 import { motion } from "framer-motion"
 import { Link } from "react-router-dom"
 import { Footer } from "../components"
-import { useDataContext } from "../contexts/DataContext"
+import { DataContextProps, useDataContext } from "../contexts/DataContext"
 
 const icon =
   "https://cdn3d.iconscout.com/3d/premium/thumb/report-6073861-4996978.png"
 
 export default function Report() {
-  const { sidebar } = useDataContext()
+  const { sidebar } = useDataContext() as DataContextProps
 
   return (
     <>
@@ -46,7 +46,7 @@ export default function Report() {
             </ol>
             <p>
               For more information on how to report content on Nukt,{" "}
-              <Link className="underline text-[#389FDD]">
+              <Link to={"/home"} className="underline text-[#389FDD]">
                 please explore our resources.
               </Link>
             </p>

@@ -7,15 +7,15 @@ import {
   Trending,
   VideoFeed,
 } from "../components"
-import { useAuthContext } from "../contexts/AuthContext"
-import { useDBContext } from "../contexts/DBContext"
-import { useDataContext } from "../contexts/DataContext"
+import { AuthContextProps, useAuthContext } from "../contexts/AuthContext"
+import { DBContextProps, useDBContext } from "../contexts/DBContext"
+import { DataContextProps, useDataContext } from "../contexts/DataContext"
 // import PopularMovie from "../components/Popular"
 
 export default function Home() {
-  const { sidebar } = useDataContext()
-  const { user } = useAuthContext()
-  const { addUser } = useDBContext()
+  const { sidebar } = useDataContext() as DataContextProps
+  const { user } = useAuthContext() as AuthContextProps
+  const { addUser } = useDBContext() as DBContextProps
 
   useEffect(() => {
     const addUserData = async () => {
@@ -27,7 +27,7 @@ export default function Home() {
             user?.auth?.currentUser?.providerData[0]?.email
           )
         } else {
-          await addUser(user?.uid)
+          await addUser(user?.uid ?? "", user?.displayName ?? "", "")
         }
       } catch (err) {
         console.log("[HOME]Error adding user data: ", err)

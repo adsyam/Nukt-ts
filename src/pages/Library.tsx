@@ -2,16 +2,16 @@ import { useState } from "react"
 import { useLocation } from "react-router"
 
 import { MovieHistory, SeriesHistory, VideoHistory } from "../components/index"
-import { useAuthContext } from "../contexts/AuthContext"
-import { useDBContext } from "../contexts/DBContext"
-import { useDataContext } from "../contexts/DataContext"
+import { AuthContextProps, useAuthContext } from "../contexts/AuthContext"
+import { DBContextProps, useDBContext } from "../contexts/DBContext"
+import { DataContextProps, useDataContext } from "../contexts/DataContext"
 
 export default function History() {
   const [reload, setReload] = useState(false)
   const location = useLocation().pathname.split("/")[2]
-  const { sidebar } = useDataContext()
-  const { clearHistoryOrLibrary } = useDBContext()
-  const { user } = useAuthContext()
+  const { sidebar } = useDataContext() as DataContextProps
+  const { clearHistoryOrLibrary } = useDBContext() as DBContextProps
+  const { user } = useAuthContext() as AuthContextProps
 
   //clear the data of localStorage
   const handleClear = () => {

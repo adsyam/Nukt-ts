@@ -60,8 +60,19 @@ export interface AuthContextProps {
   signInWithGoogle: () => Promise<UserCredential>
   logout: () => Promise<void>
   user: {
+    providerData: {
+      providerId: string
+    }[]
+    displayName: string
+    auth: {
+      currentUser: {
+        providerData: {
+          email: string
+        }[]
+      }
+    }
     uid: string
-  } 
+  }
 }
 
 const AuthContext = createContext<AuthContextProps | null>(null)

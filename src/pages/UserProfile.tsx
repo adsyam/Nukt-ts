@@ -21,7 +21,7 @@ interface ChannelDetail {
 export default function UserProfile() {
   const { id } = useParams()
   const location = useLocation().pathname
-  const { channelDetail } = useFetchChannelDetails(id)
+  const { channelDetail } = useFetchChannelDetails(id || "")
   const { user } = useAuthContext() as AuthContextProps
   const { sidebar } = useDataContext() as DataContextProps
   const { getUserData } = useDBContext() as DBContextProps

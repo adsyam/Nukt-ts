@@ -1,6 +1,25 @@
 import { motion } from "framer-motion"
 import { Link } from "react-router-dom"
 
+interface CategoryCardProps {
+  id: string
+  index: number
+  poster: string
+  name: string
+  backdrop: string
+  title: string
+  date1: string
+  date2: string
+  animation: {
+    hidden: { opacity: number }
+    visible: { opacity: number }
+  }
+  rating: number
+  mediaType: string
+  releaseDate: string
+  firstAirDate: string
+}
+
 export default function CategoryCard({
   mediaType,
   id,
@@ -11,8 +30,7 @@ export default function CategoryCard({
   releaseDate,
   firstAirDate,
   rating,
-}) {
-
+}: CategoryCardProps) {
   const fadeInVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },

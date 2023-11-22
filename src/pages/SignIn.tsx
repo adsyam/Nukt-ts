@@ -23,8 +23,12 @@ export default function SignIn() {
     if (isShow) return "text"
     if (!isShow) return "password"
   }
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target
+  const handleChange = (
+    e:
+      | React.MouseEvent<HTMLInputElement, MouseEvent>
+      | React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value, type, checked } = e.target as HTMLInputElement
 
     const newValue = type === "checkbox" ? checked : value
 
@@ -49,8 +53,10 @@ export default function SignIn() {
       await signInUser(loginDetail.email, loginDetail.password)
       return navigate("/home")
     } catch (error) {
-      setErrorMsg(error.code)
-      console.log(error)
+      if (error instanceof Error) {
+        setErrorMsg(error.message)
+        console.error(error)
+      }
     }
     setLoading(false)
   }
@@ -95,7 +101,7 @@ export default function SignIn() {
                 name="password"
                 placeholder="Enter your password"
                 value={loginDetail.password}
-                onChange={handleChange}
+                onChange={(e) => handleChange(e)}
                 className="w-full outline-none border-2 border-[#D9D9D990] p-2 rounded-md bg-slate-50/10"
               />
               {showPassword1 ? (
@@ -121,11 +127,12 @@ export default function SignIn() {
           <div className="w-full flex justify-between items-baseline mb-[1rem] px-1">
             <div className="flex justify-center items-center gap-1">
               <input
+                title="remember me"
                 type="checkbox"
                 name="remember"
                 className="cursor-pointer w-3"
-                value={loginDetail.remember}
-                onClick={handleChange}
+                value={loginDetail.remember.toString()}
+                onClick={(e) => handleChange(e)}
               />
               <label className="text-[.9rem]">remember me</label>
             </div>

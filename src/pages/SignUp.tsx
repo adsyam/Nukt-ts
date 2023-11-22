@@ -6,17 +6,18 @@ import { Link } from "react-router-dom"
 import { useSnapshot } from "valtio"
 import { user } from "../StateStore"
 import { Footer } from "../components"
-import { useAuthContext } from "../contexts/AuthContext"
+import { AuthContextProps, useAuthContext } from "../contexts/AuthContext"
+
 
 export default function SignUp() {
   const [showPassword1, setShowPassword1] = useState(false)
   const [showPassword2, setShowPassword2] = useState(false)
-  function passwordToggle(isShow) {
+  function passwordToggle(isShow: boolean) {
     if (isShow) return "text"
     if (!isShow) return "password"
   }
 
-  const { createUser } = useAuthContext()
+  const { createUser } = useAuthContext() as AuthContextProps
 
   const userSnap = useSnapshot(user)
   const [firstName, setFirstName] = useState({
@@ -28,11 +29,11 @@ export default function SignUp() {
     isEmpty: false,
   })
   const [error, setError] = useState(false)
-  const [errMsg, setErrMsg] = useState("")
+  const [errorMsg, setErrorMsg] = useState("")
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
-  const validateInput = async (e) => {
+  const validateInput = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (firstName.input === "" || lastName.input === "") {
       setFirstName({
@@ -56,8 +57,10 @@ export default function SignUp() {
       await createUser(userSnap.email, userSnap.password)
       return navigate("/signup/pricing")
     } catch (err) {
-      setErrMsg(err.code)
-      console.log(err)
+      if (err instanceof Error) {
+        setErrorMsg(err.message)
+        console.error(err)
+      }
     }
     setLoading(false)
   }
@@ -130,10 +133,10 @@ export default function SignUp() {
             />
             <p
               className={`text-red-500 text-[.8rem] right-0 font-bold italic absolute ${
-                errMsg.includes("email") ? "block" : "hidden"
+                errorMsg?.includes("email") ? "block" : "hidden"
               }`}
             >
-              {errMsg}
+              {errorMsg}
             </p>
           </div>
           <div className="relative w-full">
@@ -164,10 +167,10 @@ export default function SignUp() {
             </div>
             <p
               className={`text-red-500 text-[.8rem] right-0 font-bold italic absolute ${
-                errMsg.includes("password") ? "block" : "hidden"
+                errorMsg.includes("password") ? "block" : "hidden"
               }`}
             >
-              {errMsg}
+              {errorMsg}
             </p>
           </div>
           <div className="relative w-full mb-[1rem]">

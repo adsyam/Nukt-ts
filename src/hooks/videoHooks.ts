@@ -1,10 +1,6 @@
-//custom hooks for fetching different kinds of video queries and parameters
-
 import { useEffect, useState } from "react"
 import { useFetchRapid } from "./useFetchRapid.ts"
 
-//this custom hook will get video details based on the URL query paramenter
-//this will be used through out the pages where we display all videos and channels
 export const useFetchVideoDetails = (param: string) => {
   const [detail, setDetail] = useState(null)
   const fetchDetails = useFetchRapid(`search?part=snippet&q=${param}`).then(
@@ -18,8 +14,6 @@ export const useFetchVideoDetails = (param: string) => {
   return detail
 }
 
-//this custom hook will get video details with stats based on the URL query paramenter
-//this will be used in the watch page for the video description
 export const useFetchStats = (param: string) => {
   const [stats, setStats] = useState(null)
   const fetchStats = useFetchRapid(
@@ -32,8 +26,6 @@ export const useFetchStats = (param: string) => {
   return stats
 }
 
-//this custom hook will get related videos based on the URL query paramenter
-//this will be used in the watch page for the related videos section
 export const useFetchRelatedVideos = (param: string) => {
   const [videos, setVideos] = useState(null)
   const fetchStats = useFetchRapid(
@@ -47,8 +39,6 @@ export const useFetchRelatedVideos = (param: string) => {
   return videos
 }
 
-//this custom hook will get channel data on the URL query paramenter
-//this will be used through out the pages where we display all videos and channels
 export const useFetchChannelDetails = (param: string) => {
   const [channelDetail, setChannelDetail] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -78,8 +68,6 @@ export const useFetchChannelDetails = (param: string) => {
   return { channelDetail }
 }
 
-//this custom hook will get channel contents on the URL query paramenter
-//this will be mainly used on the profile page to generate all the video contents of that channel
 export const useFetchChannelVideos = (param: string) => {
   const [videos, setVideos] = useState([])
   const fetchChannelVideos = useFetchRapid(
@@ -92,8 +80,6 @@ export const useFetchChannelVideos = (param: string) => {
   return videos
 }
 
-//this custom hook will get the user's comments based on the URL query paramenter
-//this will be used in the watch page for the review section
 export const useFetchVideoComments = (param: string) => {
   const [comments, setComments] = useState(null)
   const fetchVideoComments = useFetchRapid(

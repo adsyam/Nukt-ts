@@ -13,7 +13,7 @@ import {
 } from "../hooks/videoHooks"
 
 export default function WatchVideo() {
-  const id = new URLSearchParams(window.location.search).get("v")
+  const id = new URLSearchParams(window.location.search).get("v") ?? ""
   const [historyToggle, setHistoryToggle] = useState(true)
 
   const videoDetails = useFetchStats(id)
@@ -25,17 +25,15 @@ export default function WatchVideo() {
   const videoRef = useRef(null)
 
   useEffect(() => {
-    if (user && user.uid) {
       const unsubscribe = onSnapshot(doc(textDB, "Users", user?.uid), (doc) =>
         setHistoryToggle(doc.data()?.storeHistory)
       )
-    }
   }, [user, user?.uid])
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (historyToggle && user?.uid) {
-        const nonNullContentId = id ?? "" // Provide a default value if id is null
+        const nonNullContentId = id ?? ""
         addHistoryOrLibrary(user?.uid, "history", "videos", nonNullContentId)
       }
     }, 1000)

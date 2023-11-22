@@ -1,12 +1,11 @@
 import { Player } from "@lottiefiles/react-lottie-player"
 import { useState } from "react"
-import useSearch from "../hooks/useSearch"
 import { loader_Geometric } from "../assets"
 import { CategoryCard, VideoCategories } from "../components"
 import { DataContextProps, useDataContext } from "../contexts/DataContext"
+import useSearch from "../hooks/useSearch"
 
 export default function SearchMedia() {
-  const [filter, setFilter] = useState("")
   const [category, setCategory] = useState("all")
   const searchParams = new URLSearchParams(window.location.search).get("q")
   const { sidebar } = useDataContext() as DataContextProps
@@ -83,10 +82,11 @@ export default function SearchMedia() {
                         date1={md.release_date}
                         date2={md.first_air_date}
                         animation={fadeInVariants}
-                        rating={md.vote_average.toFixed(1)}
+                        rating={Number(md.vote_average.toFixed(1))}
                         mediaType={"movie"}
                         releaseDate={md.release_date}
                         firstAirDate={md.first_air_date}
+                        name={""}
                       />
                     ))}
                 </div>
@@ -109,17 +109,18 @@ export default function SearchMedia() {
                         date1={tv.release_date}
                         date2={tv.first_air_date}
                         animation={fadeInVariants}
-                        rating={tv.vote_average.toFixed(1)}
+                        rating={Number(tv.vote_average.toFixed(1))}
                         mediaType={"tv"}
                         releaseDate={tv.release_date}
                         firstAirDate={tv.first_air_date}
+                        name={""}
                       />
                     ))}
                 </div>
               </section>
             ) : null}
             {category === "video" || category === "all" ? (
-              <VideoCategories catergoryName={searchParams} />
+              <VideoCategories catergoryName={String(searchParams)} />
             ) : null}
           </section>
         </>

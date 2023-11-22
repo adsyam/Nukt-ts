@@ -13,11 +13,11 @@ export default function Sidebar({ showSidebar }: { showSidebar: boolean }) {
   const { setSidebar, setUserSidebar } = useDataContext() as DataContextProps
 
   useEffect(() => {
-    if (logout && !user) {
+    if (!user && pathname.includes("/login")) {
       setSidebar({ type: "TOGGLE_SIDEBAR", payload: false })
       setUserSidebar({ type: "TOGGLE_USER_SIDEBAR", payload: false })
     }
-  }, [user, setSidebar, logout, setUserSidebar])
+  }, [user, setSidebar, logout, setUserSidebar, pathname])
 
   return (
     <aside

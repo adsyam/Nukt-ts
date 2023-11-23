@@ -29,7 +29,7 @@ export default function Navbar() {
     showUserSidebar,
     isActive,
     modal,
-    setSidebar, 
+    setSidebar,
     setUserSidebar,
   } = useDataContext() as DataContextProps
   const { user, isAuthenticated } = useAuthContext() as AuthContextProps
@@ -43,7 +43,6 @@ export default function Navbar() {
       setSidebar({ type: "TOGGLE_SIDEBAR", payload: false })
       setUserSidebar({ type: "TOGGLE_USER_SIDEBAR", payload: false })
     }
-
   }, [isAuthenticated, pathname, setSidebar, setUserSidebar, user])
 
   useEffect(() => {
@@ -117,32 +116,39 @@ export default function Navbar() {
         } py-2 flex items-center justify-between px-5 fixed top-0 right-0 left-0 z-10 text-white`}
       >
         <div className="flex gap-5">
-          <button
-            className={`px-[.6rem] rounded-md ${user ? "" : "hidden"}`}
-            onClick={showSidebar}
-          >
-            {sidebar ? (
-              <FontAwesomeIcon
-                role="button"
-                icon={faXmark}
-                className="text-2xl text-white"
-              />
-            ) : (
-              <FontAwesomeIcon
-                role="button"
-                icon={faBars}
-                className="text-2xl text-white"
-              />
-            )}
-          </button>
+          {pathname.includes("signup") ?? (
+            <button
+              className={`px-[.6rem] rounded-md ${user ? "" : "hidden"}`}
+              onClick={showSidebar}
+              disabled={pathname.includes("signup")}
+            >
+              {sidebar ? (
+                <FontAwesomeIcon
+                  role="button"
+                  icon={faXmark}
+                  className="text-2xl text-white"
+                />
+              ) : (
+                <FontAwesomeIcon
+                  role="button"
+                  icon={faBars}
+                  className="text-2xl text-white"
+                />
+              )}
+            </button>
+          )}
+
           {!showSearchbar && (
-            <Link to={"/home"} className="flex items-center gap-2 w-max">
+            <Link
+              to={`/home`}
+              className="flex items-center gap-2 w-max"
+            >
               <img src={nukt_logo} alt="" width={35} height={41} />
               <p className="hidden font-bold text-white md:block">Nukt</p>
             </Link>
           )}
         </div>
-        {!user ? (
+        {!user || pathname.includes("signup") ? (
           ""
         ) : (
           <Searchbar

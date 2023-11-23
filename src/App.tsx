@@ -1,7 +1,8 @@
 import { createBrowserRouter } from "react-router-dom"
-import { Suspense, lazy } from "react"
+import { Suspense } from "react"
 import { Player } from "@lottiefiles/react-lottie-player"
 import { loader_Geometric } from "./assets"
+import '@stripe/stripe-js'
 
 import {
   Pricing,

@@ -116,7 +116,7 @@ export default function Navbar() {
         } py-2 flex items-center justify-between px-5 fixed top-0 right-0 left-0 z-10 text-white`}
       >
         <div className="flex gap-5">
-          {pathname.includes("signup") ?? (
+          {/* {pathname.includes("signup") ?? ( */}
             <button
               className={`px-[.6rem] rounded-md ${user ? "" : "hidden"}`}
               onClick={showSidebar}
@@ -136,7 +136,7 @@ export default function Navbar() {
                 />
               )}
             </button>
-          )}
+        {/* //   )} */}
 
           {!showSearchbar && (
             <Link

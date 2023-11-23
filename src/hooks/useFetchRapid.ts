@@ -42,7 +42,7 @@ export const useFetchRapid = async (url: string) => {
       }
 
     } catch (error) {
-      console.error(`Error with API key ${apiKeys[i]}:`, error)
+      console.error(`Error with API key`, error)
     }
   }
 

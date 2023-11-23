@@ -60,7 +60,7 @@ const dataReducer = (state: State, action: Action): State => {
     case "TOGGLE_SIDEBAR":
       return { ...state, sidebar: action.payload || !state.sidebar, userSidebar: false }
     case "TOGGLE_USER_SIDEBAR":
-      return { ...state, userSidebar: action.payload || !state.userSidebar, sidebar: false }
+      return { ...state, userSidebar: action.payload, sidebar: false }
     case "SET_IS_ACTIVE":
       return { ...state, active: action.payload }
     case "TOGGLE_DROPDOWN":

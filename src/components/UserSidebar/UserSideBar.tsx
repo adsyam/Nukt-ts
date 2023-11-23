@@ -26,7 +26,7 @@ export default function UserSidebar({
   }, [user?.uid])
 
   const toggleModal = () => {
-    setModal({ type: "SET_MODAL", payload: !modal })
+    setModal({ type: "SET_MODAL", payload: true })
     return (document.body.style.overflow = "hidden")
   }
 

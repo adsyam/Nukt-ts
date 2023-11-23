@@ -80,26 +80,29 @@ export default function Subscriptions() {
     getData()
   }, [getUserData, manage, reload, subUsers, user?.uid])
 
-  const toggleUnsubscribe = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    type: string,
-    id: string
-  ) => {
-    e.preventDefault()
-    try {
+const toggleUnsubscribe = (
+  e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  type: string,
+  id: string
+) => {
+  e.preventDefault()
+  try {
+    if (subChannels) {
       removeSubscription(String(user?.uid), type, id)
       removeSubscribers(id, String(user?.uid)).then(() => {
         alert("Successfully unsubscribed")
         setReload(!reload)
       })
-    } catch (err) {
-      console.log(err)
+    } else {
+      console.error("subChannels is undefined")
     }
+  } catch (err) {
+    console.log(err)
   }
-
-  const videos = useFetchSubsVideos(subChannels)
+}
+  const videos = useFetchSubsVideos(subChannels || [])
   const channels: UseFetchSubProps[] | undefined =
-    useFetchSubChannels(subChannels)
+    useFetchSubChannels(subChannels || [])
 
   if (!videos || loading) return null
 
@@ -125,67 +128,70 @@ export default function Subscriptions() {
         <div className="flex flex-col gap-12">
           <div className="flex flex-col gap-10">
             <h2>Subscribed Channels</h2>
-            {subChannels.length === 0 && (
+            {!subChannels?.length && (
               <p className="text-center">
                 You are not subscribed to any channels
               </p>
             )}{" "}
             <div className="flex flex-wrap items-center gap-5">
-              {channels?.map((item) => (
-                <div
-                  key={item?.id?.channelId || String(item?.id)}
-                  className="w-full md:w-[300px] flex flex-col gap-1 justify-center items-center"
-                >
-                  <div
-                    className="w-[150px] md:w-[200px] h-[150px] md:h-[200px] rounded-full
-                    overflow-hidden border-2 relative group"
-                  >
+              {channels?.map(
+                (item) =>
+                  item && (
                     <div
-                      className="absolute w-full h-full grid place-items-center bg-black/80
+                      key={item?.id?.channelId || String(item?.id)}
+                      className="w-full md:w-[300px] flex flex-col gap-1 justify-center items-center"
+                    >
+                      <div
+                        className="w-[150px] md:w-[200px] h-[150px] md:h-[200px] rounded-full
+                    overflow-hidden border-2 relative group"
+                      >
+                        <div
+                          className="absolute w-full h-full grid place-items-center bg-black/80
                       rounded-full -translate-x-[15rem] group-hover:translate-x-0 transition-all
                       duration-300"
-                    >
-                      <button
-                        onClick={(e) =>
-                          toggleUnsubscribe(
-                            e,
-                            "channels",
-                            item?.id?.channelId || item?.id.toString()
-                          )
-                        }
-                        className="capitalize w-max bg-white/50 p-[.3rem] md:p-[.5rem] rounded-md
+                        >
+                          <button
+                            onClick={(e) =>
+                              toggleUnsubscribe(
+                                e,
+                                "channels",
+                                item?.id?.channelId || item?.id.toString()
+                              )
+                            }
+                            className="capitalize w-max bg-white/50 p-[.3rem] md:p-[.5rem] rounded-md
                         text-sm md:text-normal hover:scale-105 transition-all duration-200"
+                          >
+                            unsubscribe
+                          </button>
+                        </div>
+                        <img
+                          src={item?.snippet?.thumbnails?.high?.url}
+                          alt={String(item?.snippet?.title)}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <Link
+                        to={`/profile/${item?.id?.channelId || item?.id}`}
+                        className="w-max flex flex-col justify-center items-center"
                       >
-                        unsubscribe
-                      </button>
-                    </div>
-                    <img
-                      src={item?.snippet?.thumbnails?.high?.url}
-                      alt={String(item?.snippet?.title)}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <Link
-                    to={`/profile/${item?.id?.channelId || item?.id}`}
-                    className="w-max flex flex-col justify-center items-center"
-                  >
-                    <p className="flex items-center gap-1">
-                      {String(item?.snippet?.title)}
-                      <AiFillCheckCircle />
-                    </p>
-                    <div>
-                      {item?.statistics?.subscriberCount && (
-                        <p>
-                          {parseInt(
-                            item?.statistics?.subscriberCount
-                          ).toLocaleString()}{" "}
-                          Subscribers
+                        <p className="flex items-center gap-1">
+                          {String(item?.snippet?.title)}
+                          <AiFillCheckCircle />
                         </p>
-                      )}
+                        <div>
+                          {item?.statistics?.subscriberCount && (
+                            <p>
+                              {parseInt(
+                                item?.statistics?.subscriberCount
+                              ).toLocaleString()}{" "}
+                              Subscribers
+                            </p>
+                          )}
+                        </div>
+                      </Link>
                     </div>
-                  </Link>
-                </div>
-              ))}
+                  )
+              )}
             </div>
           </div>
           <div className="flex flex-col gap-10">
@@ -237,7 +243,7 @@ export default function Subscriptions() {
             </div>
           </div>
         </div>
-      ) : subChannels.length === 0 ? (
+      ) : !subChannels?.length ? (
         <p className="text-center">You are not subscribed to any channels</p>
       ) : (
         <div className="w-full flex flex-wrap justify-center items-center gap-5">

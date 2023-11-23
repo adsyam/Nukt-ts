@@ -42,12 +42,12 @@ export const useFetchRapid = async (url: string) => {
       }
 
     } catch (error) {
-    //   console.error(error)
+      console.error(error)
     }
   }
 
   if (!response) {
-    // console.error("All API keys used. Wait for rate limit reset.")
+    console.error("All API keys used. Wait for rate limit reset.")
     throw new Error("Rate limit exceeded with all API keys.")
   }
 
